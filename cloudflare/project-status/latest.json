@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-23T22:14:00-04:00",
+  "updated_at": "2026-10-24T17:46:54.442Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,13 +110,11 @@
     }
   },
   "next_steps": [
-    "Evaluate denser native-resolution full-frame extractor against packed index",
-    "Add rarity/high-frequency bucket suppression using packed bucket lengths",
-    "Cheaply rank candidates before RANSAC",
-    "Repair 26 missing normalized references and rebuild bank/index",
-    "Build screenshot-level detection aggregator and dedupe",
-    "Preserve SGW recovery and Hands/HUD rejection regressions",
-    "Only integrate into production after recall improves without false positives"
+    "Investigate descriptor patch-scale mismatch using native-resolution multiscale feature probes",
+    "Evaluate reference-art compatibility and local keypoint coverage for unseen cards",
+    "Improve retrieval recall under unchanged geometric trust gates",
+    "Do not promote to production until recall improves without accepting HUD/Hands",
+    "Keep branch, R2, and GitHub preservation synchronized"
   ],
   "preservation": {
     "status": "complete",
@@ -127,6 +125,45 @@
     "github_status_path": "cloudflare/project-status/latest.json",
     "github_handoff_path": "cloudflare/project-status/2026-10-23-handoff.md",
     "github_cloudflare_root": "cloudflare/",
-    "note": "GitHub is now the canonical code/config backup; R2 remains the live binary/corpus store."
+    "note": "GitHub is now the canonical code/config backup; R2 remains the live binary/corpus store.",
+    "latest_development_checkpoint_r2": "debug/project-status/2026-10-24-development-v7.json",
+    "latest_development_checkpoint_github": "cloudflare/project-status/2026-10-24-development-v7.json"
+  },
+  "development_latest": {
+    "checkpoint_r2": "debug/project-status/2026-10-24-development-v7.json",
+    "checkpoint_github": "cloudflare/project-status/2026-10-24-development-v7.json",
+    "github_experiment_branch": "experiment/dense-rarity-20261023",
+    "proof_worker_latest_uploaded_deployment_id": "5da114469c444171880c60e4c1a4b759",
+    "production_deployment_unchanged": true,
+    "canonical_bank_version": 3,
+    "canonical_indexed_references": 1483,
+    "canonical_missing_references": 0,
+    "descriptor_version": "brief128-v3",
+    "index_shards": 8,
+    "screenshot_benchmark": {
+      "visible_playable_cards": 11,
+      "accepted_unique": 1,
+      "recall": 0.09090909090909091,
+      "accepted_card": "Stained Glass Window",
+      "hands_of_time_accepted": false
+    },
+    "experiments": {
+      "v6_aggregated_result": "debug/global-local-full-dense-v6-hough/all8-screen-deduped.json",
+      "v7_exhaustive_result": "debug/global-local-v7-exhaustive/screen-deduped-d100.json",
+      "full_ranked_refs": 1483,
+      "completed_partitions": 62,
+      "geometric_shortlist_per_shard": 24,
+      "accepted_per_shard": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    "status": "Implemented and tested experimentally. Not promoted: recall remains 1/11."
   }
 }
