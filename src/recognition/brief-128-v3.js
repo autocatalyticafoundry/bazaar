@@ -119,9 +119,32 @@ async function glV3AssembleBank(env) {
   return {key:out,reference_count:rows.length,shards};
 }
 async function glV3Screenshot(env,inputKey,ds) {
+  // Only immutable content-addressed PNGs are cached. Arbitrary input remains
+  // programmatic and native-resolution without assumptions about the scene.
+  const match=/^perception\/inputs\/([a-f0-9]{64})\.png$/.exec(inputKey);
+  const tag=Math.round(ds*100);
+  const cacheKey=match?"debug/global-local-full-target-brief-v3/"+match[1]+"/d"+tag+".json":null;
+  if(cacheKey){
+    const hit=await env.BENCHMARK_R2.get(cacheKey);
+    if(hit){const obj=JSON.parse(await new Response(hit.body).text());
+      if(obj.descriptor_version==="brief128-v3"&&obj.input_key===inputKey)
+        return {width:obj.width,height:obj.height,descriptor_scale:ds,
+          descriptor_version:"brief128-v3",
+          features:obj.features.map(f=>({x:f[0],y:f[1],descriptor:lgB64ToDesc(f[2])}))};
+    }
+  }
   const loaded=await loadProofInputs(env,inputKey),im=loaded.image,
     positions=lgExtractSpatialFastGrid(im.rgba,im.width,im.height,16,12,32,2,ds),
     features=glRedescribeV3(im.rgba,im.width,im.height,positions,ds);
+  if(cacheKey){
+    await env.BENCHMARK_R2.put(cacheKey,JSON.stringify({schema_version:1,
+      descriptor_version:"brief128-v3",input_key:inputKey,width:im.width,
+      height:im.height,descriptor_scale:ds,feature_count:features.length,
+      features:features.map(f=>[f.x,f.y,lgDescToB64(f.descriptor)])}),{
+        httpMetadata:{contentType:"application/json"},
+        customMetadata:{artifact:"native-fullframe-brief128-v3",feature_count:String(features.length),
+          descriptor_scale:String(ds)}});
+  }
   return {width:im.width,height:im.height,descriptor_scale:ds,
     descriptor_version:"brief128-v3",features};
 }
