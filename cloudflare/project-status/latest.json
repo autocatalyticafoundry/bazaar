@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24T20:41:22.815Z",
+  "updated_at": "2026-10-24T21:20:15.666Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,11 +110,10 @@
     }
   },
   "next_steps": [
-    "Diagnose why 132-144 px wide art regions rank wrong: crop/letterboxing vs normalized square reference features",
-    "Add crop-aware candidate retrieval and assess on separately labelled screenshot fixtures",
-    "Keep per-region ranked guesses available, with raw score and explicit uncalibrated relative-support semantics",
-    "Avoid overfitting a score threshold to the one user-labelled screenshot",
-    "Preserve production until verified recall improves safely"
+    "Determine correct identities of six narrow cards or acquire independent annotated sample so gains can be measured",
+    "Build full-catalogue coarse convolution retrieval so true candidate is not limited to the earlier weak BRIEF shortlist",
+    "Test affine geometry with independent x/y scale and crop-aware reference projections, preserving false-positive controls",
+    "Use control benchmark with 11 known visible cards; production unchanged until measurable gain"
   ],
   "preservation": {
     "status": "complete",
@@ -288,6 +287,27 @@
       "confirmed_true_identities_unknown": 6,
       "verified_geometry_matches": 2,
       "interpretation": "All wide-art proposals top1 correct and all six narrow-art proposals top1 incorrect on this single screenshot. Investigate aspect-ratio/cropping and narrow-card matching, not production thresholds calibrated on this example."
+    },
+    "convolution_affine_pde_experiment": {
+      "status": "deployed_completed_10_regions",
+      "version": "convolution-affine-candidate-sets-v1",
+      "github_source": "src/recognition/convolution-affine-pde-v1.js",
+      "experiment_branch": "experiment/dense-rarity-20261023",
+      "proof_worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+      "deployment_id": "f081e8dbb1004ebd8c9926e69914bdcf",
+      "separate_r2_result": "debug/region-affine-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/result.json",
+      "proof_github": "cloudflare/project-status/2026-10-24-affine-convolution-pde-v1.json",
+      "proof_r2": "debug/project-status/2026-10-24-affine-convolution-pde-v1.json",
+      "mechanics": "separable gaussian convolution, anisotropic PDE diffusion, HOG orientation, chroma correlation, 2D crop/affine stretch variant search",
+      "compared_reference_artwork_count": 251,
+      "card_regions": 10,
+      "failed_png_decodes": 0,
+      "four_human_confirmed_correct_retained": 4,
+      "old_six_known_incorrect_names_changed": 6,
+      "new_narrow_identity_correctness": "unknown",
+      "calibrated_probabilities": false,
+      "production_changed": false,
+      "benchmark_conclusion": "Working implementation; no empirically demonstrated gain for six narrow cards because gold identities not supplied; new result is diagnostic-only."
     }
   }
 }
