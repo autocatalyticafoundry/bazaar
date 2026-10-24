@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-24T17:45:42.484Z",
+  "project": "Bazaar",
+  "goal": "Given an arbitrary The Bazaar screenshot, programmatically convert visible pixels into trustworthy structured game state.",
+  "constraints": {
+    "server_side_only": true,
+    "free_only": true,
+    "runtime_independent_of_assistant_vision": true,
+    "no_screenshot_specific_hacks": true,
+    "production_unchanged": true
+  },
+  "benchmark": {
+    "sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+    "dimensions": [
+      2048,
+      1409
+    ],
+    "playable_cards": 11,
+    "verified_unique_cards": 1,
+    "verified_recall": 0.09090909090909091,
+    "only_verified_identity": "Stained Glass Window",
+    "hands_of_time_card": false,
+    "hud_false_positive_accepted": false
+  },
+  "bank": {
+    "v1_references": 1457,
+    "v1_missing": 26,
+    "v2_references": 1483,
+    "v3_references": 1483,
+    "v3_descriptor_unique_tests": 128,
+    "source_defect_original_unique_tests": 17,
+    "v3_bank_key": "debug/whole-screen-local-feature-bank-v3/bank.json",
+    "v3_packed_index_prefix": "debug/global-local-packed-index-v3/",
+    "v3_index_shards": 8
+  },
+  "implemented": {
+    "rarity_cache_shards": 8,
+    "partitioned_hough_shortlist": true,
+    "full_ranked_references": 1483,
+    "partitions_completed": 62,
+    "spatial_candidate_winners": 496,
+    "geometry_top_n_per_shard": 24,
+    "accepted_detection_aggregation": true,
+    "screenshot_dedupe": true,
+    "feature_stride_diagnostics": true
+  },
+  "tests": {
+    "prior_proof_key": "debug/global-local-full-dense-v6-hough/all8-screen-deduped.json",
+    "prior_proof_unique_detected": 1,
+    "final_proof_key": "debug/global-local-v7-exhaustive/screen-deduped-d100.json",
+    "final_proof_unique_detected": 1,
+    "final_candidate_count": 1,
+    "duplicate_count": 0,
+    "per_shard_accepted_counts": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "stained_glass_window": {
+      "shard": 6,
+      "inliers": 12,
+      "mean_hamming": "see proof artifact",
+      "mean_residual_px": 0.777579640505463,
+      "bbox": {
+        "x": 1005.6075727463169,
+        "y": 388.7714942843052,
+        "width": 299.8040305292816,
+        "height": 299.80403052928165
+      }
+    },
+    "false_positive_hands_of_time_accepted": false
+  },
+  "caveats": {
+    "recall_not_improved": true,
+    "other_ten_identities_unverified": true,
+    "localized_card_gold_fixture_incomplete": true,
+    "partition_candidate_stride_values": [
+      1,
+      2,
+      3
+    ],
+    "stride_normalization_heuristic": true,
+    "subsequent_geometry_full_native_features": true,
+    "shortlist_not_exhaustive_geometry": true,
+    "game_semantics_not_yet_resolved": true
+  },
+  "next_work": [
+    "Probe native descriptor patch radii / artwork scale variation on arbitrary screenshot references.",
+    "Measure target feature coverage and canonical-art compatibility per card, and distinguish missing visual references from missed retrieval.",
+    "Develop multi-scale, high-recall candidate retrieval with unchanged geometric trust thresholds.",
+    "Only then evaluate screenshot-level card dedupe and semantic metadata joins on newly accepted identities."
+  ],
+  "experimental": {
+    "github_branch": "experiment/dense-rarity-20261023",
+    "github_worker_source": "cloudflare/workers/bazaar-whole-screen-fingerprint-proof-20261009/content-v2.multipart",
+    "proof_worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "proof_worker_deployment_id": "5da114469c444171880c60e4c1a4b759",
+    "queue": "bazaar-fullgeo-v1-20261014",
+    "queue_id": "9ad127b9abbf45a4af8a0bc44df14b66"
+  },
+  "production": {
+    "worker": "bazaar-clean-benchmark",
+    "deployment_id": "448be080-f7b0-47a0-8a4c-34dcc019d389",
+    "promoted": false
+  }
+}
