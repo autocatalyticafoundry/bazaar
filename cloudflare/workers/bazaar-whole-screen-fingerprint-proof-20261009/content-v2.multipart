@@ -1975,7 +1975,7 @@ function bzRegionsFromPixelsV1(im){
     if(chosen.length>=10)break;
     if(chosen.every(p=>Math.abs(p.y-peak.y)>=minPeakDistance))chosen.push(peak);
   }
-  const proposals=[],bands=[];
+  const proposals=[],bands=[],rejectedBands=[];
   for(const peak of chosen.sort((a,b)=>a.y-b.y)){
     const yBand=peak.y,near=Math.max(14,Math.round(h*.024));
     const s0=lineSegments.filter(t=>Math.abs(t.y0-yBand)<=near);
@@ -2021,7 +2021,7 @@ function bzRegionsFromPixelsV1(im){
       regions.push(region);
     }
     // A single rectangle from HUD decoration is not considered an item row.
-    if(regions.length<3)continue;
+    if(regions.length<3){rejectedBands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,y0:c.y0,y1:c.y1,count:c.count})),candidates:regions.map(p=>p.bbox)});continue;}
     bands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,count:c.count,mass:c.mass,y0:c.y0,y1:c.y1})),candidate_spans:centers.slice(1).map((c,i)=>({left:centers[i].x,right:c.x,width:c.x-centers[i].x}))});
     proposals.push(...regions);
   }
@@ -2036,7 +2036,7 @@ function bzRegionsFromPixelsV1(im){
     }))continue;
     unique.push({...p,region_id:"region-"+String(unique.length+1).padStart(2,"0")});
   }
-  return {regions:unique.slice(0,36),bands,
+  return {regions:unique.slice(0,36),bands,rejected_bands:rejectedBands,
     diagnostics:{vertical_segments:lineSegments.length,band_candidates:chosen.length,
       accepted_row_bands:bands.length,method:"native-boundary-repetition-v1"}};
 }
