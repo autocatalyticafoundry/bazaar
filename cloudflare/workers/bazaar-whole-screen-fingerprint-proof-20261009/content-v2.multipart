@@ -1000,6 +1000,7 @@ async function glFastTile(env,ti){const r=await glFastRange(env,ti,0,8),out="deb
 
 
 
+
 // Repair previously failed normalized references into a versioned bank/index.
 // All writes stay under v2 prefixes; v1 packed geometry baseline is untouched.
 const GL_REPAIR_V2_PREFIX="debug/whole-screen-local-feature-bank-v2/";
@@ -1671,7 +1672,10 @@ async function glHoughReduceShardV1(env,body){
       if(!x.asset_path||!Number.isFinite(x.hough_peak))throw new Error("invalid pool shortlist");
       const prev=scores.find(y=>y.asset_path===x.asset_path);
       if(prev)throw new Error("reference repeated across rarity partitions "+x.asset_path);
-      scores.push({...x,source_part:key,source_pool_start:start});
+      const sampleStride=Math.max(1,Math.min(4,Number(v.diagnostics?.candidate_stride)||1));
+      scores.push({...x,source_part:key,source_pool_start:start,
+        candidate_stride:sampleStride,
+        normalized_hough_peak:x.hough_peak*sampleStride});
     }
     parts.push({key,considered:Math.min(poolSize,Math.max(0,rankedCount-start)),
       winners:shortlist.length,top_peak:shortlist[0]?.hough_peak||0});
@@ -1680,7 +1684,7 @@ async function glHoughReduceShardV1(env,body){
   if(!first||!parts.length||parts.reduce((sum,p)=>sum+p.considered,0)!==rankedCount)
     throw new Error("incomplete Hough pool coverage");
   const pathToIndex=new Map(bank.refs.map((r,i)=>[r.asset_path,i]));
-  scores.sort((a,b)=>b.hough_peak-a.hough_peak||
+  scores.sort((a,b)=>b.normalized_hough_peak-a.normalized_hough_peak||
     a.hough_mean_hamming-b.hough_mean_hamming||
     b.score-a.score||a.asset_path.localeCompare(b.asset_path));
   const unique=scores.slice(0,topN).map(row=>{
@@ -1706,10 +1710,12 @@ async function glHoughReduceShardV1(env,body){
     reference_count:bank.refs.length,ranked_reference_count:rankedCount,
     partition_count:parts.length,partitions:parts,
     hough_candidates_considered:scores.length,
+    ranking_note:"Hough peaks scaled by candidate keypoint sampling stride; trust still comes only from full-feature geometry",
     candidate_reference_count:rows.length,geometry_executed_count:rows.length,
     shortlist_count:unique.length,
     shortlist:unique.map((x,rank)=>({rank:rank+1,name:basename(x.asset_path),
       asset_path:x.asset_path,hough_peak:x.hough_peak,
+      normalized_hough_peak:x.normalized_hough_peak,candidate_stride:x.candidate_stride,
       hough_mean_hamming:x.hough_mean_hamming,score:x.score,
       source_pool_start:x.source_pool_start,raw_pairs:found.per[rank]?.length||0})),
     accepted_count:accepted.length,accepted,top:rows.slice(0,24),
