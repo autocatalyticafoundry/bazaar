@@ -113,7 +113,9 @@ async function bzFullConvAggregateV1(env,body){
   const result={schema_version:1,version:"region-fullcatalog-convolution-v1",
     input_key:inputKey,regions,region_count:regions.length,
     total_comparisons:regions.reduce((n,r)=>n+r.compared,0),
-    candidate_universe:loc.regions.length?regions[0].compared:null,
+    candidate_universe:loc.regions.length?1483:null,
+    coarse_reference_comparisons:regions.reduce((n,r)=>n+(r.coarse_count||1483),0),
+    detailed_reference_comparisons:regions.reduce((n,r)=>n+r.compared,0),
     warning:"Low-resolution full-catalogue retrieval. Candidate ranks do not imply calibrated likelihood or accepted identity.",
     generated_at:new Date().toISOString()};
   await env.BENCHMARK_R2.put(base+"result.json",JSON.stringify(result),{
