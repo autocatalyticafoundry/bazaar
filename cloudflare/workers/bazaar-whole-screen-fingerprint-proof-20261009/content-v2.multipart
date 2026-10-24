@@ -2033,8 +2033,8 @@ async function bzLocalizeRegionsV1(env,body){
   await env.BENCHMARK_R2.put(base+"regions.json",JSON.stringify(artifact),{
     httpMetadata:{contentType:"application/json"},
     customMetadata:{artifact:"screenshot-regions-v1",region_count:String(result.regions.length)}});
-  if(body.dispatch!==false&&env.SCREENSHOT_QUEUE){
-    await env.SCREENSHOT_QUEUE.sendBatch(Array.from({length:8},(_,si)=>({
+  if(body.dispatch!==false&&(env.REGION_QUEUE||env.SCREENSHOT_QUEUE)){
+    await (env.REGION_QUEUE||env.SCREENSHOT_QUEUE).sendBatch(Array.from({length:8},(_,si)=>({
       body:{kind:"region_rank_shard_v1",input_key:inputKey,shard_index:si}
     })));
   }
