@@ -88,14 +88,15 @@ async function glDenseRareShardV1(env, body) {
   const inputKey=String(body.input_key||"perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png");
   const benchmark="perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png";
   // General input path keeps the native image dimensions and avoids resizing.
-  const tr=inputKey===benchmark&&body.fresh!==true?await glLoadFullTargetDense(env,ds):
+  const version=[2,3].includes(Number(body.bank_version))?Number(body.bank_version):1;
+  const tr=version===3?await glV3Screenshot(env,inputKey,ds):
+    inputKey===benchmark&&body.fresh!==true?await glLoadFullTargetDense(env,ds):
     await (async()=>{const loaded=await loadProofInputs(env,inputKey),im=loaded.image;
       return {width:im.width,height:im.height,descriptor_scale:ds,
         features:lgExtractSpatialFastGrid(im.rgba,im.width,im.height,16,12,32,2,ds)};})();
-  const version=Number(body.bank_version)===2?2:1;
   const bankKey="debug/whole-screen-local-feature-bank-v"+version+"/shards/shard-"+String(si).padStart(2,"0")+".json";
   const bank=await lgLoadBank(env,bankKey);
-  const idx=version===2?await glLoadPackedIndexV2(env,si):await glLoadPackedIndex(env,si);
+  const idx=version===1?await glLoadPackedIndex(env,si):await glLoadPackedIndexV2(env,si,version);
   if(idx.reference_count!==bank.refs.length) throw new Error("packed index/bank reference mismatch for shard "+si);
   const topN=Math.max(8,Math.min(40,Number(body.shortlist)||24));
   const maxBucket=Math.max(8,Math.min(96,Number(body.max_bucket)||48));
