@@ -1,0 +1,130 @@
+name: Import Cloudflare backup
+
+on:
+  push:
+    paths:
+      - ".github/workflows/cloudflare-backup.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Download Cloudflare snapshot
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 4 --retry-delay 2 \
+            "https://bazaar-github-backup-export-20261023.allaboutstudios.workers.dev/snapshot-7f3b9c2e" \
+            -o /tmp/cloudflare-state.b64
+          base64 --decode /tmp/cloudflare-state.b64 | gzip --decompress > /tmp/cloudflare-state.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          src = Path("/tmp/cloudflare-state.json")
+          data = json.loads(src.read_text())
+          root = Path("cloudflare")
+          root.mkdir(parents=True, exist_ok=True)
+
+          def dump(path, value):
+              path = Path(path)
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+          dump(root / "BACKUP_METADATA.json", {
+              "schema_version": data.get("schema_version"),
+              "snapshot_date": data.get("snapshot_date"),
+              "account_id": data.get("account_id"),
+              "workers_subdomain": data.get("workers_subdomain"),
+              "notes": data.get("notes"),
+              "redactions": data.get("redactions", []),
+              "worker_count": len(data.get("workers", [])),
+              "queue_count": len(data.get("queues", [])),
+              "r2": {
+                  name: {
+                      "total_objects": info.get("total_objects"),
+                      "total_bytes": info.get("total_bytes"),
+                  }
+                  for name, info in data.get("r2", {}).items()
+              },
+          })
+
+          (root / "README.md").write_text(
+              "# Cloudflare backup\n\n"
+              "Point-in-time snapshot of the Bazaar Cloudflare estate.\n\n"
+              "- Worker source is stored as the exact Cloudflare content-v2 multipart payload, except obvious credential literals are redacted.\n"
+              "- Worker settings, deployments, schedules, secret binding names, and workers.dev state are recorded.\n"
+              "- Queue configuration and consumer topology are recorded.\n"
+              "- R2 binary objects are not duplicated into Git. Exact object inventories (key, size, etag, timestamps) are recorded.\n"
+              "- Secret values and binding values are intentionally excluded/redacted.\n"
+          )
+
+          for w in data.get("workers", []):
+              d = root / "workers" / w["name"]
+              d.mkdir(parents=True, exist_ok=True)
+              (d / "content-v2.multipart").write_text(w.get("content_v2", ""))
+              dump(d / "metadata.json", {
+                  "name": w.get("name"),
+                  "created_on": w.get("created_on"),
+                  "modified_on": w.get("modified_on"),
+                  "etag": w.get("etag"),
+              })
+              dump(d / "settings.json", w.get("settings"))
+              dump(d / "deployments.json", w.get("deployments"))
+              dump(d / "schedules.json", w.get("schedules"))
+              dump(d / "secrets.json", w.get("secrets"))
+              dump(d / "subdomain.json", w.get("subdomain"))
+
+          qroot = root / "queues"
+          qroot.mkdir(parents=True, exist_ok=True)
+          dump(qroot / "index.json", [
+              {"id": q.get("id"), "name": q.get("name")}
+              for q in data.get("queues", [])
+          ])
+          for q in data.get("queues", []):
+              d = qroot / q["name"]
+              d.mkdir(parents=True, exist_ok=True)
+              dump(d / "details.json", q.get("details"))
+              dump(d / "consumers.json", q.get("consumers"))
+
+          for bucket, info in data.get("r2", {}).items():
+              d = root / "r2" / bucket
+              d.mkdir(parents=True, exist_ok=True)
+              dump(d / "bucket.json", info.get("bucket"))
+              dump(d / "summary.json", {
+                  "total_objects": info.get("total_objects"),
+                  "total_bytes": info.get("total_bytes"),
+              })
+              # NDJSON keeps the 18k-object inventory grep/diff friendly.
+              with (d / "objects.ndjson").open("w") as f:
+                  for obj in info.get("objects", []):
+                      f.write(json.dumps(obj, sort_keys=True) + "\n")
+
+          for key, value in data.get("important_r2_text", {}).items():
+              name = Path(key).name
+              p = root / "project-status" / name
+              p.parent.mkdir(parents=True, exist_ok=True)
+              if isinstance(value, str):
+                  p.write_text(value)
+              else:
+                  dump(p.with_suffix(p.suffix + ".json"), value)
+          PY
+
+      - name: Commit backup
+        run: |
+          set -euo pipefail
+          git config user.name "Bazaar Cloudflare Backup"
+          git config user.email "actions@github.com"
+          git add cloudflare
+          if git diff --cached --quiet; then
+            echo "No backup changes to commit."
+            exit 0
+          fi
+          git commit -m "Back up Bazaar Cloudflare state (2026-10-23)"
+          git push
