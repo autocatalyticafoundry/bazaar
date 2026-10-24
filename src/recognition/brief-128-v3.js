@@ -52,8 +52,10 @@ async function glV3BankPart(env,body) {
       const normalized=await env.BENCHMARK_R2.get("catalogue/item-visual-normalized-v1/"+row.source_sha256+".png");
       if(!normalized)throw new Error("normalized reference missing");
       const png=await decodePng(await new Response(normalized.body).arrayBuffer()),
-        im=lgBoundReferenceImage(png,320);
-      if(im.width!==row.width||im.height!==row.height)throw new Error("canonical dimension mismatch");
+        im=(png.width===row.width&&png.height===row.height)?png:lgBoundReferenceImage(png,320);
+      if(im.width!==row.width||im.height!==row.height)
+        throw new Error("canonical dimension mismatch expected="+row.width+"x"+row.height+
+          " original="+png.width+"x"+png.height+" resized="+im.width+"x"+im.height);
       const original=row.features.map(f=>({x:f[0],y:f[1]})),
         features=glRedescribeV3(im.rgba,im.width,im.height,original,1);
       rows.push({...row,features:features.map(f=>[f.x,f.y,lgDescToB64(f.descriptor)])});
