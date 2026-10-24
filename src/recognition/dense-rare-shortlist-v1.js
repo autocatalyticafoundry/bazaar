@@ -151,7 +151,9 @@ async function glDenseRareShardV1(env, body) {
   const poolStart=houghMode?Math.max(0,Math.floor(Number(body.pool_start)||0)):0;
   const preliminary=allVotes.slice(poolStart,poolStart+poolN);
   if(!preliminary.length)throw new Error("empty rarity pool slice "+poolStart);
-  const foundPool=glDenseRarePairsV1(tr.features,bank,idx,preliminary,maxBucket,192);
+  const stride=body.diagnostic_only===true?Math.max(1,Math.min(4,Math.floor(Number(body.candidate_stride)||1))):1;
+  const candidateTarget=stride===1?tr.features:tr.features.filter((_,i)=>i%stride===0);
+  const foundPool=glDenseRarePairsV1(candidateTarget,bank,idx,preliminary,maxBucket,192);
   const votes=houghMode?glHoughShortlistV1(foundPool.per,preliminary,bank.refs,topN):preliminary;
   const positions=new Map(preliminary.map((v,i)=>[v.i,i]));
   const found=houghMode?{...foundPool,
@@ -182,7 +184,8 @@ async function glDenseRareShardV1(env, body) {
     pair_mode:body.pair_mode==="baseline"?"baseline":"rarity",
     candidate_reference_count:rows.length,geometry_executed_count:rows.length,
     accepted_count:accepted.length,accepted,top:rows.slice(0,24),shortlist,
-    diagnostics:{...found.stats,exact:exact.diagnostics},
+    diagnostics:{...found.stats,exact:exact.diagnostics,
+      candidate_stride:stride,candidate_feature_count:candidateTarget.length},
     exact_rank_sgw:exact.rows.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))+1||null,
     exact_hits_sgw:exact.rows.find(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))||null,
     exact_top:exact.rows.slice(0,12).map(v=>({...v,name:basename(bank.refs[v.i].asset_path)}))
