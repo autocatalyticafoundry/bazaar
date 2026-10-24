@@ -72,10 +72,19 @@ function bzRegionsFromPixelsV1(im){
         mass,count:g.length,y0:bzMedianV1(g.map(t=>t.y0)),
         y1:bzMedianV1(g.map(t=>t.y1))};
     }).sort((a,b)=>a.x-b.x);
-    const regions=[];
+    // Preserve conservative primary output. Expose cadence-supported wider
+    // spans for diagnostic ranking only; no card identity or location rules.
+    const regions=[],wideSpans=[];
+    const minSpan=Math.max(65,Math.round(w*.049)),maxOrdinary=Math.round(w*.205);
+    const ordinaryWidths=centers.slice(1).map((c,i)=>c.x-centers[i].x)
+      .filter(v=>v>=minSpan&&v<=maxOrdinary);
+    const unitWidth=bzMedianV1(ordinaryWidths.filter(v=>v<=Math.round(w*.11)))||
+      bzMedianV1(ordinaryWidths);
     for(let k=0;k<centers.length-1;k++){
       const a=centers[k],b=centers[k+1],span=b.x-a.x;
-      if(span<Math.max(65,Math.round(w*.049))||span>Math.round(w*.205))continue;
+      const wide=span>maxOrdinary;
+      if(span<minSpan||span>Math.round(w*.33))continue;
+      if(wide&&(!unitWidth||span/unitWidth<2.35||span/unitWidth>4.1))continue;
       // The frame boundary contains ornaments; take the artwork interior.
       const inX=Math.max(3,Math.round(w*.0034)),inY=Math.max(3,Math.round(h*.006));
       const box={x:Math.max(0,a.x+inX),y:Math.max(0,yBand+inY),
@@ -96,11 +105,14 @@ function bzRegionsFromPixelsV1(im){
       const region={bbox:box,proposal_score:Number((deviation+2*edgeContrast).toFixed(3)),
         border_evidence:{left_x:a.x,right_x:b.x,row_y:yBand,segment_height:medianL},
         texture_stddev:Number(deviation.toFixed(3))};
-      regions.push(region);
+      if(wide)wideSpans.push({...region,
+        source:"wide_cadence_frame_span",inferred_unit_width:unitWidth,
+        span_in_units:Number((span/unitWidth).toFixed(3))});
+      else regions.push(region);
     }
     // A single rectangle from HUD decoration is not considered an item row.
-    if(regions.length<3){rejectedBands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,y0:c.y0,y1:c.y1,count:c.count})),candidates:regions.map(p=>p.bbox)});continue;}
-    bands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,count:c.count,mass:c.mass,y0:c.y0,y1:c.y1})),candidate_spans:centers.slice(1).map((c,i)=>({left:centers[i].x,right:c.x,width:c.x-centers[i].x}))});
+    if(regions.length<3){rejectedBands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,y0:c.y0,y1:c.y1,count:c.count})),candidates:regions.map(p=>p.bbox),wide_spans:wideSpans});continue;}
+    bands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,count:c.count,mass:c.mass,y0:c.y0,y1:c.y1})),candidate_spans:centers.slice(1).map((c,i)=>({left:centers[i].x,right:c.x,width:c.x-centers[i].x})),wide_spans:wideSpans});
     proposals.push(...regions);
   }
   proposals.sort((a,b)=>a.bbox.y-b.bbox.y||a.bbox.x-b.bbox.x);
@@ -116,7 +128,7 @@ function bzRegionsFromPixelsV1(im){
   }
   return {regions:unique.slice(0,36),bands,rejected_bands:rejectedBands,
     diagnostics:{vertical_segments:lineSegments.length,band_candidates:chosen.length,
-      accepted_row_bands:bands.length,method:"native-boundary-repetition-v1"}};
+      accepted_row_bands:bands.length,wide_span_probes:bands.reduce((n,b)=>n+(b.wide_spans?.length||0),0),method:"native-boundary-repetition-v1-plus-cadence-diagnostics"}};
 }
 async function bzLocalizeRegionsV1(env,body){
   const inputKey=String(body.input_key||""),
