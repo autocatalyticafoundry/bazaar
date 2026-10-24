@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-23",
+  "updated_at": "2026-10-23T22:14:00-04:00",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -76,8 +76,29 @@
     "canonical_owner": "autocatalyticafoundry",
     "canonical_repo": "autocatalyticafoundry/bazaar",
     "status": "connected_write_enabled",
-    "backup_commit": "f89ae079b3a1e003a37c94cf1a063ed3fd1b44c6",
+    "visibility": "public",
+    "cloudflare_snapshot_commit": "f89ae079b3a1e003a37c94cf1a063ed3fd1b44c6",
+    "current_head_at_preservation": "13f9f71f0480aa40647dc3647dd3ec225ff57fc0",
     "backup_date": "2026-10-23",
+    "backup_scope": {
+      "workers": 64,
+      "queues": 59,
+      "r2_buckets": 2,
+      "r2_objects": 18574,
+      "r2_bytes": 2320174453,
+      "r2_binary_bytes_duplicated_into_git": false,
+      "r2_inventory_fields": [
+        "key",
+        "size",
+        "etag",
+        "last_modified",
+        "storage_class",
+        "http_metadata",
+        "custom_metadata"
+      ],
+      "secrets_policy": "Secret values and binding values excluded/redacted.",
+      "hardcoded_credential_redactions": 1
+    },
     "legacy_repositories_to_ignore": [
       "allaboutstudios/bazaar",
       "heavymediumtool/bazaar"
@@ -91,5 +112,16 @@
     "Build screenshot-level detection aggregator and dedupe",
     "Preserve SGW recovery and Hands/HUD rejection regressions",
     "Only integrate into production after recall improves without false positives"
-  ]
+  ],
+  "preservation": {
+    "status": "complete",
+    "preserved_at": "2026-10-23T22:14:00-04:00",
+    "authoritative_machine_status_r2": "debug/project-status/latest.json",
+    "authoritative_handoff_r2": "debug/project-status/2026-10-23-handoff.md",
+    "proof_worker_source_snapshot_r2": "debug/project-status/2026-10-23-proof-worker-content-v2.multipart",
+    "github_status_path": "cloudflare/project-status/latest.json",
+    "github_handoff_path": "cloudflare/project-status/2026-10-23-handoff.md",
+    "github_cloudflare_root": "cloudflare/",
+    "note": "GitHub is now the canonical code/config backup; R2 remains the live binary/corpus store."
+  }
 }
