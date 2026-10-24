@@ -1,0 +1,27 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "f79c4475e6e54813ba66b34ea1af462c",
+      "script": "bazaar-card-gate-training-v1",
+      "settings": {
+        "batch_size": 5,
+        "max_concurrency": 2,
+        "max_retries": 1,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-09T17:59:43.90618Z",
+  "modified_on": "2026-10-09T17:59:43.90618Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "0a387636420e473395b239a2400708f7",
+  "queue_name": "bazaar-card-gate-training-v1",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

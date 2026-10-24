@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "f79c4475e6e54813ba66b34ea1af462c",
+    "created_on": "2026-10-09T17:59:46.098599Z",
+    "queue_id": "0a387636420e473395b239a2400708f7",
+    "queue_name": "bazaar-card-gate-training-v1",
+    "script": "bazaar-card-gate-training-v1",
+    "settings": {
+      "batch_size": 5,
+      "max_concurrency": 2,
+      "max_retries": 1,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

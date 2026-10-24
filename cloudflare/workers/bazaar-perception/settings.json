@@ -1,0 +1,52 @@
+{
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BENCHMARK_R2",
+      "type": "r2_bucket"
+    },
+    {
+      "database_id": "e8b25e56-61eb-4bb8-a519-e94dc04b9735",
+      "id": "e8b25e56-61eb-4bb8-a519-e94dc04b9735",
+      "name": "DB",
+      "type": "d1"
+    },
+    {
+      "name": "PERCEPTION_KEY",
+      "text": "<REDACTED_VALUE>",
+      "type": "plain_text"
+    },
+    {
+      "environment": "production",
+      "name": "SAFETY",
+      "service": "bazaar-clean-benchmark",
+      "type": "service"
+    }
+  ],
+  "compatibility_date": "2026-10-03",
+  "compatibility_flags": [],
+  "logpush": false,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    },
+    "redact_query_string": false,
+    "traces": {
+      "enabled": false,
+      "head_sampling_rate": 1,
+      "persist": true
+    }
+  },
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

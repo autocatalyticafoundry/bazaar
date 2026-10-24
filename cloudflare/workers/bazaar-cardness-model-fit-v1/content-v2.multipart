@@ -1,0 +1,27 @@
+--70e2a83f4e0a03ca0607589e5b7b56f71d93abf32da293884f574eee1aca
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+const KEYS=["luma_mean","luma_std","sat_mean","sat_std","edge_mean","edge_std","border_edge","center_edge","border_center_edge_ratio","border_luma_delta","border_sat_delta","h_edge","v_edge","hv_log_ratio","corner_edge","frame_edge","border_luma_std","center_luma_std","border_entropy","center_entropy","sym_x","sym_y"];
+async function read(env,key){const o=await env.BUCKET.get(key);return o?JSON.parse(await o.text()):null}
+function v(f){return KEYS.map(k=>Number(f?.[k]??0))}
+function addWeighted(s,row,w){const x=v(row.features);s.n+=w;for(let j=0;j<KEYS.length;j++){s.sum[j]+=w*x[j];s.sumsq[j]+=w*x[j]*x[j]}}
+function zero(){return {n:0,sum:new Array(KEYS.length).fill(0),sumsq:new Array(KEYS.length).fill(0)}}
+function score(model,row){const x=v(row.features),z=x.map((q,j)=>(q-model.global_mean[j])/model.global_std[j]),d=model.pos_centroid_z.map((q,j)=>q-model.neg_centroid_z[j]),mid=model.pos_centroid_z.map((q,j)=>(q+model.neg_centroid_z[j])/2),norm=Math.sqrt(d.reduce((s,q)=>s+q*q,0))||1;return d.reduce((s,q,j)=>s+q*(z[j]-mid[j]),0)/norm}
+export default {async queue(batch,env){for(const m of batch.messages){try{
+ const prefix=m.body.stats_prefix||"interim-",ls=await env.BUCKET.list({prefix:"benchmarks/playable-card-cardness-features-v1/stats/"+prefix,limit:1000}),pos=zero(),neg=zero();let sourceShards=0;
+ for(const x of ls.objects){if(!x.key.endsWith(".json"))continue;const d=await read(env,x.key);if(!d)continue;sourceShards+=Number(d.source_shard_count||0);pos.n+=Number(d.pos.n||0);neg.n+=Number(d.neg.n||0);for(let j=0;j<KEYS.length;j++){pos.sum[j]+=Number(d.pos.sum[j]||0);pos.sumsq[j]+=Number(d.pos.sumsq[j]||0);neg.sum[j]+=Number(d.neg.sum[j]||0);neg.sumsq[j]+=Number(d.neg.sumsq[j]||0)}}
+ const current=await read(env,"benchmarks/playable-card-cardness-features-v1/real/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393-current.json"),hands=await read(env,"benchmarks/playable-card-cardness-features-v1/real/2e74fc13f835f9f7686d6fb3f333542f4012cc4013aee8da716e56856c85674f-regression-hands.json");if(!current||!hands)throw new Error("real rows missing");
+ const posTrain={n:pos.n,sum:[...pos.sum],sumsq:[...pos.sumsq]},negTrain={n:neg.n,sum:[...neg.sum],sumsq:[...neg.sumsq]},anchorWeight=50;
+ for(const row of current.rows||[])addWeighted(row.label===1?posTrain:negTrain,row,anchorWeight);
+ const totalN=posTrain.n+negTrain.n,globalMean=new Array(KEYS.length),globalStd=new Array(KEYS.length),pm=new Array(KEYS.length),nm=new Array(KEYS.length);
+ for(let j=0;j<KEYS.length;j++){const sum=posTrain.sum[j]+negTrain.sum[j],sq=posTrain.sumsq[j]+negTrain.sumsq[j];globalMean[j]=sum/totalN;globalStd[j]=Math.max(1e-4,Math.sqrt(Math.max(0,sq/totalN-globalMean[j]*globalMean[j])));pm[j]=posTrain.sum[j]/posTrain.n;nm[j]=negTrain.sum[j]/negTrain.n}
+ const model={version:"playable-card-cardness-centroid-v1",feature_keys:KEYS,global_mean:globalMean,global_std:globalStd,pos_centroid_z:pm.map((x,j)=>(x-globalMean[j])/globalStd[j]),neg_centroid_z:nm.map((x,j)=>(x-globalMean[j])/globalStd[j]),threshold:0,real_anchor_weight:anchorWeight};
+ const realRows=[...(current.rows||[]),...(hands.rows||[])],evals=realRows.map(row=>({region_id:row.region_id,label:row.label,source:row.source,score:score(model,row),predicted_card:score(model,row)>=0}));
+ const artifact={schema_version:1,artifact:"playable-card-cardness-model",version:model.version,fit_kind:m.body.fit_kind||"interim",stats_prefix:prefix,source_stats_batch_count:ls.objects.length,source_synthetic_shard_count:sourceShards,synthetic_positive_count:pos.n,synthetic_negative_count:neg.n,training_current_real_anchor_weight:anchorWeight,held_out_regression:"previous_trusted_hands_of_time",model,real_evaluation:evals,current_sgw_accepted:evals.find(x=>x.region_id==="region-22")?.predicted_card===true,current_hud_rejected:evals.find(x=>x.region_id==="region-13")?.predicted_card===false,held_out_hands_pass:evals.find(x=>x.region_id==="region-06")?.predicted_card===true,semantic_promotion_allowed:false};
+ const out="benchmarks/playable-card-cardness-features-v1/model-"+(m.body.fit_kind||"interim")+".json";
+ await env.BUCKET.put(out,JSON.stringify(artifact),{httpMetadata:{contentType:"application/json",cacheControl:"private, max-age=0"},customMetadata:{artifact:"playable-card-cardness-model",fit_kind:String(m.body.fit_kind||"interim"),stats_batches:String(ls.objects.length),source_shards:String(sourceShards),synthetic_positive:String(pos.n),synthetic_negative:String(neg.n),current_sgw_accepted:String(artifact.current_sgw_accepted),current_hud_rejected:String(artifact.current_hud_rejected),held_out_hands_pass:String(artifact.held_out_hands_pass),real_scores:JSON.stringify(evals),semantic_promotion_allowed:"false"}});
+ m.ack();
+ }catch(e){const msg=String(e?.stack||e);await env.BUCKET.put("debug/cardness-fit-errors/"+Date.now()+".txt",msg,{httpMetadata:{contentType:"text/plain"},customMetadata:{error:msg.slice(0,1000)}});m.ack()}}}};
+--70e2a83f4e0a03ca0607589e5b7b56f71d93abf32da293884f574eee1aca--

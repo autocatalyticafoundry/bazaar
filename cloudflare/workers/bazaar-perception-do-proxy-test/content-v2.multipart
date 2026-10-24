@@ -1,0 +1,6 @@
+--1253fcc97fd1aea7ecd682288ab99ac11cf152b9e0665cb107d52668cd03
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default{async fetch(req,env){try{const id=new URL(req.url).searchParams.get("case_id")||"clean-board-004eaf06ac6295d8c6f2";const o=await env.BUCKET.get("clean/train/"+id+"/screenshot.png");if(!o)return Response.json({error:"missing"},{status:404});const bytes=await o.arrayBuffer();const stub=env.PERCEPTION_RUNNER.get(env.PERCEPTION_RUNNER.idFromName("perception-global"));const r=await stub.fetch("https://perception-runner.internal/analyze",{method:"POST",headers:{"content-type":"image/png","content-length":String(bytes.byteLength)},body:bytes});const t=await r.text();let j={};try{j=JSON.parse(t)}catch{}return Response.json({status:r.status,ok:r.ok,pipeline_version:j.pipeline_version||null,region_count:Array.isArray(j.regions)?j.regions.length:null,error:j.error||null,detail:j.detail||null})}catch(e){return Response.json({error:String(e?.message||e)},{status:500})}}};
+--1253fcc97fd1aea7ecd682288ab99ac11cf152b9e0665cb107d52668cd03--

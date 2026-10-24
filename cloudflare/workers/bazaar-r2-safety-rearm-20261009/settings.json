@@ -1,0 +1,26 @@
+{
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BENCHMARK_R2",
+      "type": "r2_bucket"
+    },
+    {
+      "class_name": "R2SafetyCoordinator",
+      "name": "R2_SAFETY",
+      "namespace_id": "a6ecf02580fb4b3abb977e86a0d78616",
+      "script_name": "bazaar-clean-benchmark",
+      "type": "durable_object_namespace"
+    }
+  ],
+  "compatibility_date": "2026-09-29",
+  "compatibility_flags": [],
+  "logpush": false,
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

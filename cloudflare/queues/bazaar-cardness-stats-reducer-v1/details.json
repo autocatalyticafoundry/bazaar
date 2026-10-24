@@ -1,0 +1,27 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "a470924136aa4f199f4400c64fb77e21",
+      "script": "bazaar-cardness-stats-reducer-v1",
+      "settings": {
+        "batch_size": 1,
+        "max_concurrency": 3,
+        "max_retries": 1,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-09T18:13:36.223921Z",
+  "modified_on": "2026-10-09T18:13:36.223921Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "e3943cb0406a42bdb7be3d2f7cbeebfa",
+  "queue_name": "bazaar-cardness-stats-reducer-v1",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

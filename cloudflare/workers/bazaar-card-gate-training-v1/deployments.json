@@ -1,0 +1,21 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatically materialize structural card-gate ...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T17:59:45.51674Z",
+      "id": "54c2e9ca-73bf-49a4-94c6-54ee917600e4",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "08829b72-bab0-49e0-818c-d22d256194bd"
+        }
+      ]
+    }
+  ]
+}

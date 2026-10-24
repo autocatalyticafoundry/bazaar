@@ -1,0 +1,27 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "9577ceb433654ee4aaa1f0b06e2b30bd",
+      "script": "bazaar-normalization-gap-caller-20261009",
+      "settings": {
+        "batch_size": 1,
+        "max_concurrency": 8,
+        "max_retries": 0,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-10T02:24:00.528759Z",
+  "modified_on": "2026-10-10T02:24:00.528759Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "565a8a7bd5544a72836957050fc89c39",
+  "queue_name": "bazaar-normalization-gap-caller-q-20261009",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

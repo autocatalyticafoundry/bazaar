@@ -1,0 +1,238 @@
+[
+  {
+    "id": "da31db8982a546bbab8a3f0616e2b0da",
+    "name": "bazaar-audit-scan-20261007"
+  },
+  {
+    "id": "288381a970ad40928bbed5e904673c1b",
+    "name": "bazaar-bank-failure-reader-20261009"
+  },
+  {
+    "id": "83bf400d9ed645ce952ead91d9de0072",
+    "name": "bazaar-box-packed-v2-20261014"
+  },
+  {
+    "id": "9df52acb13334370996a5d57d0a1d697",
+    "name": "bazaar-card-gate-calibration-v1"
+  },
+  {
+    "id": "c75ab4859e074c7b96b3a135ecbb581e",
+    "name": "bazaar-card-gate-control-v1"
+  },
+  {
+    "id": "759e17c250be4df09d8ff758c54d8aa8",
+    "name": "bazaar-card-gate-real-corrections-v1"
+  },
+  {
+    "id": "618876604fbf49f4bb4d57a52bced803",
+    "name": "bazaar-card-gate-scan-20261009"
+  },
+  {
+    "id": "0a387636420e473395b239a2400708f7",
+    "name": "bazaar-card-gate-training-v1"
+  },
+  {
+    "id": "cd3822f290124d89b729947f273843ee",
+    "name": "bazaar-cardness-feature-training-v1"
+  },
+  {
+    "id": "bf1626c7931d42798b932a4fb9be2b15",
+    "name": "bazaar-cardness-model-fit-v1"
+  },
+  {
+    "id": "c5e9519cd6b342fe9394763b502e1ec0",
+    "name": "bazaar-cardness-model-trainer-v1"
+  },
+  {
+    "id": "1483a416c07f4f8191c51055ff366a3f",
+    "name": "bazaar-cardness-real-v1"
+  },
+  {
+    "id": "e3943cb0406a42bdb7be3d2f7cbeebfa",
+    "name": "bazaar-cardness-stats-reducer-v1"
+  },
+  {
+    "id": "9215806e778e4963bf7305bf8f692b30",
+    "name": "bazaar-card-role-gate-calibration"
+  },
+  {
+    "id": "8bf0bbc9dd034ab9a3b1e072299b3196",
+    "name": "bazaar-card-role-gate-calibration-v2"
+  },
+  {
+    "id": "00f9995a5d43472f8f0bb65582960070",
+    "name": "bazaar-card-structural-fit-v2"
+  },
+  {
+    "id": "f277593e98b14b99a94b7132eac3b55c",
+    "name": "bazaar-card-structural-score-v2"
+  },
+  {
+    "id": "5afc3cac95924733a5f6f92520aeec26",
+    "name": "bazaar-card-visual-structural-v3"
+  },
+  {
+    "id": "c0b277a96b9844c292155da653880b04",
+    "name": "bazaar-clean-generation"
+  },
+  {
+    "id": "85251a7d66bf425bb165df24da490b15",
+    "name": "bazaar-clean-generation-dlq"
+  },
+  {
+    "id": "078b0afd08114c639761a829519576ca",
+    "name": "bazaar-clean-import"
+  },
+  {
+    "id": "6fe6343539644cd08e35aeb9528f086b",
+    "name": "bazaar-clean-import-dlq"
+  },
+  {
+    "id": "d073ab0a59234ba28f5eb58153d609c3",
+    "name": "bazaar-counterexample-once-20261009"
+  },
+  {
+    "id": "cd6ffc1c817540b2a3fb01fb0b752a1e",
+    "name": "bazaar-fastshard-v1-20261012"
+  },
+  {
+    "id": "a4edfe9be775474ebf4613a5e6d84fc7",
+    "name": "bazaar-fastshard-v2-selective-20261012"
+  },
+  {
+    "id": "731a5ce168744b248add1e6cb508460a",
+    "name": "bazaar-full-dense-v1-20261014"
+  },
+  {
+    "id": "c82a014fd29f4946809351e1edb7f5df",
+    "name": "bazaar-fullgeo-refresh-20261014"
+  },
+  {
+    "id": "9ad127b9abbf45a4af8a0bc44df14b66",
+    "name": "bazaar-fullgeo-v1-20261014"
+  },
+  {
+    "id": "812542cabae04d01a3ecbdaf8aa924ce",
+    "name": "bazaar-global-96-v19-20261012"
+  },
+  {
+    "id": "d1f975ff11764f24a84542974eb288ba",
+    "name": "bazaar-global-pair-v16-20261012"
+  },
+  {
+    "id": "4ac50fc16e5143899e55ef27853e6265",
+    "name": "bazaar-global-v22-20261012"
+  },
+  {
+    "id": "982af9de39f04ff9b36e66a23d9ec98c",
+    "name": "bazaar-global-v23-48-20261012"
+  },
+  {
+    "id": "b60cf443d65248418c17e29812719087",
+    "name": "bazaar-global-v24-24-20261012"
+  },
+  {
+    "id": "c04681722d664ac38cefc8e202f9c0a1",
+    "name": "bazaar-gl-v3-20261010"
+  },
+  {
+    "id": "3f7bb3d368ac42cfae73dc4af6b82635",
+    "name": "bazaar-item-multicrop-shadow"
+  },
+  {
+    "id": "ff64d7e8fa52419cbeb53473aa796e87",
+    "name": "bazaar-item-vision-shadow"
+  },
+  {
+    "id": "b824f850952846e49481d6f7e2401a4d",
+    "name": "bazaar-local-feature-bank-aggregate-shards-20261009-q"
+  },
+  {
+    "id": "0a1dc6bea28d40d28fb4276c0dd8ca99",
+    "name": "bazaar-local-feature-split-a-20261009"
+  },
+  {
+    "id": "a81945e1360c45e58d041f56826c18a9",
+    "name": "bazaar-local-feature-split-b-20261009"
+  },
+  {
+    "id": "13e80d63d60f4e23a0eed58f38e0f842",
+    "name": "bazaar-local-feature-split-c-20261009"
+  },
+  {
+    "id": "7a53487ba20347bd8242ba1e6d3636f8",
+    "name": "bazaar-local-feature-split-d-20261009"
+  },
+  {
+    "id": "d55c9ef3ae754a349bce506ef9369b89",
+    "name": "bazaar-local-feature-split-e-20261009"
+  },
+  {
+    "id": "5dcfc4bf852c4ac180c6149f40832189",
+    "name": "bazaar-local-feature-split-f-20261009"
+  },
+  {
+    "id": "a8b3989fb28b423d8e550a31265fa423",
+    "name": "bazaar-local-feature-split-g-20261009"
+  },
+  {
+    "id": "d5a5e70a9ec84e95ae4bbf1dfe9858e6",
+    "name": "bazaar-local-feature-split-h-20261009"
+  },
+  {
+    "id": "f1f21ed91b6f4a6e93ef4d7aa59d958b",
+    "name": "bazaar-local-feature-test-20261009"
+  },
+  {
+    "id": "a0f4218f7c3e4f29969aa164fb742a55",
+    "name": "bazaar-multisize-localizer-shadow"
+  },
+  {
+    "id": "565a8a7bd5544a72836957050fc89c39",
+    "name": "bazaar-normalization-gap-caller-q-20261009"
+  },
+  {
+    "id": "b5e9c036bd694b628761394cb1a660b2",
+    "name": "bazaar-normalized-gap-scan-20261009"
+  },
+  {
+    "id": "0936f71cad144da099e06f0c6026d3b3",
+    "name": "bazaar-packedfull-v1-20261016"
+  },
+  {
+    "id": "058eb1ddb72f45708e98612be432feae",
+    "name": "bazaar-perception-smoke"
+  },
+  {
+    "id": "d38c9577466042598c6cfb9aba4c0d95",
+    "name": "bazaar-playable-card-gate-shadow"
+  },
+  {
+    "id": "10d7757d98e34c378c9e84cabb5321b1",
+    "name": "bazaar-playable-card-gate-v2-combine-shadow"
+  },
+  {
+    "id": "fd19153b905e435f99960c866d3c813e",
+    "name": "bazaar-playable-card-gate-v2-shadow"
+  },
+  {
+    "id": "f3837b9328574b68a2007eec6a1eaa55",
+    "name": "bazaar-playable-card-identity-shadow"
+  },
+  {
+    "id": "166260de7a3a49e79a663b42b081b47c",
+    "name": "bazaar-r2-safety-rearm-20261009-q"
+  },
+  {
+    "id": "95a9a1aac0924ebb84fae9da9e6b69be",
+    "name": "bazaar-reference-control-v2-20261010"
+  },
+  {
+    "id": "a4e41aa319104a15b847ab37cafc38d1",
+    "name": "bazaar-vscan-multiscale-20261019"
+  },
+  {
+    "id": "a358eca3cc854a62b3785e788eeef547",
+    "name": "bazaar-whole-screen-fingerprint-proof-20261009"
+  }
+]

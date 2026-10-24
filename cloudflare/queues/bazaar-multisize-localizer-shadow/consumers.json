@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "bf250de35b424726a8b7bf87aa8e2806",
+    "created_on": "2026-10-08T21:58:08.771237Z",
+    "queue_id": "a0f4218f7c3e4f29969aa164fb742a55",
+    "queue_name": "bazaar-multisize-localizer-shadow",
+    "script": "bazaar-multisize-localizer-shadow",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 1,
+      "max_retries": 1,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 10
+    },
+    "type": "worker"
+  }
+]

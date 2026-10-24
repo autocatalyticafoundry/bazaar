@@ -1,0 +1,25 @@
+--ff30f955588c32eeaa93880d9164f357275d6564cb5b25a3f5399bdd6b8a
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+const TILE=1;
+const PROBE="/probe-4f2d9c7e51b84d7aa86f5e369240b5cd";
+export default {
+  async scheduled(controller,env,ctx){
+    const marker="debug/global-local-v11-orchestrator/t"+TILE+".done.json";
+    if(await env.BENCHMARK_R2.head(marker)) return;
+    const parts=Array.from({length:31},(_,i)=>i);
+    const rows=await Promise.all(parts.map(async part=>{
+      try{
+        const r=await env.MATCHER.fetch("https://matcher.internal"+PROBE+"?tile="+TILE+"&part="+part);
+        const text=await r.text();
+        let j=null; try{j=JSON.parse(text)}catch{}
+        return {part,status:r.status,ok:r.ok,accepted_count:Number(j?.accepted_count||0),accepted:(j?.accepted||[]).map(x=>({asset_path:x.asset_path,transform:x.transform,bbox:x.bbox}))};
+      }catch(e){return {part,status:0,ok:false,error:e instanceof Error?e.message:String(e),accepted_count:0,accepted:[]};}
+    }));
+    const accepted=rows.flatMap(r=>r.accepted.map(x=>({...x,part:r.part})));
+    const result={schema_version:1,tile:TILE,part_count:31,ok_count:rows.filter(r=>r.ok).length,error_count:rows.filter(r=>!r.ok).length,accepted_count:accepted.length,accepted,rows:rows.map(r=>({part:r.part,status:r.status,ok:r.ok,accepted_count:r.accepted_count,error:r.error||null}))};
+    await env.BENCHMARK_R2.put(marker,JSON.stringify(result),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"global-local-v11-orchestrator",tile:String(TILE),part_count:"31",ok_count:String(result.ok_count),error_count:String(result.error_count),accepted_count:String(result.accepted_count),accepted:JSON.stringify(accepted.slice(0,20).map(x=>({name:String(x.asset_path||"").split("/").pop()?.replace(/\.[^.]+$/,""),part:x.part,inliers:x.transform?.inlier_count||0,h:x.transform?.mean_hamming??null,res:x.transform?.mean_residual??null,bbox:x.bbox}))) }});
+  }
+};
+--ff30f955588c32eeaa93880d9164f357275d6564cb5b25a3f5399bdd6b8a--

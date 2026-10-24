@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "977c9b4e06e5477ab4e426314cda270a",
+    "created_on": "2026-10-08T01:30:32.672915Z",
+    "queue_id": "9df52acb13334370996a5d57d0a1d697",
+    "queue_name": "bazaar-card-gate-calibration-v1",
+    "script": "bazaar-card-gate-calibrator",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 1,
+      "max_retries": 1,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 5
+    },
+    "type": "worker"
+  }
+]

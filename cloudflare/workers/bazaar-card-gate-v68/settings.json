@@ -1,0 +1,25 @@
+{
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "environment": "production",
+      "name": "BAZAAR",
+      "service": "bazaar-clean-benchmark",
+      "type": "service"
+    },
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BUCKET",
+      "type": "r2_bucket"
+    }
+  ],
+  "compatibility_date": "2026-10-09",
+  "compatibility_flags": [],
+  "logpush": false,
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

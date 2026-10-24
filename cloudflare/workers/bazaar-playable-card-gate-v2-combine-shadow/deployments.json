@@ -1,0 +1,21 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Combine structural gate and per-region visual c...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:24:29.848511Z",
+      "id": "889246f0-cff0-41d0-8824-2b4346296dfe",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "7a5034a8-fc99-400d-8909-ca6d3d6f688d"
+        }
+      ]
+    }
+  ]
+}

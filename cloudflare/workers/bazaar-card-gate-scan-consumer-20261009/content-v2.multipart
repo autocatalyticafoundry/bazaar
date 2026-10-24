@@ -1,0 +1,43 @@
+--3f5f24f5966c1de3293ee6b218ea9ac47e70e6f4ef6ba65e72d9c8b9a242
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+  function med(a){if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2}
+  function gate(d){
+    const regs=d.regions||[], groups=d.layout?.groups||[], byId=new Map(regs.map(r=>[r.region_id||r.id,r]));
+    const decisions=[];
+    for(const r of regs){
+      const id=r.region_id||r.id,cohort=r.routing?.cohort||"",b=r.bbox||{},support=Number(r.proposal?.support_count||0);
+      if(cohort!=="portrait_or_card"&&cohort!=="v30_board_cell"){decisions.push({id,accepted:false,path:"not_item_candidate",bbox:b});continue}
+      if(cohort==="v30_board_cell"){decisions.push({id,accepted:true,path:"specialized_board_cell",bbox:b});continue}
+      const aspect=b.height?b.width/b.height:0,area=(b.width*b.height)/(d.input.width*d.input.height);
+      let bestRow=null;
+      for(const g of groups){
+        if(!(g.region_ids||[]).includes(id)||(g.member_count||0)<5)continue;
+        const mem=(g.region_ids||[]).map(x=>byId.get(x)).filter(Boolean);
+        const mw=med(mem.map(x=>x.bbox?.width||0).filter(Boolean)),mh=med(mem.map(x=>x.bbox?.height||0).filter(Boolean)),mcy=med(mem.map(x=>(x.bbox?.y||0)+(x.bbox?.height||0)/2));
+        if(!mw||!mh)continue;
+        const wr=b.width/mw,hr=b.height/mh,cyd=Math.abs((b.y+b.height/2)-mcy)/mh;
+        const pass=wr>=0.82&&wr<=1.48&&hr>=0.82&&hr<=1.48&&cyd<=0.38&&(g.width_cv??9)<=0.30&&(g.height_cv??9)<=0.25&&(g.spacing_cv??9)<=0.65&&(g.repeat_recovered_fraction??0)>=0.12;
+        const score=(pass?10:0)+(g.member_count||0)+(g.repeat_recovered_fraction||0)*4-Math.abs(1-wr)-Math.abs(1-hr)-cyd;
+        if(!bestRow||score>bestRow.score)bestRow={pass,score,member_count:g.member_count,wr,hr,cyd,spacing_cv:g.spacing_cv,repeat:g.repeat_recovered_fraction};
+      }
+      const standaloneLarge=support>=8&&aspect>=0.50&&aspect<=0.92&&area>=0.018;
+      const standaloneHighSupport=support>=12&&aspect>=0.65&&aspect<=0.90&&area>=0.010;
+      const accepted=Boolean(bestRow?.pass||standaloneLarge||standaloneHighSupport);
+      const path=bestRow?.pass?"repeated_row":standaloneLarge?"standalone_large":standaloneHighSupport?"standalone_high_support":"rejected_weak_structure";
+      decisions.push({id,accepted,path,bbox:b,support,aspect,area,best_row:bestRow});
+    }
+    return decisions;
+  }
+  export default {async queue(batch,env){
+    const sha="5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393";
+    const o=await env.BUCKET.get("perception/results/"+sha+"-human-audit-20261007-0035.json");if(!o)throw new Error("missing");
+    const d=JSON.parse(await o.text()),dec=gate(d),accepted=dec.filter(x=>x.accepted),rejected=dec.filter(x=>!x.accepted);
+    const key="benchmarks/real-screenshot-card-gate-v1/"+sha+"/shadow-eval.json";
+    const out={schema_version:1,gate_version:"real-screenshot-card-gate-v1-structural",source_result:"perception/results/"+sha+"-human-audit-20261007-0035.json",semantic_promotion_allowed:false,accepted_count:accepted.length,accepted_ids:accepted.map(x=>x.id),rejected_count:rejected.length,rejected_ids:rejected.map(x=>x.id),known_hud_region_id:"region-13",known_hud_accepted:accepted.some(x=>x.id==="region-13"),known_correct_region_id:"region-22",known_correct_accepted:accepted.some(x=>x.id==="region-22"),decisions:dec};
+    await env.BUCKET.put(key,JSON.stringify(out),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"real-screenshot-card-gate-shadow-eval",gate_version:out.gate_version,accepted_count:String(out.accepted_count),known_hud_accepted:String(out.known_hud_accepted),known_correct_accepted:String(out.known_correct_accepted),accepted_ids:JSON.stringify(out.accepted_ids)}});
+    for(const m of batch.messages)m.ack();
+  }};
+--3f5f24f5966c1de3293ee6b218ea9ac47e70e6f4ef6ba65e72d9c8b9a242--

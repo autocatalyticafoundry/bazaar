@@ -1,0 +1,26 @@
+{
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "name": "AI",
+      "project": "<catalog>",
+      "type": "ai"
+    },
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BENCHMARK_R2",
+      "type": "r2_bucket"
+    }
+  ],
+  "compatibility_date": "2026-09-29",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "logpush": false,
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

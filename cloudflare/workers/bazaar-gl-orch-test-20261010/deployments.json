@@ -1,0 +1,140 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T19:17:51.70545Z",
+      "id": "d7eff840-1e81-4014-b3cf-5dca1bd7812d",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "8805df78-01cb-4573-b499-14948681d3fa"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T19:17:00.642075Z",
+      "id": "984a93a1-b968-44cf-bcd5-9ccb3e631ec9",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "0ac0b7ee-ba09-4c4e-9c20-19ba68dc2d7d"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T19:15:23.757788Z",
+      "id": "29f339fd-f258-497d-8631-a22f41345e9f",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "eae899a8-c1ce-4016-8954-1299b169c414"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T19:14:20.744683Z",
+      "id": "b51c0137-8f7b-4d96-bb16-b9268a38c56c",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "8251432e-1d93-4d51-a842-492b81e349ac"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T19:12:50.923247Z",
+      "id": "cf257f24-71d5-4de9-959a-455bebeee7da",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "b93ec72f-2491-41ad-91b8-d55b5721f317"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T19:11:13.644464Z",
+      "id": "d188649f-1bed-46bc-9195-886b0190f244",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "f007ea12-37db-4060-9131-115c383014c9"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T19:09:20.268594Z",
+      "id": "ab27434e-11d5-4c7f-875a-fbe3bc405453",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "fc1d1589-5968-4fb4-892c-bdb1661ddc10"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T19:05:33.150567Z",
+      "id": "d696c76a-ce94-492f-a570-e7672fc798b2",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "4f71fdd2-d46f-4361-9a5c-95514a1f3d25"
+        }
+      ]
+    }
+  ]
+}

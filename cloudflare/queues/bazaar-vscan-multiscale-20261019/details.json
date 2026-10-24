@@ -1,0 +1,27 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "3ea1949bf3334a8db7baffecfed3f003",
+      "script": "bazaar-vscan-queue-proof-v1-20261019",
+      "settings": {
+        "batch_size": 1,
+        "max_concurrency": 10,
+        "max_retries": 0,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-20T00:35:21.647133Z",
+  "modified_on": "2026-10-20T00:35:21.647133Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "a4e41aa319104a15b847ab37cafc38d1",
+  "queue_name": "bazaar-vscan-multiscale-20261019",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

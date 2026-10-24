@@ -1,0 +1,72 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-20T00:23:06.881069Z",
+      "id": "ec30bccc-c0e7-4ca3-9073-a0315db9924a",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "b1fff544-9018-42cb-b862-0eedac0209c0"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-20T00:21:40.774108Z",
+      "id": "0a6ee6a4-4959-4c42-bb90-45041b391ef2",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "2afb8cf5-e6b1-46d4-aff5-e4f51ccb2510"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-20T00:20:31.847597Z",
+      "id": "be4a318c-70ed-4c5a-8041-2e7595d0ac7b",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "e50d0326-d75e-49e7-9ece-735e70459d51"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-20T00:18:01.548816Z",
+      "id": "ee76ad90-6283-40b7-b249-d96c8171ae6a",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "1ed51ed9-5de4-461d-876d-f4d137e94aca"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+[
+  {
+    "consumer_id": "9907555e902043a3bca5607de1e621c7",
+    "created_on": "2026-10-09T18:12:43.282107Z",
+    "queue_id": "c5e9519cd6b342fe9394763b502e1ec0",
+    "queue_name": "bazaar-cardness-model-trainer-v1",
+    "script": "bazaar-cardness-model-trainer-v1",
+    "settings": {
+      "batch_size": 1,
+      "max_retries": 1,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

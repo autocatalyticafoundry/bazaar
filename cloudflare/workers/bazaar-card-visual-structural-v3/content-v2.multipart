@@ -1,0 +1,95 @@
+--c5a3910fbffc28b54fe3016ca5a19b35668f70519ff0d3e1acd1fba02dd9
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+function clip(v,a=0,b=1){return Math.max(a,Math.min(b,v))}
+function n(v,d=0){const x=Number(v);return Number.isFinite(x)?x:d}
+function hb(s){let h=2166136261>>>0;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return h%5}
+function sig(z){if(z>=0){const e=Math.exp(-z);return 1/(1+e)}const e=Math.exp(z);return e/(1+e)}
+const FN=[
+"width_fraction","height_fraction","aspect_ratio","area_fraction","support_log","proposal_score",
+"group_count","max_group_size","inv_spacing_cv","inv_width_cv","inv_height_cv","repeat_fraction","group_support_log",
+"src_repeat","src_portrait","src_other","cohort_card","cohort_square","cohort_landscape","cohort_noncard",
+"geometry_portrait","geometry_other",
+"item_score","non_item_score","item_advantage","item_rank","item_score_missing","non_item_score_missing",
+"nonitem_skill","nonitem_monster","nonitem_hero","nonitem_enchantment","nonitem_effect","nonitem_other"
+];
+function vec(f){
+ const is=Number(f?.item_class_score),os=Number(f?.best_non_item_class_score),adv=Number(f?.item_class_advantage),rank=Number(f?.item_class_candidate_rank);
+ const src=String(f?.proposal_source||""),co=String(f?.cohort||""),geo=String(f?.geometry_class||""),bc=String(f?.best_non_item_class||"");
+ return[
+  clip(n(f?.width_fraction)*5),clip(n(f?.height_fraction)*5),clip(n(f?.aspect_ratio)/2.5),clip(n(f?.area_fraction)*20),
+  clip(Math.log1p(Math.max(0,n(f?.support_count)))/Math.log(65)),clip(n(f?.proposal_score)/100),
+  clip(n(f?.group_count)/8),clip(n(f?.max_group_size)/12),
+  1-clip(n(f?.min_group_spacing_cv,1.5)/1.5),1-clip(n(f?.min_group_width_cv,.6)/.6),1-clip(n(f?.min_group_height_cv,.6)/.6),
+  clip(n(f?.max_repeat_recovered_fraction)),clip(Math.log1p(Math.max(0,n(f?.max_group_mean_support)))/Math.log(65)),
+  src==="edge-horizontal-repeat-v1"?1:0,src==="edge-portrait-card-v1"?1:0,(src!=="edge-horizontal-repeat-v1"&&src!=="edge-portrait-card-v1")?1:0,
+  co==="portrait_or_card"||co==="v30_board_cell"?1:0,co==="square_ui"?1:0,co==="landscape_ui"?1:0,co==="noncard_ui"?1:0,
+  geo==="portrait_card_like"?1:0,geo!=="portrait_card_like"?1:0,
+  Number.isFinite(is)?clip(is/.6):0,Number.isFinite(os)?clip(os/.6):0,Number.isFinite(adv)?clip((adv+.3)/.6):.5,Number.isFinite(rank)?clip(rank/10):0,
+  Number.isFinite(is)?0:1,Number.isFinite(os)?0:1,
+  bc==="skill"?1:0,bc==="monster"?1:0,bc==="hero"?1:0,bc==="enchantment"?1:0,bc==="effect"?1:0,(!["skill","monster","hero","enchantment","effect"].includes(bc))?1:0
+ ];
+}
+function dot(w,x){let z=w[0]||0;for(let i=0;i<x.length;i++)z+=(w[i+1]||0)*x[i];return z}
+async function listAll(b,p){let a=[],c;do{const r=await b.list({prefix:p,limit:1000,cursor:c});a.push(...r.objects);c=r.truncated?r.cursor:undefined}while(c);return a}
+async function shard(env,id,keys){
+ const rows=[],truths=[],cases=[];
+ for(const key of keys){
+  const o=await env.BUCKET.get(key);if(!o)continue;let d;try{d=JSON.parse(await o.text())}catch{continue}
+  cases.push(d.case_id);
+  for(const r of d.regions||[]){
+   const y=r.label==="playable_card"?1:(r.label==="non_item_object_negative"||r.label==="background_or_ui_negative"?0:null);
+   if(y===null)continue;
+   rows.push([d.case_id,r.region_id,y,vec(r.features||{})]);
+  }
+  for(const t of d.truth_recall||[])if(t?.localized&&t?.best_region_id)truths.push([d.case_id,t.best_region_id,t.entity_id||null]);
+ }
+ const rec={schema_version:1,run:"visual-structural-v3",shard:id,feature_names:FN,cases,rows,truths};
+ const k="benchmarks/playable-card-gate-v3/shards/"+id+".json";
+ await env.BUCKET.put(k,JSON.stringify(rec),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"playable-card-gate-v3-shard",shard:id,cases:String(cases.length),rows:String(rows.length),truths:String(truths.length)}});
+ return{k,cases:cases.length,rows:rows.length,truths:truths.length};
+}
+function metrics(rows,truths,w,t){
+ let tp=0,tn=0,fp=0,fn=0;const scores=new Map();
+ for(const r of rows){const p=sig(dot(w,r.x)),q=p>=t;scores.set(r.c+"|"+r.r,p);if(r.y&&q)tp++;else if(r.y)fn++;else if(q)fp++;else tn++}
+ let ih=0,ic=0;for(const x of truths){const p=scores.get(x.c+"|"+x.r);if(p==null)continue;ic++;if(p>=t)ih++}
+ return{proposal_count:rows.length,tp,tn,fp,fn,proposal_recall:tp+fn?tp/(tp+fn):null,specificity:tn+fp?tn/(tn+fp):null,localized_truth_count:ic,localized_truth_recall:ic?ih/ic:null,selected:tp+fp};
+}
+function thresholdForTruth(rows,truths,w,target){
+ const sm=new Map(rows.map(r=>[r.c+"|"+r.r,sig(dot(w,r.x))]));
+ const a=truths.map(x=>sm.get(x.c+"|"+x.r)).filter(Number.isFinite).sort((a,b)=>a-b);
+ if(!a.length)return .5;
+ const miss=Math.floor(a.length*(1-target)+1e-12),idx=Math.min(a.length-1,miss);
+ return clip(a[idx]-1e-9);
+}
+async function fit(env){
+ const os=await listAll(env.BUCKET,"benchmarks/playable-card-gate-v3/shards/");if(!os.length)throw Error("no_shards");
+ const rows=[],truths=[],cases=new Set();
+ for(const e of os){const o=await env.BUCKET.get(e.key);if(!o)continue;const d=JSON.parse(await o.text());for(const c of d.cases||[])cases.add(c);for(const r of d.rows||[])rows.push({c:r[0],r:r[1],y:r[2],x:r[3]});for(const x of d.truths||[])truths.push({c:x[0],r:x[1],e:x[2]})}
+ const tr=rows.filter(r=>hb(r.c)!==0),va=rows.filter(r=>hb(r.c)===0),tt=truths.filter(x=>hb(x.c)!==0),vt=truths.filter(x=>hb(x.c)===0);
+ const pos=tr.filter(r=>r.y===1).length,neg=tr.length-pos;if(!tr.length||!va.length||!pos||!neg)throw Error("insufficient");
+ const pw=Math.max(1,neg/pos),w=new Array(FN.length+1).fill(0),epochs=120,lambda=.003;
+ for(let ep=0;ep<epochs;ep++){const g=new Array(w.length).fill(0);let norm=0;for(const r of tr){const p=sig(dot(w,r.x)),wt=r.y?pw:1,e=(p-r.y)*wt;g[0]+=e;for(let j=0;j<r.x.length;j++)g[j+1]+=e*r.x[j];norm+=wt}const lr=.5/Math.sqrt(1+ep*.08);w[0]-=lr*g[0]/norm;for(let j=1;j<w.length;j++)w[j]-=lr*(g[j]/norm+lambda*w[j])}
+ const th={r100:thresholdForTruth(va,vt,w,1),r99:thresholdForTruth(va,vt,w,.99),r98:thresholdForTruth(va,vt,w,.98),r95:thresholdForTruth(va,vt,w,.95)};
+ const rec={schema_version:3,model_version:"playable-card-gate-visual-structural-logit-v3-case-holdout",feature_policy:"resolution-normalized structural plus semantic-class visual evidence; excludes absolute x/y and all candidate identity/name features",split_policy:"FNV1a case_id mod 5, bucket0 validation",semantic_promotion_allowed:false,feature_names:FN,weights:w,positive_weight:pw,counts:{shards:os.length,cases:cases.size,train_cases:new Set(tr.map(r=>r.c)).size,validation_cases:new Set(va.map(r=>r.c)).size,train_rows:tr.length,validation_rows:va.length,train_truths:tt.length,validation_truths:vt.length,train_positive:pos,train_negative:neg},thresholds:th,validation:{r100:metrics(va,vt,w,th.r100),r99:metrics(va,vt,w,th.r99),r98:metrics(va,vt,w,th.r98),r95:metrics(va,vt,w,th.r95)},training_r100:metrics(tr,tt,w,th.r100)};
+ const k="benchmarks/playable-card-gate-v3/model-case-holdout.json";
+ await env.BUCKET.put(k,JSON.stringify(rec),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"playable-card-gate-v3-model",model_version:rec.model_version,cases:String(rec.counts.cases),train_cases:String(rec.counts.train_cases),validation_cases:String(rec.counts.validation_cases),validation_truths:String(vt.length),threshold_r100:String(th.r100),validation_truth_recall_r100:String(rec.validation.r100.localized_truth_recall),validation_specificity_r100:String(rec.validation.r100.specificity),validation_selected_r100:String(rec.validation.r100.selected),validation_proposal_recall_r100:String(rec.validation.r100.proposal_recall)}});
+ return{k,counts:rec.counts,thresholds:th,validation:rec.validation};
+}
+function groupF(id,gs){const m=(gs||[]).filter(g=>Array.isArray(g.region_ids)&&g.region_ids.includes(id));const nums=k=>m.map(g=>Number(g[k])).filter(Number.isFinite),mx=a=>a.length?Math.max(...a):null,mn=a=>a.length?Math.min(...a):null;return{group_count:m.length,max_group_size:mx(nums("member_count")),min_group_spacing_cv:mn(nums("spacing_cv")),min_group_width_cv:mn(nums("width_cv")),min_group_height_cv:mn(nums("height_cv")),max_repeat_recovered_fraction:mx(nums("repeat_recovered_fraction")),max_group_mean_support:mx(nums("mean_proposal_support"))}}
+function classF(r){const ev=Array.isArray(r.semantic_class_evidence)?r.semantic_class_evidence:[],it=ev.find(x=>x.semantic_class==="item")||null,ot=ev.filter(x=>x.semantic_class!=="item"&&Number.isFinite(x.best_score)).sort((a,b)=>a.best_score-b.best_score)[0]||null,is=Number(it?.best_score),os=Number(ot?.best_score);return{item_class_score:Number.isFinite(is)?is:null,best_non_item_class_score:Number.isFinite(os)?os:null,item_class_advantage:Number.isFinite(is)&&Number.isFinite(os)?os-is:null,item_class_candidate_rank:Number.isFinite(Number(it?.candidate_rank))?Number(it.candidate_rank):null,best_non_item_class:ot?.semantic_class||null}}
+function feat(r,gs,W,H){const b=r.bbox,p=r.proposal||{};return{x_fraction:b.x/W,y_fraction:b.y/H,width_fraction:b.width/W,height_fraction:b.height/H,aspect_ratio:b.width/b.height,area_fraction:(b.width*b.height)/(W*H),proposal_source:p.source||null,proposal_score:Number.isFinite(p.score)?p.score:null,support_count:Number.isFinite(p.support_count)?p.support_count:null,geometry_class:r.geometry_class||null,cohort:r.routing?.cohort||null,current_item_route:r.routing?.cohort==="portrait_or_card"||r.routing?.cohort==="v30_board_cell",...classF(r),...groupF(r.region_id||r.id,gs)}}
+async function score(env,sha){
+ const [mo,ro]=await Promise.all([env.BUCKET.get("benchmarks/playable-card-gate-v3/model-case-holdout.json"),env.BUCKET.get("perception/results/"+sha+"-human-audit-20261007-0035.json")]);if(!mo||!ro)throw Error("missing_model_or_result");
+ const m=JSON.parse(await mo.text()),d=JSON.parse(await ro.text()),W=n(d.input?.width,1),H=n(d.input?.height,1),gs=d.layout?.groups||[],t=n(m.thresholds?.r100,.5);
+ const rows=(d.regions||[]).map(r=>{const f=feat(r,gs,W,H),p=sig(dot(m.weights||[],vec(f))),sel=r?.proposal?.source==="v30_board_row"||p>=t;return{region_id:r.region_id,bbox:r.bbox,score:p,selected:sel,proposal_source:r.proposal?.source||null,cohort:r.routing?.cohort||null,item_class_score:f.item_class_score,item_class_advantage:f.item_class_advantage,best_non_item_class:f.best_non_item_class}});
+ const s=rows.filter(x=>x.selected),by=Object.fromEntries(rows.map(x=>[x.region_id,x])),top=s.filter(x=>x.bbox.y/H<.2);
+ const out={schema_version:1,evaluation_version:"playable-card-gate-v3-real-screen-shadow",model_version:m.model_version,threshold:t,screenshot_sha256:sha,total_regions:rows.length,selected_count:s.length,selected_region_ids:s.map(x=>x.region_id),top_band_selected_count:top.length,top_band_selected_ids:top.map(x=>x.region_id),known_checks:{hud13:{prediction:by["region-13"]?.selected?1:0,score:by["region-13"]?.score??null,passed:by["region-13"]?.selected===false},stained22:{prediction:by["region-22"]?.selected?1:0,score:by["region-22"]?.score??null,passed:by["region-22"]?.selected===true}},rows,semantic_promotion_allowed:false};
+ const k="benchmarks/playable-card-gate-v3/real-screen/"+sha+".json";await env.BUCKET.put(k,JSON.stringify(out),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"playable-card-gate-v3-real-screen",model_version:String(m.model_version||""),threshold:String(t),selected_count:String(s.length),top_band_selected_count:String(top.length),hud13_prediction:String(out.known_checks.hud13.prediction),stained22_prediction:String(out.known_checks.stained22.prediction),known_checks_passed:String(out.known_checks.hud13.passed&&out.known_checks.stained22.passed),selected_ids:JSON.stringify(out.selected_region_ids).slice(0,900),top_band_ids:JSON.stringify(out.top_band_selected_ids).slice(0,500)}});
+ return{k,selected:out.selected_region_ids,top_band:out.top_band_selected_ids,checks:out.known_checks};
+}
+export default{async queue(batch,env){for(const m of batch.messages){try{const b=m.body||{};let o;if(b.kind==="shard")o=await shard(env,String(b.shard).padStart(2,"0"),Array.isArray(b.keys)?b.keys:[]);else if(b.kind==="fit")o=await fit(env);else if(b.kind==="score")o=await score(env,String(b.sha||""));else throw Error("unknown_kind");console.log("CARD_VISUAL_STRUCTURAL_V3",JSON.stringify(o));m.ack()}catch(e){const msg=String(e?.message||e);try{await env.BUCKET.put("debug/card-visual-structural-v3/"+Date.now()+".json",JSON.stringify({error:msg,body:m.body}),{customMetadata:{artifact:"card-visual-structural-v3-error",detail:msg.slice(0,900)}})}catch{}m.retry({delaySeconds:10})}}}};
+
+--c5a3910fbffc28b54fe3016ca5a19b35668f70519ff0d3e1acd1fba02dd9--

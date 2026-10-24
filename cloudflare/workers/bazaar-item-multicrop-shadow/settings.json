@@ -1,0 +1,25 @@
+{
+  "annotations": {
+    "workers/message": "Persist multicrop diagnostic errors",
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BUCKET",
+      "type": "r2_bucket"
+    },
+    {
+      "name": "SEARCH_URL",
+      "text": "<REDACTED_VALUE>",
+      "type": "plain_text"
+    }
+  ],
+  "compatibility_date": "2026-10-09",
+  "compatibility_flags": [],
+  "logpush": false,
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

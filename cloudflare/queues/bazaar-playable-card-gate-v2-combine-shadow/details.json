@@ -1,0 +1,27 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "6c0d25e1bb864510ab3f029d425aa457",
+      "script": "bazaar-playable-card-gate-v2-combine-shadow",
+      "settings": {
+        "batch_size": 1,
+        "max_concurrency": 2,
+        "max_retries": 1,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-09T18:24:28.209602Z",
+  "modified_on": "2026-10-09T18:24:28.209602Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "10d7757d98e34c378c9e84cabb5321b1",
+  "queue_name": "bazaar-playable-card-gate-v2-combine-shadow",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

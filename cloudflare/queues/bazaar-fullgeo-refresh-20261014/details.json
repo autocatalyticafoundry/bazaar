@@ -1,0 +1,14 @@
+{
+  "consumers": [],
+  "consumers_total_count": 0,
+  "created_on": "2026-10-15T02:42:38.430151Z",
+  "modified_on": "2026-10-15T02:42:38.430151Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "c82a014fd29f4946809351e1edb7f5df",
+  "queue_name": "bazaar-fullgeo-refresh-20261014",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

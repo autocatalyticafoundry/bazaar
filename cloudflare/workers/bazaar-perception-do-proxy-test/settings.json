@@ -1,0 +1,26 @@
+{
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BUCKET",
+      "type": "r2_bucket"
+    },
+    {
+      "class_name": "PerceptionRunner",
+      "name": "PERCEPTION_RUNNER",
+      "namespace_id": "6d93e28ac24d41b7aee0833132db7e46",
+      "script_name": "bazaar-clean-benchmark",
+      "type": "durable_object_namespace"
+    }
+  ],
+  "compatibility_date": "2026-10-08",
+  "compatibility_flags": [],
+  "logpush": false,
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

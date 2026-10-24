@@ -1,0 +1,6 @@
+--7be45be2c70de3b7aa982b7599c4de5fbd37051601aa0585752f79ea34c7
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default{async fetch(req,env){return env.SEEDER.fetch("https://seeder.internal/")}};
+--7be45be2c70de3b7aa982b7599c4de5fbd37051601aa0585752f79ea34c7--

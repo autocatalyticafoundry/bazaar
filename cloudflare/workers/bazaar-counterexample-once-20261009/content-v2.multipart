@@ -1,0 +1,13 @@
+--7f908737cb25347a7ccc0a4b7128f9e985d575370d8fa18bb82a348a64eb
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+function med(a){if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2}
+export default {async queue(batch,env){for(const m of batch.messages){try{
+ const key=m.body.result_key,o=await env.BUCKET.get(key);if(!o)throw new Error("missing result");const d=JSON.parse(await o.text()),regions=d.regions||[],groups=d.layout?.groups||[],r=regions.find(x=>x.region_id==="region-06");if(!r)throw new Error("region-06 missing");const b=r.bbox,rows=[];
+ for(let gi=0;gi<groups.length;gi++){const g=groups[gi];if(!(g.region_ids||[]).includes("region-06"))continue;const ms=(g.region_ids||[]).map(id=>regions.find(x=>x.region_id===id)).filter(Boolean),mw=med(ms.map(x=>x.bbox.width)),mh=med(ms.map(x=>x.bbox.height)),mcy=med(ms.map(x=>x.bbox.y+x.bbox.height/2));if(!mw||!mh||mcy===null)continue;const wr=b.width/mw,hr=b.height/mh,cd=Math.abs(b.y+b.height/2-mcy)/mh,gf=((wr>=.76&&wr<=1.42?1:0)+(hr>=.76&&hr<=1.42?1:0)+(cd<=.30?1:0))/3,count=Math.min(1,g.member_count/6),regularity=g.spacing_cv===null?.5:Math.max(0,1-g.spacing_cv/.75),repeat=Math.max(0,Math.min(1,g.repeat_recovered_fraction??0)),gs=Math.min(1,Math.max(0,g.mean_proposal_support??0)/8),score=.4*gf+.22*count+.16*regularity+.12*repeat+.1*gs;rows.push({gi,member_count:g.member_count,score,wr,hr,cd,spacing_cv:g.spacing_cv,repeat:g.repeat_recovered_fraction,mean_support:g.mean_proposal_support})}
+ rows.sort((a,b)=>b.score-a.score);const area=b.width*b.height/(d.input.width*d.input.height),aspect=b.width/b.height,support=r.proposal?.support_count??0,compact={bbox:b,input:{w:d.input.width,h:d.input.height},norm:{x:b.x/d.input.width,y:b.y/d.input.height,w:b.width/d.input.width,h:b.height/d.input.height,area,aspect},proposal:{source:r.proposal?.source,score:r.proposal?.score,support},best_row:rows[0]??null,row_count:rows.length};
+ await env.BUCKET.put("debug/hands-positive-counterexample-v1.json",JSON.stringify(compact),{httpMetadata:{contentType:"application/json"},customMetadata:{bbox:JSON.stringify(b),norm:JSON.stringify(compact.norm),proposal:JSON.stringify(compact.proposal),best_row:JSON.stringify(compact.best_row),row_count:String(rows.length)}});
+ m.ack();
+ }catch(e){const msg=String(e?.stack||e);await env.BUCKET.put("debug/hands-positive-counterexample-error.txt",msg,{httpMetadata:{contentType:"text/plain"},customMetadata:{error:msg.slice(0,1000)}});m.ack()}}}};
+--7f908737cb25347a7ccc0a4b7128f9e985d575370d8fa18bb82a348a64eb--

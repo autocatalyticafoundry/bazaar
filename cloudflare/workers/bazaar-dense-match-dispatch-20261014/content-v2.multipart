@@ -1,0 +1,6 @@
+--5499502bf2b5096a12222952b47cdfa8bf688e30756920b045e33091b457
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default {async fetch(req,env){const k=String.fromCharCode(...[103,108,111,98,97,108,95,102,117,108,108,95,100,101,110,115,101,95,112,97,99,107,101,100,102,97,115,116]);const s=Math.max(0,Math.min(7,Number(new URL(req.url).searchParams.get("s"))||0));await env.Q.send({kind:k,shard_index:s,scale:1});return Response.json({queued:s});}}
+--5499502bf2b5096a12222952b47cdfa8bf688e30756920b045e33091b457--

@@ -1,0 +1,6 @@
+--6f5455804d8b0c9b0a4ad5236fa1d8be8d9bd005f979ae7abc8bb7c1b833
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default{async fetch(req,env){const done=new Set();let c;do{const l=await env.BUCKET.list({prefix:"benchmarks/card-role-calibration-v1/train/",limit:1000,cursor:c});for(const o of l.objects){if(o.customMetadata?.calibration_version==="card-role-calibration-v1.2-instance-aware"){const id=o.key.split("/").pop()?.slice(0,-5);if(id)done.add(id)}}c=l.truncated?l.cursor:undefined}while(c);const boards=new Set();c=undefined;do{const l=await env.BUCKET.list({prefix:"clean/train/clean-board-",limit:1000,cursor:c});for(const o of l.objects){if(o.key.endsWith("/truth.json")){const id=o.key.split("/")[2];if(id?.startsWith("clean-board-"))boards.add(id)}}c=l.truncated?l.cursor:undefined}while(c);const missing=[...boards].filter(id=>!done.has(id)).sort();for(let i=0;i<missing.length;i+=100){await env.QUEUE.sendBatch(missing.slice(i,i+100).map(case_id=>({body:{case_id}})))}return Response.json({board_count:boards.size,v12_done:done.size,missing:missing.length,enqueued:missing.length})}};
+--6f5455804d8b0c9b0a4ad5236fa1d8be8d9bd005f979ae7abc8bb7c1b833--

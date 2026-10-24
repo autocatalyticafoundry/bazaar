@@ -1,0 +1,38 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Recompute playable-card training summary from s...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:04:05.770369Z",
+      "id": "cd107d86-138e-421c-9c52-e42efd0a1227",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "7afae75e-8acc-4b3c-9f15-08670d05c757"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Add user-confirmed HUD hard negatives and Stain...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:02:54.656943Z",
+      "id": "b7a62ed5-43fd-429f-88b4-63311621fbb5",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "3857cdc8-098f-4367-ab4f-36eb466bbf8b"
+        }
+      ]
+    }
+  ]
+}

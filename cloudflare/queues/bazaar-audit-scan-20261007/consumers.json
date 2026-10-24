@@ -1,0 +1,16 @@
+[
+  {
+    "consumer_id": "537672cedd254321b2fcb9273012836a",
+    "created_on": "2026-10-08T17:41:55.056839Z",
+    "queue_id": "da31db8982a546bbab8a3f0616e2b0da",
+    "queue_name": "bazaar-audit-scan-20261007",
+    "script": "bazaar-queue-dispatch-diagnostic",
+    "settings": {
+      "batch_size": 1,
+      "max_retries": 1,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

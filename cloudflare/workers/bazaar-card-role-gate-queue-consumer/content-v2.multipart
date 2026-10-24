@@ -1,0 +1,6 @@
+--69e0b4c97a8695f9da92e77d78904689050b0b52df9143d46c48874eb3bd
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default{async queue(batch,env){for(const m of batch.messages){try{let b=m.body;if(typeof b==="string"){try{b=JSON.parse(b)}catch{b={case_id:b}}}const id=typeof b?.case_id==="string"?b.case_id.trim():"";if(!id)throw new Error("case_id_missing");const r=await env.CALIBRATOR.fetch("https://calibrator.internal/evaluate-case?case_id="+encodeURIComponent(id));if(!r.ok)throw new Error("calibrator_"+r.status+":"+(await r.text()).slice(0,300));m.ack()}catch(e){console.error("CARD_ROLE_CALIBRATION_ERROR",String(e?.message||e));m.retry({delaySeconds:5})}}}};
+--69e0b4c97a8695f9da92e77d78904689050b0b52df9143d46c48874eb3bd--

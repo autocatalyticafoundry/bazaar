@@ -1,0 +1,6 @@
+--d80fef42828e9f24ad8511cb2c0ca710a634fc79cc0ebf8580b549b2c830
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default {async fetch(req,env){const u=new URL(req.url);if(u.searchParams.get("m")==="b"){const o=await env.R.get(["debug","whole-screen-local-feature-bank-v1","bank.json"].join("/"));if(!o)return new Response("{}",{status:404});const x=JSON.parse(await new Response(o.body).text());return Response.json({reference_count:x.reference_count,failure_count:x.failure_count,failures:x.failures||[]});}if(u.searchParams.get("m")==="s"){const t=String(u.searchParams.get("t")||""),l=await env.R.list({prefix:"debug/global-local-",limit:1000,include:["customMetadata"]}),rows=[];for(const o of l.objects||[]){if(t&&!o.key.includes(t))continue;rows.push({key:o.key,meta:o.customMetadata||{}});}return Response.json({rows});}return new Response("ok");}}
+--d80fef42828e9f24ad8511cb2c0ca710a634fc79cc0ebf8580b549b2c830--

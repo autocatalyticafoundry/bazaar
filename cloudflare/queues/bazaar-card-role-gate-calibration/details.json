@@ -1,0 +1,27 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "02ada4ac71eb40e4bc349464ee7f066c",
+      "script": "bazaar-card-role-gate-queue-consumer",
+      "settings": {
+        "batch_size": 3,
+        "max_concurrency": 3,
+        "max_retries": 2,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-08T17:28:48.039955Z",
+  "modified_on": "2026-10-08T17:28:48.039955Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "9215806e778e4963bf7305bf8f692b30",
+  "queue_name": "bazaar-card-role-gate-calibration",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

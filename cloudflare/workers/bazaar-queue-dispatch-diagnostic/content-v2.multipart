@@ -1,0 +1,6 @@
+--779095487425f4ec91e94162f008f505e018f2812cac568e05444e89ec8d
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default{async queue(batch,env){let i=0;for(const m of batch.messages){let b=m.body;if(typeof b==="string"){try{b=JSON.parse(b)}catch{}}const key="debug/queue-dispatch-diagnostic/"+Date.now()+"-"+(i++);await env.BUCKET.put(key,new Uint8Array(),{customMetadata:{body:JSON.stringify(b).slice(0,1000)}});m.ack()}}};
+--779095487425f4ec91e94162f008f505e018f2812cac568e05444e89ec8d--

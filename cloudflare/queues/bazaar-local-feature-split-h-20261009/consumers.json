@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "e7fe1d7bd3224470a2e91fd4a5cb0de8",
+    "created_on": "2026-10-10T02:18:49.641549Z",
+    "queue_id": "d5a5e70a9ec84e95ae4bbf1dfe9858e6",
+    "queue_name": "bazaar-local-feature-split-h-20261009",
+    "script": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 10,
+      "max_retries": 0,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

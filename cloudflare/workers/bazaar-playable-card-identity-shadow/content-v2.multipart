@@ -1,0 +1,51 @@
+--394fed39279cf8a5239607dea279f5a95d20ff0104a4038401568c6dfd6c
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+function entities(c){return Array.isArray(c?.entities)?c.entities.map(e=>({entity_id:e?.entity_id??null,name:e?.name??null,kind:e?.kind??null})):[]}
+function ids(c){const a=Array.isArray(c?.entity_ids)?c.entity_ids:[];return a.length?a:entities(c).map(e=>e.entity_id).filter(Boolean)}
+export default {
+ async queue(batch,env){
+  for(const m of batch.messages){
+   try{
+    const gateKey=m.body.gate_key,truth=m.body.known_truth||{};
+    const go=await env.BUCKET.get(gateKey);if(!go)throw new Error("missing gate artifact");
+    const gate=JSON.parse(await go.text()),sourceKey=gate.source_result_key;
+    const so=await env.BUCKET.get(sourceKey);if(!so)throw new Error("missing source");
+    const source=JSON.parse(await so.text()),sha=source.input.sha256,token=String(source.pipeline_version).replace(/[^A-Za-z0-9._-]+/g,"-");
+    const prefix="perception/probes/item-visual/auto-trust/"+sha+"/"+token+"/";
+    const byId=new Map((source.regions||[]).map(r=>[r.region_id,r]));
+    const rows=[];
+    for(const regionId of gate.accepted_region_ids){
+      const po=await env.BUCKET.get(prefix+regionId+".json");
+      if(!po){rows.push({region_id:regionId,bbox:byId.get(regionId)?.bbox??null,probe_missing:true});continue}
+      const p=JSON.parse(await po.text()),rr=p.result||{},learned=Array.isArray(rr.learned_candidates)?rr.learned_candidates.slice(0,3):[],local=rr.local_feature_verifier_shadow||{},trustv=rr.item_trust_shadow_v2||{},src=byId.get(regionId)||{};
+      const learnedTop=learned[0]||null;
+      const top3=learned.map(c=>({rank:c.rank??null,score:c.score??null,asset_path:c.asset_path??null,entity_ids:ids(c),entities:entities(c)}));
+      const native=(src.catalogue_candidates||[]).filter(c=>Array.isArray(c.semantic_entity_ids)&&c.semantic_entity_ids.some(id=>String(id).startsWith("bazaar:item:"))).slice(0,3).map(c=>({score:c.score??null,asset_path:c.asset_path??null,entity_ids:c.semantic_entity_ids??[]}));
+      const expected=truth[regionId]||null,learnedIds=learned.flatMap(ids);
+      rows.push({
+        region_id:regionId,bbox:rr.bbox||src.bbox||null,probe_missing:false,
+        learned_top3:top3,
+        learned_top1_asset_path:learnedTop?.asset_path??null,
+        learned_top1_entity_ids:ids(learnedTop),
+        learned_margin:learned.length>=2?(learned[1].score-learned[0].score):null,
+        native_top3:native,
+        local_feature:{best_asset_path:local.best_asset_path??null,best_score:local.best_score??null,margin:local.margin??null,descriptor_best_asset_path:local.descriptor_best_asset_path??null,aligned_best_asset_path:local.aligned_best_asset_path??null,direct_best_asset_path:local.direct_best_asset_path??null},
+        trust:{accepted:trustv.accepted===true,path:trustv.path??null,learned_strong:trustv.learned_strong??null,local_consensus:trustv.local_consensus??null},
+        cross_signal:{learned_local_best_agree:Boolean(learnedTop?.asset_path&&learnedTop.asset_path===local.best_asset_path),learned_descriptor_agree:Boolean(learnedTop?.asset_path&&learnedTop.asset_path===local.descriptor_best_asset_path),learned_aligned_agree:Boolean(learnedTop?.asset_path&&learnedTop.asset_path===local.aligned_best_asset_path)},
+        known_truth:expected,
+        known_truth_top1_correct:expected?ids(learnedTop).includes(expected):null,
+        known_truth_top3_contains:expected?learnedIds.includes(expected):null
+      });
+    }
+    const known=rows.filter(r=>r.known_truth),artifact={schema_version:1,artifact:"playable-card-identity-shadow",semantic_promotion_allowed:false,source_gate_key:gateKey,source_result_key:sourceKey,source_sha256:sha,pipeline_version:source.pipeline_version,gate_version:gate.gate_version,gated_region_count:rows.length,probe_present_count:rows.filter(r=>!r.probe_missing).length,trust_accepted_count:rows.filter(r=>r.trust?.accepted).length,learned_local_best_agree_count:rows.filter(r=>r.cross_signal?.learned_local_best_agree).length,learned_descriptor_agree_count:rows.filter(r=>r.cross_signal?.learned_descriptor_agree).length,known_truth_count:known.length,known_truth_top1_correct_count:known.filter(r=>r.known_truth_top1_correct).length,known_truth_top3_contains_count:known.filter(r=>r.known_truth_top3_contains).length,regions:rows};
+    const key="perception/playable-card-identity-shadow/"+sha+"/"+token+".json";
+    await env.BUCKET.put(key,JSON.stringify(artifact),{httpMetadata:{contentType:"application/json",cacheControl:"private, max-age=0"},customMetadata:{artifact:"playable-card-identity-shadow",gate_version:gate.gate_version,gated_regions:String(rows.length),probe_present:String(artifact.probe_present_count),trust_accepted:String(artifact.trust_accepted_count),learned_local_best_agree:String(artifact.learned_local_best_agree_count),known_truth_count:String(artifact.known_truth_count),known_truth_top1_correct:String(artifact.known_truth_top1_correct_count),known_truth_top3_contains:String(artifact.known_truth_top3_contains_count),semantic_promotion_allowed:"false"}});
+    m.ack();
+   }catch(e){m.retry({delaySeconds:10})}
+  }
+ }
+};
+--394fed39279cf8a5239607dea279f5a95d20ff0104a4038401568c6dfd6c--

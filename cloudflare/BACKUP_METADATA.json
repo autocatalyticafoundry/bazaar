@@ -1,0 +1,31 @@
+{
+  "account_id": "bbb4bad207659efcb2f7463ab5582004",
+  "notes": {
+    "purpose": "GitHub backup of Bazaar Cloudflare state",
+    "r2_binary_policy": "R2 binary object bytes are not embedded; exact inventories are included.",
+    "secret_policy": "Secret values and obvious hard-coded credential literals are excluded/redacted."
+  },
+  "queue_count": 59,
+  "r2": {
+    "bazaar-clean-benchmark": {
+      "total_bytes": 1213553412,
+      "total_objects": 15915
+    },
+    "bazaar-reference-assets": {
+      "total_bytes": 1106621041,
+      "total_objects": 2659
+    }
+  },
+  "redactions": [
+    {
+      "label": "credential_assignment",
+      "worker": "bazaar-opencv-proof-export-20261009"
+    }
+  ],
+  "schema_version": 1,
+  "snapshot_date": "2026-10-23",
+  "worker_count": 64,
+  "workers_subdomain": {
+    "subdomain": "allaboutstudios"
+  }
+}

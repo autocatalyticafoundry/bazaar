@@ -1,0 +1,55 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-08T17:56:50.08894Z",
+      "id": "eab880c7-08b6-4043-b0c3-1fd674c6a491",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "ac42a596-4753-417a-96c9-775e7037206e"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-08T17:51:10.519956Z",
+      "id": "1767b6b1-8155-404c-b798-a6e7c5ededef",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "f8efa038-c664-411a-a759-01d598175cd0"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-08T17:49:40.468323Z",
+      "id": "659dabd5-0b53-4bca-91e1-0fdbb504d43c",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "04f5ddb5-c257-4f5b-9f2f-0bcadf07a27e"
+        }
+      ]
+    }
+  ]
+}

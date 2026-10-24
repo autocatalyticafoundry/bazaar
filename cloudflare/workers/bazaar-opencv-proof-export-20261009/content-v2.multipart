@@ -1,0 +1,6 @@
+--df2cd7ff9a7948c3ae4853c79e00c97a717f0bc3fce0c358b013c6911c07
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+const TOKEN="<REDACTED_CREDENTIAL>";const SHOT="perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png";export default { async fetch(req,env){ const u=new URL(req.url); if(u.searchParams.get("t")!==TOKEN) return new Response("forbidden",{status:403}); let key=null; let ct="application/octet-stream"; if(u.pathname==="/screenshot"){ key=SHOT; ct="image/png"; } else if(u.pathname==="/snapshot"){ key="catalogue/visual-catalogue-screen-native-native-v2.json"; ct="application/json"; } else { const m=/^\/ref\/([0-9a-f]{64})\.png$/.exec(u.pathname); if(m){ key="catalogue/item-visual-normalized-v1/"+m[1]+".png"; ct="image/png"; } } if(!key) return new Response("not found",{status:404}); const o=await env.BENCHMARK_R2.get(key); if(!o) return new Response("missing",{status:404}); return new Response(o.body,{headers:{"content-type":ct,"cache-control":"private, no-store","x-bazaar-key":key}}); } };
+--df2cd7ff9a7948c3ae4853c79e00c97a717f0bc3fce0c358b013c6911c07--

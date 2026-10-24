@@ -1,0 +1,23 @@
+--84acbf3c038d8779404a83e5506bb14d0e8031023fdbd0c6f0120fd2d555
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+const VERSION="playable-card-gate-training-v1";
+function iou(a,b){const x1=Math.max(a.x,b.x),y1=Math.max(a.y,b.y),x2=Math.min(a.x+a.width,b.x+b.width),y2=Math.min(a.y+a.height,b.y+b.height),i=Math.max(0,x2-x1)*Math.max(0,y2-y1),u=a.width*a.height+b.width*b.height-i;return u?i/u:0}
+function med(a){if(!a.length)return 0;const s=[...a].sort((x,y)=>x-y),m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2}
+function feat(b,w,h,extra={}){return {x:b.x/w,y:b.y/h,w:b.width/w,h:b.height/h,aspect:b.width/Math.max(1,b.height),area:(b.width*b.height)/(w*h),...extra}}
+function perturbs(b,w,h){const defs=[["identity",1,1,0,0],["scale-90",.9,.9,0,0],["scale-110",1.1,1.1,0,0],["wide-110",1.1,1,0,0],["tall-110",1,1.1,0,0],["shift-l",1,1,-.05,0],["shift-r",1,1,.05,0],["shift-u",1,1,0,-.05],["shift-d",1,1,0,.05]],out=[];for(const [id,sx,sy,dx,dy] of defs){const cx=b.x+b.width/2+dx*b.width,cy=b.y+b.height/2+dy*b.height,nw=b.width*sx,nh=b.height*sy,x=Math.max(0,Math.min(w-nw,cx-nw/2)),y=Math.max(0,Math.min(h-nh,cy-nh/2));out.push({variant:id,bbox:{x,y,width:nw,height:nh},features:feat({x,y,width:nw,height:nh},w,h)})}return out}
+async function process(env,key){
+ const o=await env.BUCKET.get(key);if(!o)throw new Error("missing "+key);const d=JSON.parse(await o.text()),w=d.screenshot_width||d.image_width||d.width||d.input?.width||1920,h=d.screenshot_height||d.image_height||d.height||d.input?.height||1080,objects=Array.isArray(d.objects)?d.objects:[];
+ const items=objects.filter(x=>x?.expected_resolution==="semantic"&&Array.isArray(x.expected_entity_ids)&&x.expected_entity_ids.length===1&&String(x.expected_entity_ids[0]).startsWith("bazaar:item:")&&x.bbox);
+ const positives=items.flatMap(x=>perturbs(x.bbox,w,h).map(p=>({...p,label:1,entity_id:x.expected_entity_ids[0],source:"synthetic_truth_item"})));
+ const mw=Math.max(24,Math.round(med(items.map(x=>x.bbox.width)))),mh=Math.max(32,Math.round(med(items.map(x=>x.bbox.height)))),sx=Math.max(24,Math.round(mw/2)),sy=Math.max(32,Math.round(mh/2)),centers=items.map(x=>({x:x.bbox.x+x.bbox.width/2,y:x.bbox.y+x.bbox.height/2})),neg=[];
+ if(items.length&&mw<=w&&mh<=h){for(let y=0;y<=h-mh;y+=sy)for(let x=0;x<=w-mw;x+=sx){const b={x,y,width:mw,height:mh},max=Math.max(0,...objects.filter(z=>z.bbox).map(z=>iou(z.bbox,b)));if(max>=.05)continue;const cx=x+mw/2,cy=y+mh/2,dist=centers.length?Math.min(...centers.map(c=>Math.hypot(c.x-cx,c.y-cy))):999999;neg.push({label:0,source:"synthetic_truth_empty_card_crop",bbox:b,features:feat(b,w,h,{max_truth_iou:max,nearest_truth_center_distance:dist})})}}
+ neg.sort((a,b)=>a.features.nearest_truth_center_distance-b.features.nearest_truth_center_distance||a.bbox.y-b.bbox.y||a.bbox.x-b.bbox.x);const negatives=neg.slice(0,24),caseId=d.case_id||key.split("/").slice(-2,-1)[0];
+ const artifact={schema_version:1,artifact:"playable-card-gate-training-shard",version:VERSION,source_truth_key:key,case_id:caseId,width:w,height:h,item_truth_count:items.length,positive_sample_count:positives.length,negative_sample_count:negatives.length,positives,negatives};
+ const out="benchmarks/playable-card-gate-training-v1/synthetic/"+caseId+".json";await env.BUCKET.put(out,JSON.stringify(artifact),{httpMetadata:{contentType:"application/json",cacheControl:"private, max-age=0"},customMetadata:{artifact:"playable-card-gate-training-shard",version:VERSION,case_id:String(caseId),truth_items:String(items.length),positive_samples:String(positives.length),negative_samples:String(negatives.length)}});
+}
+export default {async queue(batch,env){for(const m of batch.messages){try{await process(env,m.body.truth_key);m.ack()}catch(e){const msg=String(e?.stack||e);await env.BUCKET.put("debug/card-gate-training-errors/"+Date.now()+".txt",msg,{customMetadata:{truth_key:String(m.body?.truth_key||""),error:msg.slice(0,1000)}});m.ack()}}}};
+
+--84acbf3c038d8779404a83e5506bb14d0e8031023fdbd0c6f0120fd2d555--

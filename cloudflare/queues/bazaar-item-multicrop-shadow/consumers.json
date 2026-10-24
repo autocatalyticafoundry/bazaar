@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "06e670720cbb4fbfba7156d7af1365cc",
+    "created_on": "2026-10-09T17:57:33.29208Z",
+    "queue_id": "3f7bb3d368ac42cfae73dc4af6b82635",
+    "queue_name": "bazaar-item-multicrop-shadow",
+    "script": "bazaar-item-multicrop-shadow",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 1,
+      "max_retries": 2,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

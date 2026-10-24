@@ -1,0 +1,11 @@
+--190daa2ce8372d0335c7b56bcee4c9e36bda8e47e2fdac7e0750758ae81a
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+const INPUT="perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png";
+const B=[[174,526,223,217],[404,526,68,217],[478,526,68,217],[548,526,68,217],[618,526,68,217],[688,526,68,217],[758,526,68,217],[828,526,68,217],[404,286,68,200],[478,286,164,200],[642,286,68,200],[166,794,134,200],[826,784,150,210],[899,518,65,225]];
+function box(i){const b=B[i];return {x:Math.round(b[0]*2.048),y:Math.round(b[1]*1.409),width:Math.round(b[2]*2.048),height:Math.round(b[3]*1.409)};}
+export default {async fetch(req,env){const u=new URL(req.url),i=u.pathname==="/control"?9:Math.max(0,Math.min(B.length-1,Number(u.searchParams.get("i"))||0)),bbox=box(i),id=env.RUNNER.idFromName("perception-global"),stub=env.RUNNER.get(id);const r=await stub.fetch("https://perception-runner.internal/item-visual-search-r2-region",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({input_key:INPUT,bbox,top_k:5})});return new Response(await r.text(),{status:r.status,headers:{"content-type":"application/json","cache-control":"no-store"}});}};
+
+--190daa2ce8372d0335c7b56bcee4c9e36bda8e47e2fdac7e0750758ae81a--

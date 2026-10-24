@@ -1,0 +1,26 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "74699d80b6dd492b9b02028752693ed5",
+      "script": "bazaar-card-gate-scan-consumer-20261009",
+      "settings": {
+        "batch_size": 1,
+        "max_retries": 1,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-09T17:47:11.55729Z",
+  "modified_on": "2026-10-09T17:47:11.55729Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "618876604fbf49f4bb4d57a52bced803",
+  "queue_name": "bazaar-card-gate-scan-20261009",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

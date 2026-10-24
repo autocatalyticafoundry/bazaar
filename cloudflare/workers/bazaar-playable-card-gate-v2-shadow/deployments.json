@@ -1,0 +1,21 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Shadow gate v2: structural card evidence plus c...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:20:28.965752Z",
+      "id": "bd86f4c5-45c0-4508-af45-c4dd7702ff41",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "8912038b-7855-45f9-a1c6-f94f6144b680"
+        }
+      ]
+    }
+  ]
+}

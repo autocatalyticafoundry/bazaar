@@ -1,0 +1,12 @@
+--7b2daa0b9721e0dbc6ee4eba07fc812ae8926e8e9fc5eaeeede7b561df3f
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+function lm(rows){const m=new Map();for(const r of rows||[]){const k=String(r.label||r.class||"");const v=Number(r.score??r.confidence??0);if(k)m.set(k,v);}return m;}
+function sim(a,b){const A=lm(a),B=lm(b),ks=new Set([...A.keys(),...B.keys()]);let d=0,aa=0,bb=0;for(const k of ks){const x=A.get(k)||0,y=B.get(k)||0;d+=x*y;aa+=x*x;bb+=y*y;}return aa&&bb?d/Math.sqrt(aa*bb):0;}
+async function bytes(env,key){const o=await env.BENCHMARK_R2.get(key);if(!o)throw new Error("missing "+key);return new Uint8Array(await new Response(o.body).arrayBuffer());}
+async function run(env,b){return await env.AI.run("@cf/microsoft/resnet-50",{image:Array.from(b)});}
+export default {async fetch(request,env){try{const c=await bytes(env,"debug/rn-crop-control.png"),a=await bytes(env,"catalogue/item-visual-normalized-v1/1d13067b91ed569e390e61377b440842fa2db45e18441f9489c0fc6333126404.png"),b=await bytes(env,"catalogue/item-visual-normalized-v1/a6244d017a284368ee6a6bfa427bb01acf21a1cf98b82f1f74e521d3cad3261e.png"),cr=await run(env,c),ar=await run(env,a),br=await run(env,b),out={ok:true,crop_bytes:c.length,a_bytes:a.length,b_bytes:b.length,similarity_a:sim(cr,ar),similarity_b:sim(cr,br),crop:cr,a:ar,b:br};await env.BENCHMARK_R2.put("debug/resnet-mini-control-v1.json",JSON.stringify(out),{httpMetadata:{contentType:"application/json"},customMetadata:{similarity_a:String(out.similarity_a),similarity_b:String(out.similarity_b)}});return new Response(JSON.stringify(out),{headers:{"content-type":"application/json","cache-control":"no-store"}});}catch(e){return new Response(JSON.stringify({ok:false,error:e instanceof Error?e.message:String(e),stack:e instanceof Error?String(e.stack||"").slice(0,1500):""}),{status:500,headers:{"content-type":"application/json"}});}}};
+
+--7b2daa0b9721e0dbc6ee4eba07fc812ae8926e8e9fc5eaeeede7b561df3f--

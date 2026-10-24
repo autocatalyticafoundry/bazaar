@@ -1,0 +1,6 @@
+--7c887a9aa4c44a2d5ae7ead223c8bc02c08d8bff1b43734494bf86ab0886
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default {async queue(batch,env){for(const m of batch.messages){const b=m.body||{},out=String(b.output_key||"debug/r2-safety-rearm.json");try{const id=env.R2_SAFETY.idFromName("global"),stub=env.R2_SAFETY.get(id),res=await stub.fetch("https://r2-safety.internal/arm",{method:"POST"}),text=await res.text();let j=null;try{j=JSON.parse(text);}catch{}await env.BENCHMARK_R2.put(out,text,{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"r2-safety-rearm",status:String(res.status),ok:String(res.ok),halted:String(j?.halted??""),warning:String(j?.warning??""),reason:String(j?.reason??"").slice(0,500),class_a_ops:String(j?.class_a_ops??""),class_b_ops:String(j?.class_b_ops??""),storage_bytes:String(j?.storage_bytes??"")}});}catch(e){await env.BENCHMARK_R2.put(out,JSON.stringify({error:e instanceof Error?e.message:String(e)}),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"r2-safety-rearm",error:e instanceof Error?e.message:String(e)}});}m.ack();}}};
+--7c887a9aa4c44a2d5ae7ead223c8bc02c08d8bff1b43734494bf86ab0886--

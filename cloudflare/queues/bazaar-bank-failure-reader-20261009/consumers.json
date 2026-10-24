@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "0155e343bd0243e8a03daeed48256324",
+    "created_on": "2026-10-10T02:19:51.647701Z",
+    "queue_id": "288381a970ad40928bbed5e904673c1b",
+    "queue_name": "bazaar-bank-failure-reader-20261009",
+    "script": "bazaar-bank-failure-reader-20261009",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 4,
+      "max_retries": 0,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

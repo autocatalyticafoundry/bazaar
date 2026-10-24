@@ -1,0 +1,6 @@
+--8c44100df3581c1889460e3c167f7e6ee52b04ff0cc18576cbceff5e1dff
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default {async fetch(req,env){const k=String.fromCharCode(...[103,108,111,98,97,108,95,112,97,99,107,101,100,95,105,110,100,101,120,95,98,117,105,108,100]);for(let s=0;s<8;s++)await env.Q.send({kind:k,shard_index:s});return Response.json({queued:8});}}
+--8c44100df3581c1889460e3c167f7e6ee52b04ff0cc18576cbceff5e1dff--

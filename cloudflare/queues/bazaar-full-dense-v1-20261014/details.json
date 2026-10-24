@@ -1,0 +1,36 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "c22e0e8cf404473c8b64f3ae558bd0c4",
+      "script": "bazaar-whole-screen-fingerprint-proof-20261009",
+      "settings": {
+        "batch_size": 1,
+        "max_concurrency": 4,
+        "max_retries": 0,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-15T00:59:11.124936Z",
+  "modified_on": "2026-10-15T00:59:11.124936Z",
+  "producers": [
+    {
+      "script": "bazaar-dense-match-dispatch-20261014",
+      "type": "worker"
+    },
+    {
+      "script": "bazaar-packed-dispatch-20261014",
+      "type": "worker"
+    }
+  ],
+  "producers_total_count": 2,
+  "queue_id": "731a5ce168744b248add1e6cb508460a",
+  "queue_name": "bazaar-full-dense-v1-20261014",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

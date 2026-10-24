@@ -1,0 +1,47 @@
+--2a8f8058d605d2a91b45f2b18fa595141d370ae1a6ba08040f724829666d
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+const VERSION="item-visual-qwen3-vl-multicrop-shadow-v1";
+const te=new TextEncoder();
+let cachedKey=null,cachedDecoded=null;
+function u32be(a,o){return ((a[o]<<24)>>>0)|(a[o+1]<<16)|(a[o+2]<<8)|a[o+3]}
+function paeth(a,b,c){const p=a+b-c,pa=Math.abs(p-a),pb=Math.abs(p-b),pc=Math.abs(p-c);return pa<=pb&&pa<=pc?a:pb<=pc?b:c}
+function cat(parts){let n=0;for(const p of parts)n+=p.length;const out=new Uint8Array(n);let o=0;for(const p of parts){out.set(p,o);o+=p.length}return out}
+async function inflate(bytes){const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream("deflate"));return new Uint8Array(await new Response(stream).arrayBuffer())}
+async function deflate(bytes){const stream=new Blob([bytes]).stream().pipeThrough(new CompressionStream("deflate"));return new Uint8Array(await new Response(stream).arrayBuffer())}
+async function decodePng(bytes){
+ const sig=[137,80,78,71,13,10,26,10];for(let i=0;i<8;i++)if(bytes[i]!==sig[i])throw new Error("not png");
+ let o=8,w=0,h=0,depth=0,type=0,interlace=0,idats=[];
+ while(o+12<=bytes.length){const len=u32be(bytes,o)>>>0,typ=String.fromCharCode(...bytes.slice(o+4,o+8)),data=bytes.slice(o+8,o+8+len);o+=12+len;if(typ==="IHDR"){w=u32be(data,0)>>>0;h=u32be(data,4)>>>0;depth=data[8];type=data[9];interlace=data[12]}else if(typ==="IDAT")idats.push(data);else if(typ==="IEND")break}
+ if(depth!==8||interlace!==0||!(type===6||type===2))throw new Error("unsupported png "+JSON.stringify({depth,type,interlace}));
+ const bpp=type===6?4:3,stride=w*bpp,raw=await inflate(cat(idats)),rgba=new Uint8Array(w*h*4),prev=new Uint8Array(stride),cur=new Uint8Array(stride);let p=0;
+ for(let y=0;y<h;y++){const f=raw[p++];for(let x=0;x<stride;x++){const v=raw[p++],a=x>=bpp?cur[x-bpp]:0,b=prev[x],c=x>=bpp?prev[x-bpp]:0;cur[x]=(v+(f===0?0:f===1?a:f===2?b:f===3?Math.floor((a+b)/2):f===4?paeth(a,b,c):(()=>{throw new Error("png filter "+f)})()))&255}
+  for(let x=0;x<w;x++){const si=x*bpp,di=(y*w+x)*4;rgba[di]=cur[si];rgba[di+1]=cur[si+1];rgba[di+2]=cur[si+2];rgba[di+3]=type===6?cur[si+3]:255}prev.set(cur)
+ }
+ return {width:w,height:h,rgba};
+}
+let crcTable=null;function crc32(bytes){if(!crcTable){crcTable=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;crcTable[n]=c>>>0}}let c=0xffffffff;for(const b of bytes)c=crcTable[(c^b)&255]^(c>>>8);return (c^0xffffffff)>>>0}
+function pngChunk(type,data){const t=te.encode(type),out=new Uint8Array(12+data.length),dv=new DataView(out.buffer);dv.setUint32(0,data.length);out.set(t,4);out.set(data,8);dv.setUint32(8+data.length,crc32(cat([t,data])));return out}
+async function encodePng(rgba,w,h){const scan=new Uint8Array(h*(1+w*4));for(let y=0;y<h;y++){const d=y*(1+w*4);scan[d]=0;scan.set(rgba.subarray(y*w*4,(y+1)*w*4),d+1)}const comp=await deflate(scan),ih=new Uint8Array(13),dv=new DataView(ih.buffer);dv.setUint32(0,w);dv.setUint32(4,h);ih[8]=8;ih[9]=6;return cat([new Uint8Array([137,80,78,71,13,10,26,10]),pngChunk("IHDR",ih),pngChunk("IDAT",comp),pngChunk("IEND",new Uint8Array())])}
+function crop(img,b){const x=Math.max(0,Math.min(img.width-1,Math.round(b.x))),y=Math.max(0,Math.min(img.height-1,Math.round(b.y))),w=Math.max(1,Math.min(img.width-x,Math.round(b.width))),h=Math.max(1,Math.min(img.height-y,Math.round(b.height))),out=new Uint8Array(w*h*4);for(let yy=0;yy<h;yy++)out.set(img.rgba.subarray(((y+yy)*img.width+x)*4,((y+yy)*img.width+x+w)*4),yy*w*4);return {x,y,width:w,height:h,rgba:out}}
+function box(base,fx,fy){const cx=base.x+base.width/2,cy=base.y+base.height/2,w=base.width*(1+2*fx),h=base.height*(1+2*fy);return {x:cx-w/2,y:cy-h/2,width:w,height:h}}
+function b64(bytes){let s="",chunk=0x8000;for(let i=0;i<bytes.length;i+=chunk)s+=String.fromCharCode(...bytes.subarray(i,Math.min(bytes.length,i+chunk)));return btoa(s)}
+async function query(env,png){const response=await fetch(env.SEARCH_URL,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({messages:[{role:"user",content:[{type:"image_url",image_url:{url:"data:image/png;base64,"+b64(png)}}]}],ai_search_options:{query_rewrite:{enabled:false},reranking:{enabled:false},cache:{enabled:false},retrieval:{retrieval_type:"vector",match_threshold:0,max_num_results:20,return_on_failure:true}}})});const payload=await response.json();if(!response.ok||payload.success===false)throw new Error("search "+response.status+" "+JSON.stringify(payload.errors||payload).slice(0,300));return (payload.result?.chunks||[]).map((c,i)=>({rank:i+1,score:typeof c.score==="number"?c.score:null,asset_path:c.item?.metadata?.asset_path||c.item?.key||null,entity_id:c.item?.metadata?.entity_id||null,indexed_key:c.item?.key||null})).filter(c=>c.entity_id&&String(c.entity_id).startsWith("bazaar:item:")).slice(0,10)}
+async function imageFor(env,key){if(cachedKey===key&&cachedDecoded)return cachedDecoded;const o=await env.BUCKET.get(key);if(!o)throw new Error("missing input");const d=await decodePng(new Uint8Array(await o.arrayBuffer()));cachedKey=key;cachedDecoded=d;return d}
+async function processOne(env,msg){
+ const ro=await env.BUCKET.get(msg.result_key);if(!ro)throw new Error("missing result");const result=JSON.parse(await ro.text()),region=(result.regions||[]).find(r=>r.region_id===msg.region_id);if(!region)throw new Error("missing region");
+ const inputKey=result.input?.r2_key||("perception/inputs/"+result.input.sha256+".png"),img=await imageFor(env,inputKey),base=region.bbox;
+ const specs=[["original",0,0],["expand-08",.08,.08],["expand-16",.16,.16],["expand-y24",.08,.24],["inset-06",-.06,-.06]];
+ const variants=[];const agg=new Map();
+ for(const [id,fx,fy] of specs){const c=crop(img,box(base,fx,fy)),png=await encodePng(c.rgba,c.width,c.height),cands=await query(env,png);variants.push({id,bbox:{x:c.x,y:c.y,width:c.width,height:c.height},candidates:cands.slice(0,5)});for(const cand of cands){const k=cand.entity_id+"|"+cand.asset_path;let a=agg.get(k);if(!a){a={entity_id:cand.entity_id,asset_path:cand.asset_path,scores:[],ranks:[],variants:[]};agg.set(k,a)}a.scores.push(cand.score??0);a.ranks.push(cand.rank);a.variants.push(id)}}
+ const fused=[...agg.values()].map(a=>{const max=Math.max(...a.scores),sum=a.scores.reduce((x,y)=>x+y,0),meanAll=sum/specs.length,support=a.scores.length/specs.length,rrf=a.ranks.reduce((x,r)=>x+1/r,0)/specs.length;return {entity_id:a.entity_id,asset_path:a.asset_path,max_score:max,mean_score_all:meanAll,variant_support:support,rrf,fusion_score:.68*max+.22*meanAll+.07*support+.03*rrf,variants:a.variants}}).sort((a,b)=>b.fusion_score-a.fusion_score).slice(0,10).map((x,i)=>({...x,rank:i+1}));
+ const artifact={schema_version:1,artifact:"item-visual-multicrop-shadow",version:VERSION,semantic_promotion_allowed:false,source_result_key:msg.result_key,source_sha256:result.input.sha256,region_id:msg.region_id,base_bbox:base,variant_count:variants.length,variants,fused_candidates:fused};
+ const token=String(result.pipeline_version).replace(/[^A-Za-z0-9._-]+/g,"-"),key="perception/probes/item-visual/multicrop-shadow/"+result.input.sha256+"/"+token+"/"+msg.region_id+".json";
+ await env.BUCKET.put(key,JSON.stringify(artifact),{httpMetadata:{contentType:"application/json",cacheControl:"private, max-age=0"},customMetadata:{artifact:"item-visual-multicrop-shadow",version:VERSION,region_id:msg.region_id,top_entity_id:fused[0]?.entity_id||"",top_asset_path:fused[0]?.asset_path||"",top_fusion_score:String(fused[0]?.fusion_score??""),variant_count:String(variants.length),semantic_promotion_allowed:"false"}});
+ return key;
+}
+export default {async queue(batch,env){for(const m of batch.messages){try{await processOne(env,m.body);m.ack()}catch(e){const msg=String(e?.stack||e);console.log("MULTICROP_ERROR",msg);await env.BUCKET.put("debug/multicrop-errors-20261009/"+Date.now()+".txt",msg,{httpMetadata:{contentType:"text/plain"},customMetadata:{region_id:String(m.body?.region_id||""),error:msg.slice(0,1000)}});m.ack()}}}};
+
+--2a8f8058d605d2a91b45f2b18fa595141d370ae1a6ba08040f724829666d--

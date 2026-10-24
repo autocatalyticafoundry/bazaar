@@ -1,0 +1,164 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T21:32:32.408395Z",
+      "id": "448be080-f7b0-47a0-8a4c-34dcc019d389",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "9297970a-daf5-4a06-b5ba-61542222a169"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T18:12:15.710927Z",
+      "id": "962e7960-4e66-4f27-8f25-8d7bcdc65290",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "d37d22d1-655c-4c44-8a31-4b2509bde768"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T04:51:57.941001Z",
+      "id": "2e87769a-0e22-4f2a-b80d-e85fcb5d6a7e",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "dc25690d-377f-4f12-ab14-6de1c930e0d4"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T04:44:59.162343Z",
+      "id": "3d70bfb1-7894-4072-8049-f61ba1046fcf",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "a66b7499-057b-470b-9fa7-5ac82545332c"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T04:41:15.288761Z",
+      "id": "ef48c9ba-62b0-4714-b199-797c30affe95",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "35b2387d-efab-4fd8-9c90-d7d8e17d87d5"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T04:40:53.371601Z",
+      "id": "efed319b-fab8-4637-906d-28b7f537669a",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "71663d00-0d6f-4e69-aa61-fe37252d2368"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T03:21:13.74012Z",
+      "id": "389b7593-a5c0-4735-92ee-d4bab8183bca",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "9f68b77c-aa95-4d15-aa7d-d618e51bc375"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T03:18:21.221633Z",
+      "id": "5d3e7dc8-5275-48a6-9f6a-a63886115e09",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "05e96a64-c911-4c30-9d59-ae9256fc6225"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T03:11:59.995158Z",
+      "id": "42501793-3f0e-4a50-8e53-4845732f07b2",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "21b806ee-ae7a-4d4e-980a-468aa608132d"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/triggered_by": "deployment"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-07T03:09:13.492589Z",
+      "id": "569f8871-fe81-46ad-8d41-e3cceaa4885c",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "5187e1f0-b468-404a-ade2-e0dcd4f2c776"
+        }
+      ]
+    }
+  ]
+}

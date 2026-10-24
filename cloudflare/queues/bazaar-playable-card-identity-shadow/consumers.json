@@ -1,0 +1,16 @@
+[
+  {
+    "consumer_id": "26d23c3877db4ebcbd2bc1cdf5731d08",
+    "created_on": "2026-10-09T17:54:44.426801Z",
+    "queue_id": "f3837b9328574b68a2007eec6a1eaa55",
+    "queue_name": "bazaar-playable-card-identity-shadow",
+    "script": "bazaar-playable-card-identity-shadow",
+    "settings": {
+      "batch_size": 2,
+      "max_retries": 2,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

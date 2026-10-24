@@ -1,0 +1,51 @@
+{
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BENCHMARK_R2",
+      "type": "r2_bucket"
+    },
+    {
+      "name": "IMAGES",
+      "type": "images"
+    },
+    {
+      "index_name": "bazaar-item-visual-struct-v1",
+      "name": "STRUCT_INDEX",
+      "type": "vectorize"
+    },
+    {
+      "index_name": "bazaar-item-visual-rgb16-v1",
+      "name": "VISUAL_INDEX",
+      "type": "vectorize"
+    }
+  ],
+  "compatibility_date": "2026-09-29",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "logpush": false,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    },
+    "redact_query_string": true,
+    "traces": {
+      "enabled": false,
+      "head_sampling_rate": 1,
+      "persist": true
+    }
+  },
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "7c4f5cf524d44f078589d2221d6eb12e",
+    "created_on": "2026-10-13T01:24:57.271623Z",
+    "queue_id": "a4edfe9be775474ebf4613a5e6d84fc7",
+    "queue_name": "bazaar-fastshard-v2-selective-20261012",
+    "script": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 250,
+      "max_retries": 0,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

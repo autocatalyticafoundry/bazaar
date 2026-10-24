@@ -1,0 +1,27 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "3d129bdd681b4cc48d637b76cafd4979",
+      "script": "bazaar-card-structural-score-v2",
+      "settings": {
+        "batch_size": 1,
+        "max_concurrency": 1,
+        "max_retries": 1,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 10
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-08T21:42:25.623037Z",
+  "modified_on": "2026-10-08T21:42:25.623037Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "f277593e98b14b99a94b7132eac3b55c",
+  "queue_name": "bazaar-card-structural-score-v2",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "e117a0b800fb4a0292c7d1f0bb6f5482",
+    "created_on": "2026-10-03T21:07:07.921525Z",
+    "queue_id": "058eb1ddb72f45708e98612be432feae",
+    "queue_name": "bazaar-perception-smoke",
+    "script": "bazaar-perception",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 1,
+      "max_retries": 0,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

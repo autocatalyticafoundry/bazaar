@@ -1,0 +1,209 @@
+--88279a40309573cd474d856ef2ce14f26c210490ce0f38b4d6d237d19aa2
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+const MODEL = "@cf/google/gemma-4-26b-a4b-it";
+const VERSION = "item-vision-gemma4-shadow-v2-thinking-off";
+const MAX_DAILY_CALLS = 4;
+const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+const BUDGET_PREFIX = "diagnostics/item-vision-gemma4/budget-v2/";
+const REPLAY_PREFIX = "diagnostics/item-vision-gemma4/live-v1/";
+
+function bytesToBase64(bytes) {
+  let binary = "";
+  const chunk = 0x8000;
+  for (let offset = 0; offset < bytes.length; offset += chunk) {
+    const slice = bytes.subarray(offset, Math.min(bytes.length, offset + chunk));
+    for (let i = 0; i < slice.length; i++) binary += String.fromCharCode(slice[i]);
+  }
+  return btoa(binary);
+}
+
+async function objectDataUrl(bucket, key, mime = "image/png") {
+  const object = await bucket.get(key);
+  if (!object) throw new Error("missing R2 object: " + key);
+  if (object.size && object.size > MAX_IMAGE_BYTES) throw new Error("image too large: " + key);
+  const bytes = new Uint8Array(await new Response(object.body).arrayBuffer());
+  if (!bytes.length || bytes.length > MAX_IMAGE_BYTES) throw new Error("invalid image bytes: " + key);
+  return "data:" + mime + ";base64," + bytesToBase64(bytes);
+}
+
+function responseText(response) {
+  if (typeof response === "string") return response;
+  if (!response || typeof response !== "object") return "";
+  if (typeof response.response === "string") return response.response;
+  if (response.response && typeof response.response === "object") {
+    try { return JSON.stringify(response.response); } catch {}
+  }
+  const first = Array.isArray(response.choices) ? response.choices[0] : null;
+  const content = first && first.message ? first.message.content : null;
+  if (typeof content === "string") return content;
+  if (!Array.isArray(content)) return "";
+  return content.map((part) => part && typeof part.text === "string" ? part.text : "").filter(Boolean).join(" ");
+}
+
+function parseDecision(text, candidates) {
+  let choice = null;
+  let confidence = null;
+  let reason = null;
+  try {
+    const parsed = JSON.parse(text);
+    const raw = typeof parsed.choice === "string" ? parsed.choice.trim().toUpperCase() : "";
+    if (["A","B","C","NONE"].includes(raw)) choice = raw;
+    if (typeof parsed.confidence === "number" && Number.isFinite(parsed.confidence)) {
+      confidence = Math.max(0, Math.min(1, parsed.confidence));
+    }
+    if (typeof parsed.reason === "string") reason = parsed.reason.slice(0, 240);
+  } catch {
+    const match = /\b(NONE|A|B|C)\b/i.exec(text);
+    if (match) choice = match[1].toUpperCase();
+  }
+  const index = choice === "A" ? 0 : choice === "B" ? 1 : choice === "C" ? 2 : -1;
+  return { choice, confidence, reason, selected_asset_path: index >= 0 ? candidates[index]?.asset_path ?? null : null };
+}
+
+async function reserveBudget(env) {
+  const day = new Date().toISOString().slice(0, 10);
+  const key = BUDGET_PREFIX + day + ".json";
+  const object = await env.BENCHMARK_R2.get(key);
+  let count = 0;
+  if (object) {
+    try {
+      const parsed = JSON.parse(await new Response(object.body).text());
+      count = Number.isFinite(parsed.count) ? parsed.count : 0;
+    } catch {}
+  }
+  if (count >= MAX_DAILY_CALLS) return { allowed: false, day, count, key };
+  const next = count + 1;
+  await env.BENCHMARK_R2.put(key, JSON.stringify({
+    schema_version: 1, verifier_version: VERSION, day, count: next,
+    max_daily_calls: MAX_DAILY_CALLS, updated_at: new Date().toISOString()
+  }), {
+    httpMetadata: { contentType: "application/json; charset=utf-8", cacheControl: "private, max-age=0" },
+    customMetadata: { artifact: "item-vision-budget", verifier_version: VERSION }
+  });
+  return { allowed: true, day, count: next, key };
+}
+
+async function normalizeBody(env, body) {
+  const replayKey = String(body.replay_key || "");
+  if (!replayKey) return body;
+  if (!replayKey.startsWith(REPLAY_PREFIX) || !replayKey.endsWith(".json")) {
+    throw new Error("invalid replay_key");
+  }
+  const object = await env.BENCHMARK_R2.get(replayKey);
+  if (!object) throw new Error("missing replay artifact: " + replayKey);
+  const prior = JSON.parse(await new Response(object.body).text());
+  return {
+    input_key: prior.input_key,
+    bbox: prior.bbox,
+    source_width: prior.source_width,
+    source_height: prior.source_height,
+    candidates: prior.candidates,
+    output_key: body.output_key
+  };
+}
+
+async function verify(env, rawBody) {
+  const body = await normalizeBody(env, rawBody);
+  const inputKey = String(body.input_key || "");
+  const outputKey = String(body.output_key || "");
+  const bbox = body.bbox || {};
+  const sourceWidth = Number(body.source_width);
+  const sourceHeight = Number(body.source_height);
+  const candidates = Array.isArray(body.candidates) ? body.candidates.slice(0, 3) : [];
+
+  if (!inputKey.startsWith("perception/inputs/") || !inputKey.endsWith(".png")) throw new Error("invalid input_key");
+  if (!outputKey.startsWith("diagnostics/item-vision-gemma4/") || !outputKey.endsWith(".json")) throw new Error("invalid output_key");
+  if (candidates.length !== 3 || candidates.some((c) => !c || typeof c.asset_path !== "string" || typeof c.reference_key !== "string")) throw new Error("exactly three candidates required");
+  for (const value of [bbox.x, bbox.y, bbox.width, bbox.height, sourceWidth, sourceHeight]) {
+    if (!Number.isFinite(Number(value))) throw new Error("invalid bbox/source geometry");
+  }
+
+  const budget = await reserveBudget(env);
+  if (!budget.allowed) {
+    return { schema_version: 1, verifier_version: VERSION, semantic_promotion_allowed: false, status: "budget_exhausted", budget };
+  }
+
+  const targetUrl = await objectDataUrl(env.BENCHMARK_R2, inputKey, "image/png");
+  const refs = await Promise.all(candidates.map((candidate) => objectDataUrl(env.BENCHMARK_R2, candidate.reference_key, "image/png")));
+  const labels = ["A","B","C"];
+  const content = [{
+    type: "text",
+    text: [
+      "Strict visual identity comparison.",
+      "Image 1 is a full live game screenshot.",
+      "TARGET is ONLY the content inside pixel rectangle x=" + Number(bbox.x) + ", y=" + Number(bbox.y) + ", width=" + Number(bbox.width) + ", height=" + Number(bbox.height) + " in a " + sourceWidth + "x" + sourceHeight + " screenshot.",
+      "Images 2-4 are canonical candidate item artworks A, B, C.",
+      "Decide whether the item/artwork visible inside TARGET is the same underlying item artwork as A, B, or C.",
+      "Ignore card frames, UI, text, borders, glow, scaling, and color treatment.",
+      "If no candidate clearly depicts the same underlying item/object, choose NONE.",
+      "Use visual evidence only. Return JSON only: choice (A/B/C/NONE), confidence (0..1), reason (12 words maximum)."
+    ].join(" ")
+  }, { type: "text", text: "IMAGE 1: FULL SCREENSHOT; inspect TARGET rectangle only." },
+     { type: "image_url", image_url: { url: targetUrl } }];
+  for (let i = 0; i < candidates.length; i++) {
+    content.push({ type: "text", text: "CANDIDATE " + labels[i] });
+    content.push({ type: "image_url", image_url: { url: refs[i] } });
+  }
+  content.push({ type: "text", text: "Return the JSON decision now." });
+
+  const response = await env.AI.run(MODEL, {
+    messages: [{ role: "user", content }],
+    chat_template_kwargs: { enable_thinking: false },
+    temperature: 0,
+    seed: 1,
+    max_completion_tokens: 64
+  }, { rejectIfBusy: true });
+
+  const text = responseText(response);
+  const decision = parseDecision(text, candidates);
+  return {
+    schema_version: 1, verifier_version: VERSION, model: MODEL,
+    semantic_promotion_allowed: false, status: "evaluated",
+    input_key: inputKey,
+    bbox: { x: Number(bbox.x), y: Number(bbox.y), width: Number(bbox.width), height: Number(bbox.height) },
+    source_width: sourceWidth, source_height: sourceHeight, candidates,
+    ...decision, raw_response: text.slice(0, 1200),
+    usage: response && typeof response === "object" ? response.usage ?? null : null,
+    budget
+  };
+}
+
+export default {
+  async queue(batch, env) {
+    for (const message of batch.messages) {
+      const body = message.body || {};
+      const outputKey = String(body.output_key || "");
+      try {
+        const result = await verify(env, body);
+        if (outputKey) {
+          await env.BENCHMARK_R2.put(outputKey, JSON.stringify(result), {
+            httpMetadata: { contentType: "application/json; charset=utf-8", cacheControl: "private, max-age=0" },
+            customMetadata: { artifact: "item-vision-verifier-result", verifier_version: VERSION, semantic_promotion_allowed: "false" }
+          });
+        }
+        console.log("ITEM_VISION_VERIFIER_RESULT", JSON.stringify({
+          output_key: outputKey || null, status: result.status,
+          choice: result.choice ?? null, confidence: result.confidence ?? null,
+          selected_asset_path: result.selected_asset_path ?? null,
+          reason: result.reason ?? null,
+          budget: result.budget ?? null, usage: result.usage ?? null
+        }));
+      } catch (error) {
+        const failure = { schema_version: 1, verifier_version: VERSION, semantic_promotion_allowed: false, status: "error", error: error instanceof Error ? error.message : String(error) };
+        if (outputKey && outputKey.startsWith("diagnostics/item-vision-gemma4/") && outputKey.endsWith(".json")) {
+          await env.BENCHMARK_R2.put(outputKey, JSON.stringify(failure), {
+            httpMetadata: { contentType: "application/json; charset=utf-8", cacheControl: "private, max-age=0" },
+            customMetadata: { artifact: "item-vision-verifier-result", verifier_version: VERSION }
+          });
+        }
+        console.error("ITEM_VISION_VERIFIER_ERROR", JSON.stringify({ output_key: outputKey || null, error: failure.error }));
+      } finally {
+        message.ack();
+      }
+    }
+  }
+};
+
+--88279a40309573cd474d856ef2ce14f26c210490ce0f38b4d6d237d19aa2--

@@ -1,0 +1,21 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Stage-by-stage identity evaluation after playab...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T17:54:43.683982Z",
+      "id": "a94d74d4-a982-43ed-aeb1-bab679d63ace",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "09f0a0c9-4edb-4460-9b54-5479021c4c01"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "2f42d833c52d4f1f8919334a40a9e5af",
+      "dead_letter_queue": "bazaar-clean-generation-dlq",
+      "script": "bazaar-clean-benchmark",
+      "settings": {
+        "batch_size": 1,
+        "max_concurrency": 1,
+        "max_retries": 0,
+        "max_wait_time_ms": 2000,
+        "retry_delay": 11
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-09-29T04:29:32.891688Z",
+  "modified_on": "2026-09-29T04:29:32.891688Z",
+  "producers": [
+    {
+      "script": "bazaar-clean-benchmark",
+      "type": "worker"
+    }
+  ],
+  "producers_total_count": 1,
+  "queue_id": "c0b277a96b9844c292155da653880b04",
+  "queue_name": "bazaar-clean-generation",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

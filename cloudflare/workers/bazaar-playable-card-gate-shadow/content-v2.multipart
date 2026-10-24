@@ -1,0 +1,85 @@
+--eadc016e973a4a61c8dc152cce420296e9612efcfb356f74c848f77f7ac2
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+const VERSION="playable-card-structural-gate-v1";
+function median(values){if(!values.length)return null;const s=[...values].sort((a,b)=>a-b),m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2}
+function decide(region,regions,groups,w,h){
+  const cohort=region.routing?.cohort??null;
+  if(cohort==="v30_board_cell") return {version:VERSION,accepted:true,score:1,path:"specialized_board_cell",reason:"specialized_board_cell",support_count:region.proposal?.support_count??null,row_evidence:null};
+  if(cohort!=="portrait_or_card") return {version:VERSION,accepted:false,score:0,path:"not_card_candidate",reason:"routing_cohort_not_card_candidate",support_count:region.proposal?.support_count??null,row_evidence:null};
+  const b=region.bbox||{},support=Number.isFinite(region.proposal?.support_count)?region.proposal.support_count:0;
+  const aspect=b.width/Math.max(1,b.height),area=(b.width*b.height)/Math.max(1,w*h);
+  let best=null;
+  for(let gi=0;gi<groups.length;gi++){
+    const g=groups[gi]; if(!(g.region_ids||[]).includes(region.region_id)||g.member_count<4)continue;
+    const ms=(g.region_ids||[]).map(id=>regions.find(x=>x.region_id===id)).filter(Boolean);
+    const mw=median(ms.map(x=>x.bbox.width)),mh=median(ms.map(x=>x.bbox.height)),mcy=median(ms.map(x=>x.bbox.y+x.bbox.height/2));
+    if(!mw||!mh||mcy===null)continue;
+    const wr=b.width/mw,hr=b.height/mh,cd=Math.abs(b.y+b.height/2-mcy)/mh;
+    const gf=((wr>=.76&&wr<=1.42?1:0)+(hr>=.76&&hr<=1.42?1:0)+(cd<=.30?1:0))/3;
+    const count=Math.min(1,g.member_count/6),regularity=g.spacing_cv===null?.5:Math.max(0,1-g.spacing_cv/.75),repeat=Math.max(0,Math.min(1,g.repeat_recovered_fraction??0)),gs=Math.min(1,Math.max(0,g.mean_proposal_support??0)/8);
+    const score=.4*gf+.22*count+.16*regularity+.12*repeat+.1*gs;
+    const ev={group_index:gi,member_count:g.member_count,score,width_ratio_to_median:wr,height_ratio_to_median:hr,center_y_delta_over_height:cd,spacing_cv:g.spacing_cv,repeat_recovered_fraction:g.repeat_recovered_fraction,mean_proposal_support:g.mean_proposal_support};
+    if(!best||score>best.score)best=ev;
+  }
+  const row=(best?.score??0)>=.7;
+  const large=support>=8&&area>=.018;
+  const small=support>=12&&area>=.01&&aspect>=.62&&aspect<=.88;
+  const accepted=row||large||small;
+  const score=Math.max(best?.score??0,large?Math.min(1,.72+support/100+area):0,small?Math.min(1,.70+support/100+area):0);
+  return {version:VERSION,accepted,score,path:row?"repeated_board_structure":large?"strong_standalone_large":small?"strong_standalone_small":"rejected",reason:accepted?"structural_card_evidence":"insufficient_structural_card_evidence",support_count:support,aspect_ratio:aspect,area_fraction:area,row_evidence:best,semantic_promotion_allowed:false};
+}
+async function evaluate(env,resultKey,evaluation={}){
+  if(!resultKey.startsWith("perception/results/")||!resultKey.endsWith(".json"))throw new Error("invalid result_key");
+  const o=await env.BUCKET.get(resultKey);if(!o)throw new Error("missing result");
+  const d=JSON.parse(await o.text()),regions=d.regions||[],groups=d.layout?.groups||[],w=d.input?.width||1,h=d.input?.height||1;
+  const decisions=regions.map(r=>({region_id:r.region_id,bbox:r.bbox,cohort:r.routing?.cohort??null,proposal:r.proposal,decision:decide(r,regions,groups,w,h)}));
+  const candidates=decisions.filter(x=>x.cohort==="portrait_or_card"||x.cohort==="v30_board_cell");
+  const accepted=candidates.filter(x=>x.decision.accepted),rejected=candidates.filter(x=>!x.decision.accepted);
+  const knownNeg=new Set(evaluation.known_negative_region_ids||[]),knownPos=new Set(evaluation.known_positive_region_ids||[]);
+  const falseNegAccepted=accepted.filter(x=>knownNeg.has(x.region_id)).map(x=>x.region_id);
+  const knownPosRejected=rejected.filter(x=>knownPos.has(x.region_id)).map(x=>x.region_id);
+  const artifact={schema_version:1,artifact:"playable-card-gate-shadow",gate_version:VERSION,semantic_promotion_allowed:false,source_result_key:resultKey,source_sha256:d.input?.sha256??null,pipeline_version:d.pipeline_version??null,evaluation:{expected_playable_card_count:evaluation.expected_playable_card_count??null,known_negative_region_ids:[...knownNeg],known_positive_region_ids:[...knownPos],known_negative_accepted:falseNegAccepted,known_positive_rejected:knownPosRejected,count_matches:evaluation.expected_playable_card_count==null?null:accepted.length===evaluation.expected_playable_card_count},candidate_region_count:candidates.length,accepted_region_count:accepted.length,rejected_region_count:rejected.length,accepted_region_ids:accepted.map(x=>x.region_id),rejected_region_ids:rejected.map(x=>x.region_id),decisions};
+  const token=String(d.pipeline_version||"unknown").replace(/[^A-Za-z0-9._-]+/g,"-");
+  const key="perception/playable-card-gate-shadow/"+(d.input?.sha256||"unknown")+"/"+token+".json";
+  for (const x of candidates.filter(x=>knownPos.has(x.region_id))) {
+    await env.BUCKET.put("debug/gate-known-positive/"+(d.input?.sha256||"unknown")+"/"+x.region_id,new Uint8Array(),{customMetadata:{
+      region_id:x.region_id,
+      bbox:JSON.stringify(x.bbox),
+      proposal:JSON.stringify(x.proposal),
+      path:String(x.decision?.path??""),
+      accepted:String(x.decision?.accepted===true),
+      score:String(x.decision?.score??""),
+      area:String(x.decision?.area_fraction??""),
+      aspect:String(x.decision?.aspect_ratio??""),
+      row_score:String(x.decision?.row_evidence?.score??""),
+      row_members:String(x.decision?.row_evidence?.member_count??"")
+    }});
+  }
+  for (const x of candidates.filter(x=>knownNeg.has(x.region_id))) {
+    await env.BUCKET.put("debug/gate-known-negative/"+(d.input?.sha256||"unknown")+"/"+x.region_id,new Uint8Array(),{customMetadata:{
+      region_id:x.region_id,
+      bbox:JSON.stringify(x.bbox),
+      proposal:JSON.stringify(x.proposal),
+      path:String(x.decision?.path??""),
+      accepted:String(x.decision?.accepted===true),
+      score:String(x.decision?.score??""),
+      area:String(x.decision?.area_fraction??""),
+      aspect:String(x.decision?.aspect_ratio??""),
+      row_score:String(x.decision?.row_evidence?.score??""),
+      row_members:String(x.decision?.row_evidence?.member_count??"")
+    }});
+  }
+  await env.BUCKET.put(key,JSON.stringify(artifact),{httpMetadata:{contentType:"application/json",cacheControl:"private, max-age=0"},customMetadata:{artifact:"playable-card-gate-shadow",gate_version:VERSION,candidates:String(candidates.length),accepted:String(accepted.length),rejected:String(rejected.length),accepted_region_ids:JSON.stringify(accepted.map(x=>x.region_id)),known_negative_accepted:JSON.stringify(falseNegAccepted),known_positive_rejected:JSON.stringify(knownPosRejected),known_positive_compact:JSON.stringify(candidates.filter(x=>knownPos.has(x.region_id)).map(x=>({region_id:x.region_id,bbox:x.bbox,support:x.proposal?.support_count??null,path:x.decision?.path??null,score:x.decision?.score??null,area:x.decision?.area_fraction??null,row_score:x.decision?.row_evidence?.score??null,row_members:x.decision?.row_evidence?.member_count??null}))).slice(0,700),known_negative_compact:JSON.stringify(candidates.filter(x=>knownNeg.has(x.region_id)).map(x=>({region_id:x.region_id,bbox:x.bbox,support:x.proposal?.support_count??null,path:x.decision?.path??null,score:x.decision?.score??null,area:x.decision?.area_fraction??null,row_score:x.decision?.row_evidence?.score??null,row_members:x.decision?.row_evidence?.member_count??null}))).slice(0,700),expected_count:evaluation.expected_playable_card_count==null?"":String(evaluation.expected_playable_card_count),count_matches:artifact.evaluation.count_matches==null?"":String(artifact.evaluation.count_matches),semantic_promotion_allowed:"false"}});
+  return {key,artifact};
+}
+export default {
+  async queue(batch,env){
+    for(const m of batch.messages){
+      try{await evaluate(env,m.body.result_key,m.body.evaluation||{});m.ack()}catch(e){m.retry({delaySeconds:10})}
+    }
+  }
+};
+--eadc016e973a4a61c8dc152cce420296e9612efcfb356f74c848f77f7ac2--

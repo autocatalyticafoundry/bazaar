@@ -1,0 +1,27 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "55b71ddfcdbd44838da6b524406fc3ae",
+      "script": "bazaar-whole-screen-fingerprint-proof-20261009",
+      "settings": {
+        "batch_size": 1,
+        "max_concurrency": 8,
+        "max_retries": 0,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-17T01:34:11.220359Z",
+  "modified_on": "2026-10-17T01:34:11.220359Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "0936f71cad144da099e06f0c6026d3b3",
+  "queue_name": "bazaar-packedfull-v1-20261016",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

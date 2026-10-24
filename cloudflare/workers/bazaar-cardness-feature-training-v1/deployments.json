@@ -1,0 +1,123 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Persist gate v2 structural plus uncovered visua...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:30:25.613809Z",
+      "id": "23247660-9d09-4ab9-bb01-be1e77eea75e",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "3f707b12-f86a-4753-ac0c-d08ea2f119bf"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:27:58.563715Z",
+      "id": "f4fc9f10-773a-491e-bbc6-4d2dae1cea6c",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "12964b8e-ed21-46d0-b77e-6f566c27a625"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Visual cardness rescue only when structural loc...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:26:13.712134Z",
+      "id": "155c507c-cd99-42a6-912f-0dab1ee20a75",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "ecb4468e-047c-47fa-adf8-3cacbd00dc04"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Score one-region cardness candidates against ca...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:22:00.133891Z",
+      "id": "72c53a99-fadf-419d-bbe6-e25cd76abd11",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "fd771d23-96f1-4b7c-8b16-d677a99e1061"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Add one-region cardness shadow feature mode",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:21:05.083579Z",
+      "id": "f08f396e-17d0-4643-a367-5b745724bccb",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "d131d93a-3a55-4c87-b1f4-c3d5b1e3f016"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Add 8-bit indexed PNG support to automatic card...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:11:42.414207Z",
+      "id": "0461a1b6-c27d-4886-a1d5-469e2e7157ce",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "79eb6a6d-30e8-4c2e-8b61-ba6438fe1517"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatically extract visual cardness features ...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:10:16.72765Z",
+      "id": "e84851d6-adb5-469d-ab3c-7e69492b7776",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "19b4593e-333e-4ee7-9690-c25984ef006c"
+        }
+      ]
+    }
+  ]
+}

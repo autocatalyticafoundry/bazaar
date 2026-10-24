@@ -1,0 +1,11 @@
+--d6c84b30f618a7dbd0fac9fe19c71a1a7def7971a6b7ff76b1a83f3cffef
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+const INPUT="perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png";
+const B=[[174,526,223,217],[404,526,68,217],[478,526,68,217],[548,526,68,217],[618,526,68,217],[688,526,68,217],[758,526,68,217],[828,526,68,217],[404,286,68,200],[478,286,164,200],[642,286,68,200],[166,794,134,200],[826,784,150,210],[899,518,65,225]];
+function box(i){const b=B[i];return {x:Math.round(b[0]*2.048),y:Math.round(b[1]*1.409),width:Math.round(b[2]*2.048),height:Math.round(b[3]*1.409)};}
+async function one(env,i){const bbox=box(i),id=env.RUNNER.idFromName("perception-global"),stub=env.RUNNER.get(id),r=await stub.fetch("https://internal/item-visual-search-r2-region",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({input_key:INPUT,bbox,top_k:5})}),d=JSON.parse(await r.text()),cs=Array.isArray(d.candidates)?d.candidates:[],n=d.screen_native_shortlist_shadow||{};return {id:i,bbox,learned:cs.slice(0,5).map(c=>({name:(c.asset_path||"").split("/").pop().replace(/\.avif$/,""),score:c.score,entity_ids:c.entity_ids||[]})),native:{name:(n.best_asset_path||"").split("/").pop().replace(/\.avif$/,""),score:n.best_score??null,margin:n.margin??null},learned_margin:cs[0]&&cs[1]?cs[0].score-cs[1].score:null};}export default {async fetch(req,env){const u=new URL(req.url);if(u.pathname==="/batch"){const start=Math.max(0,Math.min(B.length-1,Number(u.searchParams.get("start"))||0)),count=Math.max(1,Math.min(5,B.length-start,Number(u.searchParams.get("count"))||1)),rows=[];for(let i=start;i<start+count;i++)rows.push(await one(env,i));return new Response(JSON.stringify({start,count,rows}),{headers:{"content-type":"application/json","cache-control":"no-store"}});}const i=u.pathname==="/control"?9:Math.max(0,Math.min(B.length-1,Number(u.searchParams.get("i"))||0)),row=await one(env,i);return new Response(JSON.stringify(row),{headers:{"content-type":"application/json","cache-control":"no-store"}});}};
+
+--d6c84b30f618a7dbd0fac9fe19c71a1a7def7971a6b7ff76b1a83f3cffef--

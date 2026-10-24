@@ -1,0 +1,27 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "834f0ae0312a4ce6a93726a7dcf10795",
+      "script": "bazaar-r2-safety-rearm-20261009",
+      "settings": {
+        "batch_size": 1,
+        "max_concurrency": 1,
+        "max_retries": 0,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-10T02:25:43.333018Z",
+  "modified_on": "2026-10-10T02:25:43.333018Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "166260de7a3a49e79a663b42b081b47c",
+  "queue_name": "bazaar-r2-safety-rearm-20261009-q",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

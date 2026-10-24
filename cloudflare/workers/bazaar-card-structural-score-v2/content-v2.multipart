@@ -1,0 +1,28 @@
+--ed5c7df599c6da539f6c9643ab134011defb6b51f2eea166e1ec4f7d88f3
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+function clip(v,a=0,b=1){return Math.max(a,Math.min(b,v))}
+function num(v,d=0){const n=Number(v);return Number.isFinite(n)?n:d}
+function sigmoid(z){if(z>=0){const e=Math.exp(-z);return 1/(1+e)}const e=Math.exp(z);return e/(1+e)}
+function gf(gs){const g=Array.isArray(gs)?gs:[];const vs=k=>g.map(x=>Number(x?.[k])).filter(Number.isFinite);const mn=(k,d)=>{const a=vs(k);return a.length?Math.min(...a):d};const mx=(k,d)=>{const a=vs(k);return a.length?Math.max(...a):d};return{gc:clip(g.length/8),ms:clip(mx("member_count",0)/12),sp:clip(mn("spacing_cv",1.5)/1.5),wc:clip(mn("width_cv",.6)/.6),hc:clip(mn("height_cv",.6)/.6),rr:clip(mx("repeat_recovered_fraction",0)),hg:clip(g.filter(x=>x?.orientation==="horizontal").length/8)}}
+function fx(r,W,H,groups){const b=r?.bbox||{},p=r?.proposal||{},g=gf((groups||[]).filter(x=>Array.isArray(x?.region_ids)&&x.region_ids.includes(r.region_id))),wf=clip(num(b.width)/Math.max(1,W)),hf=clip(num(b.height)/Math.max(1,H)),src=String(p.source||""),c=String(r?.routing?.cohort||"");return[wf,hf,clip(num(b.width)/Math.max(1,num(b.height)),0,2.5)/2.5,clip(wf*hf*20),clip(Math.log1p(Math.max(0,num(p.support_count)))/Math.log(65)),clip(num(p.score)/100),g.gc,g.ms,1-g.sp,1-g.wc,1-g.hc,g.rr,g.hg,src==="edge-horizontal-repeat-v1"?1:0,src==="edge-portrait-card-v1"?1:0,(src!=="edge-horizontal-repeat-v1"&&src!=="edge-portrait-card-v1")?1:0,c==="portrait_or_card"?1:0,c==="square_ui"?1:0,c==="landscape_ui"?1:0,c==="noncard_ui"?1:0]}
+function dot(w,x){let s=w[0];for(let i=0;i<x.length;i++)s+=w[i+1]*x[i];return s}
+export default{async queue(batch,env){for(const m of batch.messages){try{
+  const sha=String(m.body?.sha||"").trim();
+  if(!/^[0-9a-f]{64}$/.test(sha))throw Error("sha_required");
+  const mo=await env.BUCKET.get("benchmarks/playable-card-gate-v2/structural-logit-case-holdout.json");if(!mo)throw Error("model_missing");
+  const model=JSON.parse(await mo.text());
+  const ro=await env.BUCKET.get("perception/results/"+sha+"-human-audit-20261007-0035.json");if(!ro)throw Error("result_missing");
+  const d=JSON.parse(await ro.text()),W=num(d.input?.width,1),H=num(d.input?.height,1),groups=d.layout?.groups||[],w=model.weights||[],t=num(model.thresholds?.r100,.5);
+  const rows=(d.regions||[]).map(r=>{const x=fx(r,W,H,groups),score=sigmoid(dot(w,x)),selected=r?.proposal?.source==="v30_board_row"||score>=t;return{region_id:r.region_id,bbox:r.bbox,proposal:r.proposal,routing:{cohort:r.routing?.cohort||null},score,selected,group_count:groups.filter(g=>Array.isArray(g?.region_ids)&&g.region_ids.includes(r.region_id)).length}});
+  const selected=rows.filter(r=>r.selected),rejected=rows.filter(r=>!r.selected),byId=Object.fromEntries(rows.map(r=>[r.region_id,r]));
+  const out={schema_version:1,evaluation_version:"playable-card-gate-structural-real-screen-v2",model_version:model.model_version,threshold:t,source_result_key:"perception/results/"+sha+"-human-audit-20261007-0035.json",screenshot_sha256:sha,total_regions:rows.length,selected_count:selected.length,rejected_count:rejected.length,selected_region_ids:selected.map(r=>r.region_id),known_checks:{hud_region_13:{expected:0,score:byId["region-13"]?.score??null,prediction:byId["region-13"]?.selected?1:0,passed:byId["region-13"]?.selected===false},stained_glass_region_22:{expected:1,score:byId["region-22"]?.score??null,prediction:byId["region-22"]?.selected?1:0,passed:byId["region-22"]?.selected===true}},rows,semantic_promotion_allowed:false};
+  const key="benchmarks/playable-card-gate-v2/real-screen-structural/"+sha+".json";
+  await env.BUCKET.put(key,JSON.stringify(out),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"playable-card-gate-structural-real-screen",model_version:String(model.model_version||""),threshold:String(t),total_regions:String(rows.length),selected_count:String(selected.length),rejected_count:String(rejected.length),hud_region_13_prediction:String(out.known_checks.hud_region_13.prediction),hud_region_13_score:String(out.known_checks.hud_region_13.score),stained_glass_region_22_prediction:String(out.known_checks.stained_glass_region_22.prediction),stained_glass_region_22_score:String(out.known_checks.stained_glass_region_22.score),known_checks_passed:String(out.known_checks.hud_region_13.passed&&out.known_checks.stained_glass_region_22.passed),selected_ids:JSON.stringify(out.selected_region_ids).slice(0,900)}});
+  console.log("CARD_STRUCTURAL_SCORE_V2",JSON.stringify({key,selected:out.selected_region_ids,known_checks:out.known_checks}));
+  m.ack();
+}catch(e){const msg=String(e?.message||e);console.error("CARD_STRUCTURAL_SCORE_V2_ERROR",msg);try{await env.BUCKET.put("debug/card-structural-score-v2/"+Date.now()+".json",JSON.stringify({error:msg,body:m.body}),{customMetadata:{artifact:"card-structural-score-v2-error",detail:msg.slice(0,900)}})}catch{}m.retry({delaySeconds:10})}}}};
+
+--ed5c7df599c6da539f6c9643ab134011defb6b51f2eea166e1ec4f7d88f3--

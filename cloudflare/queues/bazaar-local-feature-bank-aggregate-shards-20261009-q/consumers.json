@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "f7914438859e4bde92bd87afa58b9c18",
+    "created_on": "2026-10-10T02:36:06.645636Z",
+    "queue_id": "b824f850952846e49481d6f7e2401a4d",
+    "queue_name": "bazaar-local-feature-bank-aggregate-shards-20261009-q",
+    "script": "bazaar-local-feature-bank-aggregate-shards-20261009",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 4,
+      "max_retries": 0,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

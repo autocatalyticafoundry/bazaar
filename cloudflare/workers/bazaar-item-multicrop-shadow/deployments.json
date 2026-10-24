@@ -1,0 +1,38 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Persist multicrop diagnostic errors",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T17:58:07.529425Z",
+      "id": "8e6807e5-2f23-49eb-826a-518a7db992e6",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "122e31fe-38e8-4089-866e-27cc5b748026"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Shadow-only multi-crop item retrieval using PNG...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T17:57:32.615906Z",
+      "id": "f1f8936f-ea63-471a-9f81-f450219c9a0c",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "eeb04f7b-1caa-40b7-bb27-ba4d4f14f360"
+        }
+      ]
+    }
+  ]
+}

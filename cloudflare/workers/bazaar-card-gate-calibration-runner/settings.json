@@ -1,0 +1,25 @@
+{
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BENCHMARK_R2",
+      "type": "r2_bucket"
+    },
+    {
+      "environment": "production",
+      "name": "CALIBRATOR",
+      "service": "bazaar-card-gate-calibrator",
+      "type": "service"
+    }
+  ],
+  "compatibility_date": "2026-10-07",
+  "compatibility_flags": [],
+  "logpush": false,
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

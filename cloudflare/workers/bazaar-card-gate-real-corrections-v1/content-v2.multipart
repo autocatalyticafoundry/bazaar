@@ -1,0 +1,22 @@
+--fba649d5605d1be3adc3d493bf6a957aa3a1123cad2c8133901a69db77f2
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default {async queue(batch,env){for(const m of batch.messages){try{
+    let cursor,shards=0,itemTruth=0,posN=0,negN=0;
+    do{
+      const ls=await env.BUCKET.list({prefix:"benchmarks/playable-card-gate-training-v1/synthetic/",limit:1000,cursor});
+      for(const x of ls.objects){if(!x.key.endsWith(".json"))continue;const o=await env.BUCKET.get(x.key);if(!o)continue;const d=JSON.parse(await o.text());shards++;itemTruth+=Number(d.item_truth_count||0);posN+=Number(d.positive_sample_count||0);negN+=Number(d.negative_sample_count||0)}
+      cursor=ls.truncated?ls.cursor:undefined;
+    }while(cursor);
+    let realPos=0,realNeg=0,realShards=0;cursor=undefined;
+    do{
+      const ls=await env.BUCKET.list({prefix:"benchmarks/playable-card-gate-training-v1/real-corrections/",limit:1000,cursor});
+      for(const x of ls.objects){if(!x.key.endsWith(".json"))continue;const o=await env.BUCKET.get(x.key);if(!o)continue;const d=JSON.parse(await o.text());realShards++;realPos+=Number(d.positive_sample_count||0);realNeg+=Number(d.negative_sample_count||0)}
+      cursor=ls.truncated?ls.cursor:undefined;
+    }while(cursor);
+    const summary={schema_version:1,artifact:"playable-card-gate-training-summary",version:"playable-card-gate-training-v1",synthetic_shard_count:shards,synthetic_truth_item_count:itemTruth,synthetic_positive_sample_count:posN,synthetic_negative_sample_count:negN,real_correction_shard_count:realShards,real_positive_sample_count:realPos,real_negative_sample_count:realNeg,total_positive_sample_count:posN+realPos,total_negative_sample_count:negN+realNeg,semantic_promotion_allowed:false};
+    await env.BUCKET.put("benchmarks/playable-card-gate-training-v1/summary.json",JSON.stringify(summary),{httpMetadata:{contentType:"application/json",cacheControl:"private, max-age=0"},customMetadata:{artifact:"playable-card-gate-training-summary",version:"playable-card-gate-training-v1",synthetic_shards:String(shards),truth_items:String(itemTruth),synthetic_positive:String(posN),synthetic_negative:String(negN),real_positive:String(realPos),real_negative:String(realNeg),total_positive:String(posN+realPos),total_negative:String(negN+realNeg),semantic_promotion_allowed:"false"}});
+    m.ack();
+  }catch(e){const msg=String(e?.stack||e);await env.BUCKET.put("debug/card-gate-summary-errors/"+Date.now()+".txt",msg,{customMetadata:{error:msg.slice(0,1000)}});m.ack()}}}};
+--fba649d5605d1be3adc3d493bf6a957aa3a1123cad2c8133901a69db77f2--

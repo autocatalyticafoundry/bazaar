@@ -1,0 +1,72 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T02:33:40.990356Z",
+      "id": "5bd9b5e8-2476-4e91-95f1-4b614607abba",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "89656f39-c2fa-4523-ad28-9852589b4e58"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T02:33:04.770992Z",
+      "id": "1992732e-ea11-4fe7-8f43-4530bdd2344e",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "1cd436a2-6c54-4608-bdc4-6b5398d34463"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T02:29:36.019656Z",
+      "id": "0f2aaf0d-ccfb-4bcd-bae8-6b677aa1272e",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "7ebd7496-3f6a-46ed-af8c-dbf8211945a3"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T02:23:49.999859Z",
+      "id": "0e43429b-ae34-4148-b351-a980dbce21b8",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "81f3e30d-b9bd-484c-b567-c85d6248b3cf"
+        }
+      ]
+    }
+  ]
+}

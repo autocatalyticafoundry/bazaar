@@ -1,0 +1,72 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T22:38:33.593124Z",
+      "id": "6952921d-2225-4260-9cd3-586869ba5fc1",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "484295d4-2743-4292-aee2-d89608198b66"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T22:38:14.729433Z",
+      "id": "9541e31d-01af-4bfb-b072-462a25bf051e",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "d666c776-5b3d-4110-97ab-b32f872f37dd"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T22:37:06.939759Z",
+      "id": "7e98acbc-9838-41e0-9b63-b61507571c79",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "394c993c-e89f-412e-b45a-7945a1d3ee3e"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T22:36:05.872952Z",
+      "id": "7266ea0e-b575-40d8-8e24-de90dbba7aa6",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "ccc5004b-e3a3-4758-baec-35a4d6e71ede"
+        }
+      ]
+    }
+  ]
+}

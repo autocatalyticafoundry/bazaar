@@ -1,0 +1,21 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-08T18:02:53.798752Z",
+      "id": "ce3c9ba0-d3c7-432f-9a0a-2eabc026d180",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "397f633d-570b-4ddb-bb40-ca1c2354a06e"
+        }
+      ]
+    }
+  ]
+}

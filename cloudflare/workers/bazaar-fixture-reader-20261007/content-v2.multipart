@@ -1,0 +1,16 @@
+--b1e16accb1f554abbbf3ec6bc17779f9368bce6061e4de1de34b225e04b3
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default {async fetch(req,env){
+    const u=new URL(req.url);
+    const keys={
+      pos:"benchmarks/item-cross-signal-v2/clean-board-004eaf06ac6295d8c6f2/localization-offset-0.json",
+      neg:"benchmarks/item-cross-signal-negative-v3/clean-board-004eaf06ac6295d8c6f2/offset-0.json"
+    };
+    const key=keys[u.pathname.slice(1)];
+    if(!key)return Response.json({ok:true,paths:["/pos","/neg"]});
+    const o=await env.BUCKET.get(key);if(!o)return Response.json({error:"missing"},{status:404});
+    return new Response(o.body,{headers:{"content-type":"application/json","cache-control":"no-store"}});
+  }};
+--b1e16accb1f554abbbf3ec6bc17779f9368bce6061e4de1de34b225e04b3--

@@ -1,0 +1,24 @@
+{
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BUCKET",
+      "type": "r2_bucket"
+    },
+    {
+      "name": "QUEUE",
+      "queue_name": "bazaar-card-role-gate-calibration-v2",
+      "type": "queue"
+    }
+  ],
+  "compatibility_date": "2026-10-08",
+  "compatibility_flags": [],
+  "logpush": false,
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

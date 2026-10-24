@@ -1,0 +1,38 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-08T21:39:35.53014Z",
+      "id": "9ac9d2c2-d340-47eb-87ac-36df5e854040",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "fda41f5f-9c00-4d11-b722-0530b5649072"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-08T21:37:41.654505Z",
+      "id": "8a3f93cc-d4e7-4815-aaf7-d8c5b1b1f0f9",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "9ba045a4-8ff9-4243-b8af-e881d5e3543f"
+        }
+      ]
+    }
+  ]
+}

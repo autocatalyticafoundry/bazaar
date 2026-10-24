@@ -1,0 +1,16 @@
+--21d43d784ac5ab830a001b9597d91d513efc07174654d97b03ff56f14aad
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+  function json(v,s=200){return new Response(JSON.stringify(v),{status:s,headers:{"content-type":"application/json","cache-control":"no-store"}})}
+  export default {async fetch(req,env){
+    const u=new URL(req.url);
+    if(u.pathname==="/service-test"){
+      const target=new Request("https://bazaar-clean-benchmark.allaboutstudios.workers.dev/r2-safety",{method:"GET"});
+      const r=await env.BAZAAR.fetch(target);
+      return json({status:r.status,body:(await r.text()).slice(0,1000)});
+    }
+    return json({ok:true});
+  }};
+--21d43d784ac5ab830a001b9597d91d513efc07174654d97b03ff56f14aad--

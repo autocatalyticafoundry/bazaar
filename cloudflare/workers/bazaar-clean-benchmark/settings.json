@@ -1,0 +1,113 @@
+{
+  "annotations": {
+    "workers/triggered_by": "version_upload"
+  },
+  "bindings": [
+    {
+      "name": "ADMIN_TOKEN",
+      "type": "secret_text"
+    },
+    {
+      "name": "AI",
+      "project": "<catalog>",
+      "type": "ai"
+    },
+    {
+      "bucket_name": "bazaar-reference-assets",
+      "name": "ASSETS_R2",
+      "type": "r2_bucket"
+    },
+    {
+      "bucket_name": "bazaar-clean-benchmark",
+      "name": "BENCHMARK_R2",
+      "type": "r2_bucket"
+    },
+    {
+      "name": "BENCHMARK_SCHEMA_VERSION",
+      "text": "<REDACTED_VALUE>",
+      "type": "plain_text"
+    },
+    {
+      "name": "BROWSER",
+      "type": "browser",
+      "version": 2
+    },
+    {
+      "name": "CF_ACCOUNT_ID",
+      "text": "<REDACTED_VALUE>",
+      "type": "plain_text"
+    },
+    {
+      "name": "CF_ANALYTICS_TOKEN",
+      "type": "secret_text"
+    },
+    {
+      "database_id": "e8b25e56-61eb-4bb8-a519-e94dc04b9735",
+      "id": "e8b25e56-61eb-4bb8-a519-e94dc04b9735",
+      "name": "DB",
+      "type": "d1"
+    },
+    {
+      "name": "GENERATION_QUEUE",
+      "queue_name": "bazaar-clean-generation",
+      "type": "queue"
+    },
+    {
+      "instance_name": "bazaar-item-visual-v1",
+      "name": "ITEM_VISUAL_SEARCH",
+      "type": "ai_search"
+    },
+    {
+      "name": "ITEM_VISUAL_SEARCH_PUBLIC_URL",
+      "text": "<REDACTED_VALUE>",
+      "type": "plain_text"
+    },
+    {
+      "class_name": "PerceptionRunner",
+      "name": "PERCEPTION_RUNNER",
+      "namespace_id": "6d93e28ac24d41b7aee0833132db7e46",
+      "type": "durable_object_namespace"
+    },
+    {
+      "name": "PUBLIC_BASE_URL",
+      "text": "<REDACTED_VALUE>",
+      "type": "plain_text"
+    },
+    {
+      "class_name": "R2SafetyCoordinator",
+      "name": "R2_SAFETY",
+      "namespace_id": "a6ecf02580fb4b3abb977e86a0d78616",
+      "type": "durable_object_namespace"
+    },
+    {
+      "name": "SOURCE_COMMIT",
+      "text": "<REDACTED_VALUE>",
+      "type": "plain_text"
+    }
+  ],
+  "compatibility_date": "2026-09-29",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "logpush": false,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": true,
+      "persist": true
+    },
+    "redact_query_string": true,
+    "traces": {
+      "enabled": false,
+      "head_sampling_rate": 1,
+      "persist": true
+    }
+  },
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

@@ -1,0 +1,48 @@
+--63043b8331c48cb656a0ecf325001d06186f5d5abc5e57e2f6a1c6f32128
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+  function med(a){if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2}
+  export default {
+    async queue(batch,env){
+      const sha="5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393";
+      const o=await env.BUCKET.get("perception/results/"+sha+"-human-audit-20261007-0035.json"); if(!o)throw new Error("missing");
+      const d=JSON.parse(await o.text());
+      const regions=d.regions||[], groups=d.layout?.groups||[];
+      const byId=new Map(regions.map(r=>[r.region_id||r.id,r]));
+      const prefix="debug/card-gate-features-20261009/";
+      let i=0;
+      for(const r of regions){
+        const id=r.region_id||r.id;
+        const b=r.bbox||{};
+        const memberships=[];
+        for(let gi=0;gi<groups.length;gi++){
+          const g=groups[gi];
+          if(!(g.region_ids||[]).includes(id))continue;
+          const mem=(g.region_ids||[]).map(x=>byId.get(x)).filter(Boolean);
+          const widths=mem.map(x=>x.bbox?.width||0).filter(Boolean), heights=mem.map(x=>x.bbox?.height||0).filter(Boolean);
+          const cy=mem.map(x=>(x.bbox?.y||0)+(x.bbox?.height||0)/2);
+          const mw=med(widths),mh=med(heights),mcy=med(cy);
+          memberships.push({
+            group_index:gi,member_count:g.member_count,center_y_fraction:g.center_y_fraction,
+            width_cv:g.width_cv,height_cv:g.height_cv,spacing_cv:g.spacing_cv,
+            repeat_recovered_fraction:g.repeat_recovered_fraction,mean_proposal_support:g.mean_proposal_support,
+            width_ratio_to_median:mw?b.width/mw:null,height_ratio_to_median:mh?b.height/mh:null,
+            center_y_delta_over_height:mh?Math.abs((b.y+b.height/2)-mcy)/mh:null
+          });
+        }
+        memberships.sort((a,b)=>(b.member_count||0)-(a.member_count||0)||(a.spacing_cv||9)-(b.spacing_cv||9));
+        const fact={
+          id,bbox:b,
+          norm:{x:b.x/d.input.width,y:b.y/d.input.height,w:b.width/d.input.width,h:b.height/d.input.height,aspect:b.width/b.height,area:(b.width*b.height)/(d.input.width*d.input.height)},
+          proposal:r.proposal,routing:{cohort:r.routing?.cohort},
+          membership_count:memberships.length,best_memberships:memberships.slice(0,4)
+        };
+        await env.BUCKET.put(prefix+String(i++).padStart(3,"0")+"-"+id,new Uint8Array(),{customMetadata:{fact:JSON.stringify(fact).slice(0,1400)}});
+      }
+      await env.BUCKET.put(prefix+"zzz-summary",new Uint8Array(),{customMetadata:{region_count:String(regions.length),group_count:String(groups.length)}});
+      for(const m of batch.messages)m.ack();
+    }
+  };
+--63043b8331c48cb656a0ecf325001d06186f5d5abc5e57e2f6a1c6f32128--

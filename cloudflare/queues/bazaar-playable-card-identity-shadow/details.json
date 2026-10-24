@@ -1,0 +1,26 @@
+{
+  "consumers": [
+    {
+      "consumer_id": "26d23c3877db4ebcbd2bc1cdf5731d08",
+      "script": "bazaar-playable-card-identity-shadow",
+      "settings": {
+        "batch_size": 2,
+        "max_retries": 2,
+        "max_wait_time_ms": 1000,
+        "retry_delay": 0
+      },
+      "type": "worker"
+    }
+  ],
+  "consumers_total_count": 1,
+  "created_on": "2026-10-09T17:54:41.640374Z",
+  "modified_on": "2026-10-09T17:54:41.640374Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "f3837b9328574b68a2007eec6a1eaa55",
+  "queue_name": "bazaar-playable-card-identity-shadow",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

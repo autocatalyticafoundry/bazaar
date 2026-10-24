@@ -1,0 +1,6 @@
+--148e2d8fabb7d839b1d1dadd810a4c70d340d20b35c71cab4104eae63713
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default {async fetch(req,env){const src=["debug","global-local-full-target-dense-v1","d100.json"].join("/"),dst=["debug","global-local-full-target-dense-v2","d100.json"].join("/"),bak=["debug","global-local-full-target-dense-v2","d100.pre-v1swap.json"].join("/"),old=await env.R.get(dst);if(old){const ab=await new Response(old.body).arrayBuffer();await env.R.put(bak,ab,{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"dense-v2-pre-v1swap"}});}const o=await env.R.get(src);if(!o)return Response.json({error:"source missing"},{status:404});const ab=await new Response(o.body).arrayBuffer();await env.R.put(dst,ab,{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"dense-v2-key-with-dense-v1-target",feature_count:"5560"}});return Response.json({ok:true,bytes:ab.byteLength});}}
+--148e2d8fabb7d839b1d1dadd810a4c70d340d20b35c71cab4104eae63713--

@@ -1,0 +1,14 @@
+{
+  "consumers": [],
+  "consumers_total_count": 0,
+  "created_on": "2026-09-29T04:29:34.007323Z",
+  "modified_on": "2026-09-29T04:29:34.007323Z",
+  "producers": [],
+  "producers_total_count": 0,
+  "queue_id": "85251a7d66bf425bb165df24da490b15",
+  "queue_name": "bazaar-clean-generation-dlq",
+  "settings": {
+    "delivery_delay": 0,
+    "message_retention_period": 86400
+  }
+}

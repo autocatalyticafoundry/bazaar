@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "748b41ddda824c7d8e3f4052234bef02",
+    "created_on": "2026-10-08T17:58:51.171297Z",
+    "queue_id": "8bf0bbc9dd034ab9a3b1e072299b3196",
+    "queue_name": "bazaar-card-role-gate-calibration-v2",
+    "script": "bazaar-card-role-gate-queue-consumer",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 2,
+      "max_retries": 2,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

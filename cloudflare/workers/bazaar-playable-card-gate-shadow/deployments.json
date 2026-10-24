@@ -1,0 +1,72 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:08:53.223339Z",
+      "id": "6493b314-67ae-480e-b44c-f171a55f74f0",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "0d8ea472-10df-4f7f-ba62-9a6e19f39133"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:06:29.617851Z",
+      "id": "e3d9c132-53d8-4066-949d-b3081821abc7",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "4ba019fa-25e1-4590-901f-2662623c4096"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Expose known positive/negative gate decisions f...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T18:05:39.258243Z",
+      "id": "d551441b-b448-468d-b615-80bd868805d6",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "f5836484-6f82-4a95-8129-affc036fe732"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Add shadow-only structural playable-card gate; ...",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-09T17:53:19.742184Z",
+      "id": "67751cc3-0508-4c69-b22e-ccecba0ef6a1",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "83e9998c-b900-4909-a0e7-617188bfa028"
+        }
+      ]
+    }
+  ]
+}

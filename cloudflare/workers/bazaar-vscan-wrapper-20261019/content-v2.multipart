@@ -1,0 +1,8 @@
+--d649124683c36387d2279c0e80543ec5ba9e9a4b92698647d05f9e15f2f4
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+export default {async fetch(request){const u=new URL(request.url),from=Math.max(0,Math.min(20,Number(u.searchParams.get("from"))||0)),count=Math.max(1,Math.min(3,Number(u.searchParams.get("count"))||1)),f=Math.max(8,Math.min(30,Number(u.searchParams.get("f"))||22)),rows=[];for(let c=from;c<from+count;c++){try{const r=await fetch("https://bazaar-vscan-proof-v1-20261019.allaboutstudios.workers.dev/vs-9d3e?f="+f+"&c="+c,{headers:{"cache-control":"no-store"}}),j=await r.json();rows.push({c,status:r.status,ok:r.ok,start:Number(j.start||0),count:Number(j.count||0),windows:Number(j.window_count||0),size:Number(j.size||0)});}catch(e){rows.push({c,ok:false,error:String(e)})}}return new Response(JSON.stringify({from,count:rows.length,rows}),{headers:{"content-type":"application/json","cache-control":"no-store"}});}};
+
+--d649124683c36387d2279c0e80543ec5ba9e9a4b92698647d05f9e15f2f4--

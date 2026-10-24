@@ -1,0 +1,16 @@
+[
+  {
+    "consumer_id": "476bdf5beee04eb58762f559bdfdc8d8",
+    "created_on": "2026-10-09T18:07:52.740859Z",
+    "queue_id": "d073ab0a59234ba28f5eb58153d609c3",
+    "queue_name": "bazaar-counterexample-once-20261009",
+    "script": "bazaar-counterexample-once-20261009",
+    "settings": {
+      "batch_size": 1,
+      "max_retries": 1,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

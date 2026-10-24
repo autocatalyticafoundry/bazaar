@@ -1,0 +1,30 @@
+--1503594d8662bf716cdd8790a68e5b5739e2ff6d09c17ff0907ca2d96d02
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+const VERSION="playable-card-gate-v2-combine-shadow-v1";
+async function read(env,key){const o=await env.BUCKET.get(key);return o?JSON.parse(await o.text()):null}
+export default {async queue(batch,env){for(const m of batch.messages){try{
+ const v1=await read(env,m.body.v1_gate_key);if(!v1)throw new Error("missing v1 gate");
+ const source=await read(env,v1.source_result_key);if(!source)throw new Error("missing source result");
+ const token=String(source.pipeline_version).replace(/[^A-Za-z0-9._-]+/g,"-"),rows=[];
+ for(const d of v1.decisions||[]){
+   const structuralAccepted=d.decision?.accepted===true;
+   let cardness=null;
+   if(!structuralAccepted){
+     const key="perception/playable-card-cardness-shadow/"+source.input.sha256+"/"+token+"/"+d.region_id+".json";
+     const c=await read(env,key);
+     if(c?.cardness)cardness=c.cardness;
+   }
+   const visualRescue=!structuralAccepted&&cardness?.predicted_card===true&&Number(cardness.margin)>=Number(m.body.min_visual_margin??0);
+   rows.push({region_id:d.region_id,bbox:d.bbox,proposal:d.proposal,structural:d.decision,cardness,accepted:structuralAccepted||visualRescue,path:structuralAccepted?d.decision.path:visualRescue?"visual_cardness_rescue":"rejected"});
+ }
+ const accepted=rows.filter(x=>x.accepted),rescued=rows.filter(x=>x.path==="visual_cardness_rescue");
+ const knownPos=new Set(m.body.evaluation?.known_positive_region_ids||[]),knownNeg=new Set(m.body.evaluation?.known_negative_region_ids||[]);
+ const artifact={schema_version:1,artifact:"playable-card-gate-v2-combine-shadow",version:VERSION,semantic_promotion_allowed:false,source_v1_gate_key:m.body.v1_gate_key,source_result_key:v1.source_result_key,source_sha256:source.input.sha256,min_visual_margin:Number(m.body.min_visual_margin??0),candidate_count:rows.length,structural_accepted_count:rows.filter(x=>x.structural?.accepted).length,visual_rescue_count:rescued.length,accepted_count:accepted.length,rejected_count:rows.length-accepted.length,accepted_region_ids:accepted.map(x=>x.region_id),visual_rescue_region_ids:rescued.map(x=>x.region_id),evaluation:{expected_count:m.body.evaluation?.expected_playable_card_count??null,count_matches:m.body.evaluation?.expected_playable_card_count==null?null:accepted.length===m.body.evaluation.expected_playable_card_count,known_positive_rejected:rows.filter(x=>knownPos.has(x.region_id)&&!x.accepted).map(x=>x.region_id),known_negative_accepted:rows.filter(x=>knownNeg.has(x.region_id)&&x.accepted).map(x=>x.region_id)},rows};
+ const out="perception/playable-card-gate-v2-combine-shadow/"+source.input.sha256+"/"+token+".json";
+ await env.BUCKET.put(out,JSON.stringify(artifact),{httpMetadata:{contentType:"application/json",cacheControl:"private, max-age=0"},customMetadata:{artifact:"playable-card-gate-v2-combine-shadow",version:VERSION,candidates:String(rows.length),structural_accepted:String(artifact.structural_accepted_count),visual_rescues:String(artifact.visual_rescue_count),accepted:String(accepted.length),rescue_ids:JSON.stringify(rescued.map(x=>x.region_id)),accepted_ids:JSON.stringify(accepted.map(x=>x.region_id)),expected_count:artifact.evaluation.expected_count==null?"":String(artifact.evaluation.expected_count),count_matches:artifact.evaluation.count_matches==null?"":String(artifact.evaluation.count_matches),known_positive_rejected:JSON.stringify(artifact.evaluation.known_positive_rejected),known_negative_accepted:JSON.stringify(artifact.evaluation.known_negative_accepted),semantic_promotion_allowed:"false"}});
+ m.ack();
+ }catch(e){const msg=String(e?.stack||e);await env.BUCKET.put("debug/gate-v2-combine-errors/"+Date.now()+".txt",msg,{httpMetadata:{contentType:"text/plain"},customMetadata:{error:msg.slice(0,1000)}});m.ack()}}}};
+--1503594d8662bf716cdd8790a68e5b5739e2ff6d09c17ff0907ca2d96d02--

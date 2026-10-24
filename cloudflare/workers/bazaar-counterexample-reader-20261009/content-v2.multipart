@@ -1,0 +1,12 @@
+--214d77f8a86dc6ad0c670e9d3428115c11ae69dd6dedf7165f3e4c6726ee
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+function med(a){if(!a.length)return null;const s=[...a].sort((x,y)=>x-y),m=Math.floor(s.length/2);return s.length%2?s[m]:(s[m-1]+s[m])/2}
+export default {async fetch(request,env){
+ const key="perception/results/2e74fc13f835f9f7686d6fb3f333542f4012cc4013aee8da716e56856c85674f-auto-trust-e2e-v1.json",o=await env.BUCKET.get(key);if(!o)return Response.json({error:"missing"},{status:404});
+ const d=JSON.parse(await o.text()),regions=d.regions||[],groups=d.layout?.groups||[],r=regions.find(x=>x.region_id==="region-06");if(!r)return Response.json({error:"region missing"},{status:404});const b=r.bbox,m=[];
+ for(let gi=0;gi<groups.length;gi++){const g=groups[gi];if(!(g.region_ids||[]).includes("region-06"))continue;const ms=(g.region_ids||[]).map(id=>regions.find(x=>x.region_id===id)).filter(Boolean),mw=med(ms.map(x=>x.bbox.width)),mh=med(ms.map(x=>x.bbox.height)),mcy=med(ms.map(x=>x.bbox.y+x.bbox.height/2));m.push({group_index:gi,member_count:g.member_count,width_cv:g.width_cv,height_cv:g.height_cv,spacing_cv:g.spacing_cv,repeat_recovered_fraction:g.repeat_recovered_fraction,mean_proposal_support:g.mean_proposal_support,width_ratio_to_median:mw?b.width/mw:null,height_ratio_to_median:mh?b.height/mh:null,center_y_delta_over_height:mh?Math.abs(b.y+b.height/2-mcy)/mh:null})}
+ return Response.json({input:{width:d.input.width,height:d.input.height},region:{region_id:r.region_id,bbox:r.bbox,proposal:r.proposal,routing:{cohort:r.routing?.cohort},geometry_class:r.geometry_class},norm:{x:b.x/d.input.width,y:b.y/d.input.height,w:b.width/d.input.width,h:b.height/d.input.height,aspect:b.width/b.height,area:b.width*b.height/(d.input.width*d.input.height)},memberships:m},{headers:{"cache-control":"no-store"}});
+}};
+--214d77f8a86dc6ad0c670e9d3428115c11ae69dd6dedf7165f3e4c6726ee--

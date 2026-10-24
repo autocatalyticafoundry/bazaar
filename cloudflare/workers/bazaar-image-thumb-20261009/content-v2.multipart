@@ -1,0 +1,6 @@
+--66d7eb0eaf81d4e6b870dc97a526c0e82123b832145bb80264455fde4288
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default {async fetch(request,env){const u=new URL(request.url);if(u.pathname==="/img"){const o=await env.BUCKET.get("perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png");if(!o)return new Response("missing",{status:404});return new Response(o.body,{headers:{"content-type":"image/png","cache-control":"no-store"}})}return new Response('<!doctype html><style>*{box-sizing:border-box}html,body{margin:0;width:1024px;height:705px;overflow:hidden;background:#000}img{width:1024px;height:705px;display:block}</style><img src="/img">',{headers:{"content-type":"text/html","cache-control":"no-store"}})}};
+--66d7eb0eaf81d4e6b870dc97a526c0e82123b832145bb80264455fde4288--

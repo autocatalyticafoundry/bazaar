@@ -1,0 +1,18 @@
+[
+  {
+    "consumer_id": "2f42d833c52d4f1f8919334a40a9e5af",
+    "created_on": "2026-10-01T16:12:00.903654Z",
+    "dead_letter_queue": "bazaar-clean-generation-dlq",
+    "queue_id": "c0b277a96b9844c292155da653880b04",
+    "queue_name": "bazaar-clean-generation",
+    "script": "bazaar-clean-benchmark",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 1,
+      "max_retries": 0,
+      "max_wait_time_ms": 2000,
+      "retry_delay": 11
+    },
+    "type": "worker"
+  }
+]

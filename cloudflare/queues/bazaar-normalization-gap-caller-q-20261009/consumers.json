@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "9577ceb433654ee4aaa1f0b06e2b30bd",
+    "created_on": "2026-10-10T02:24:06.433722Z",
+    "queue_id": "565a8a7bd5544a72836957050fc89c39",
+    "queue_name": "bazaar-normalization-gap-caller-q-20261009",
+    "script": "bazaar-normalization-gap-caller-20261009",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 8,
+      "max_retries": 0,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 0
+    },
+    "type": "worker"
+  }
+]

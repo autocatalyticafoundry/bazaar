@@ -1,0 +1,17 @@
+[
+  {
+    "consumer_id": "62b5ee818d5a4699b0482485dae2e893",
+    "created_on": "2026-10-08T21:48:00.067625Z",
+    "queue_id": "5afc3cac95924733a5f6f92520aeec26",
+    "queue_name": "bazaar-card-visual-structural-v3",
+    "script": "bazaar-card-visual-structural-v3",
+    "settings": {
+      "batch_size": 1,
+      "max_concurrency": 1,
+      "max_retries": 1,
+      "max_wait_time_ms": 1000,
+      "retry_delay": 10
+    },
+    "type": "worker"
+  }
+]

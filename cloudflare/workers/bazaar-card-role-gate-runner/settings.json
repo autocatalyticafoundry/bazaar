@@ -1,0 +1,20 @@
+{
+  "annotations": {
+    "workers/triggered_by": "upload"
+  },
+  "bindings": [
+    {
+      "environment": "production",
+      "name": "SEEDER",
+      "service": "bazaar-card-role-seeder-v1",
+      "type": "service"
+    }
+  ],
+  "compatibility_date": "2026-10-08",
+  "compatibility_flags": [],
+  "logpush": false,
+  "placement": {},
+  "tags": [],
+  "tail_consumers": [],
+  "usage_model": "standard"
+}

@@ -1,0 +1,6 @@
+--15b3d41450af9eee888191f11792a96ecec61ddb5044d3bdfbad2ea73cb7
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+export default{async queue(batch,env){for(const m of batch.messages){const c=String(m.body?.case_id||"");let status="";let ok=false;let detail="";try{if(!/^clean-board-[a-z0-9]+$/.test(c))throw new Error("invalid case_id");const r=await env.CALIBRATOR.fetch("https://internal/run?case="+encodeURIComponent(c));status=String(r.status);detail=(await r.text()).slice(0,900);ok=r.ok;}catch(e){detail=e instanceof Error?e.message:String(e);}await env.BENCHMARK_R2.put("debug/card-gate-runner/"+c+".json",JSON.stringify({case_id:c,ok,status,detail}),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"card-gate-runner-diagnostic",case_id:c,ok:String(ok),status,detail}});m.ack();}}};
+--15b3d41450af9eee888191f11792a96ecec61ddb5044d3bdfbad2ea73cb7--

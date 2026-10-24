@@ -1,0 +1,89 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T22:33:08.209623Z",
+      "id": "87a1e78a-6118-4aa1-9c52-390c3be22518",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "c0829c05-8af2-4c4f-958f-347c4478e1c3"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T22:32:23.753803Z",
+      "id": "c9c34766-94c9-4c64-81e4-4da11b71201d",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "be419a4c-c131-4a78-9c3f-2bdb9fb1bd44"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T22:31:39.613398Z",
+      "id": "3b3aef69-bbe0-4502-a9ef-0063f135da8b",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "7bc373bd-90ab-44c8-a8cf-206c8e6662d7"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T22:27:20.809549Z",
+      "id": "1cab3bd3-e471-432f-92ef-2b809ca1717c",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "6da7e116-2ca7-43cb-9429-0db19a749d07"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-10T22:26:05.506294Z",
+      "id": "108ffe6d-5a89-43fa-aa93-32f092b2d6a1",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "3c1f818d-a882-48a0-b1a9-f724eaa62762"
+        }
+      ]
+    }
+  ]
+}

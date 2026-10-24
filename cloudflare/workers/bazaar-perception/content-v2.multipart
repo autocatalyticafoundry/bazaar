@@ -1,0 +1,379 @@
+--ebfa35259d95b16bf31e5c8d54e44f40c2d37a722f10bc2c820b0dfa7f52
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+const PIPELINE_VERSION="bazaar-perception-v1r-root-only-group-members";
+const REGION_VERSION="edge-rectangle-proposals-v1";
+const MAX_BYTES=12582912,MAX_PIXELS=16000000,MAX_REGIONS=24;
+function j(v,s=200){return new Response(JSON.stringify(v,null,2),{status:s,headers:{"content-type":"application/json; charset=utf-8","cache-control":"no-store"}})}
+async function auth(r,e){const h=r.headers.get("authorization");if(!h)return false;try{const q=await e.SAFETY.fetch(new Request("https://bazaar-auth.internal/api/admin/r2-safety",{method:"GET",headers:{authorization:h}}));return q.ok}catch{return false}}
+function u32(b,o){return(((b[o]<<24)>>>0)|(b[o+1]<<16)|(b[o+2]<<8)|b[o+3])>>>0}
+function paeth(a,b,c){const p=a+b-c,pa=Math.abs(p-a),pb=Math.abs(p-b),pc=Math.abs(p-c);return pa<=pb&&pa<=pc?a:pb<=pc?b:c}
+async function inflate(b){const s=new Blob([b]).stream().pipeThrough(new DecompressionStream("deflate"));return new Uint8Array(await new Response(s).arrayBuffer())}
+async function png(buf){
+ const b=new Uint8Array(buf),sig=[137,80,78,71,13,10,26,10];if(b.length<33||sig.some((v,i)=>b[i]!==v))throw Error("invalid PNG");
+ let o=8,w=0,h=0,depth=0,type=-1,comp=-1,filter=-1,interlace=-1;const id=[];
+ while(o+12<=b.length){const n=u32(b,o);o+=4;const t=String.fromCharCode(b[o],b[o+1],b[o+2],b[o+3]);o+=4;if(o+n+4>b.length)throw Error("truncated PNG");const d=b.subarray(o,o+n);o+=n+4;
+  if(t==="IHDR"){w=u32(d,0);h=u32(d,4);depth=d[8];type=d[9];comp=d[10];filter=d[11];interlace=d[12]}else if(t==="IDAT")id.push(new Uint8Array(d));else if(t==="IEND")break}
+ if(!w||!h||depth!==8||![2,6].includes(type)||comp!==0||filter!==0||interlace!==0)throw Error("PNG mode unsupported in v1a");
+ if(w*h>MAX_PIXELS)throw Error("image pixel count exceeds limit");
+ const ch=type===6?4:3;let n=0;for(const c of id)n+=c.length;const z=new Uint8Array(n);let p=0;for(const c of id){z.set(c,p);p+=c.length}
+ const raw=await inflate(z),stride=w*ch,expected=h*(stride+1);if(raw.length!==expected)throw Error("unexpected PNG decode length");
+ const rec=new Uint8Array(w*h*ch);let src=0;
+ for(let y=0;y<h;y++){const f=raw[src++],row=y*stride,prev=(y-1)*stride;for(let x=0;x<stride;x++){const v=raw[src++],a=x>=ch?rec[row+x-ch]:0,bb=y?rec[prev+x]:0,c=y&&x>=ch?rec[prev+x-ch]:0;let q=0;
+  if(f===1)q=a;else if(f===2)q=bb;else if(f===3)q=Math.floor((a+bb)/2);else if(f===4)q=paeth(a,bb,c);else if(f!==0)throw Error("PNG filter unsupported");rec[row+x]=(v+q)&255}}
+ const rgba=new Uint8ClampedArray(w*h*4);for(let i=0;i<w*h;i++){const s=i*ch,t=i*4;rgba[t]=rec[s];rgba[t+1]=rec[s+1];rgba[t+2]=rec[s+2];rgba[t+3]=type===6?rec[s+3]:255}
+ return{width:w,height:h,data:rgba,color_type:type,bit_depth:depth}
+}
+function gray(r,g,b){return r*.299+g*.587+b*.114}
+function iou(a,b){const x1=Math.max(a.x,b.x),y1=Math.max(a.y,b.y),x2=Math.min(a.x+a.width,b.x+b.width),y2=Math.min(a.y+a.height,b.y+b.height),q=Math.max(0,x2-x1)*Math.max(0,y2-y1),u=a.width*a.height+b.width*b.height-q;return u?q/u:0}
+function geom(b){const r=b.width/Math.max(1,b.height);return r>=.62&&r<=.88?"portrait_card_like":r>=.88&&r<=1.14?"square_like":r>1.14&&r<=2.2?"landscape_panel_like":r<.62?"tall_region":"wide_region"}
+function grid(image){const w=224,h=Math.max(96,Math.min(224,Math.round(image.height/image.width*w))),v=new Float64Array(w*h),sx=image.width/w,sy=image.height/h;for(let y=0;y<h;y++){const py=Math.min(image.height-1,Math.floor((y+.5)*sy));for(let x=0;x<w;x++){const px=Math.min(image.width-1,Math.floor((x+.5)*sx)),k=(py*image.width+px)*4;v[y*w+x]=gray(image.data[k],image.data[k+1],image.data[k+2])}}return{w,h,v,sx,sy}}
+function integ(v,w,h){const s=w+1,o=new Float64Array((w+1)*(h+1));for(let y=0;y<h;y++){let row=0;for(let x=0;x<w;x++){row+=v[y*w+x];o[(y+1)*s+x+1]=o[y*s+x+1]+row}}return o}
+function sum(ii,s,x,y,w,h){const x2=x+w,y2=y+h;return ii[y2*s+x2]-ii[y*s+x2]-ii[y2*s+x]+ii[y*s+x]}
+function keep(a,c,n){if(a.length<n){a.push(c);a.sort((x,y)=>y.score-x.score);return}if(c.score>a[a.length-1].score){a[a.length-1]=c;a.sort((x,y)=>y.score-x.score)}}
+function regions(image){
+ const g=grid(image),w=g.w,h=g.h,v=g.v,gx=new Float64Array(w*h),gy=new Float64Array(w*h),m=new Float64Array(w*h);let et=0,ec=0;
+ for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const k=y*w+x,ex=Math.abs(v[k+1]-v[k-1]),ey=Math.abs(v[k+w]-v[k-w]);gx[k]=ex;gy[k]=ey;m[k]=ex+ey;et+=ex+ey;ec++}
+ const ix=integ(gx,w,h),iy=integ(gy,w,h),imag=integ(m,w,h),s=w+1,base=et/Math.max(1,ec),ws=[.08,.11,.15,.2,.27,.35].map(x=>Math.max(12,Math.round(w*x))),hs=[.08,.11,.15,.2,.27,.35].map(x=>Math.max(10,Math.round(h*x))),top=[];
+ for(const bw of ws)for(const bh of hs){const r=bw/bh;if(r<.45||r>2.2)continue;const band=Math.max(1,Math.min(3,Math.round(Math.min(bw,bh)*.06))),step=Math.max(2,Math.round(Math.min(bw,bh)/6));
+  for(let y=1;y+bh<h-1;y+=step)for(let x=1;x+bw<w-1;x+=step){const a=sum(iy,s,x,y,bw,band)/(bw*band),b=sum(iy,s,x,y+bh-band,bw,band)/(bw*band),c=sum(ix,s,x,y,band,bh)/(band*bh),d=sum(ix,s,x+bw-band,y,band,bh)/(band*bh),floor=Math.min(a,b,c,d),mean=(a+b+c+d)/4,iw=Math.max(1,bw-2*band),ih=Math.max(1,bh-2*band),inner=sum(imag,s,x+band,y+band,iw,ih)/(iw*ih),score=floor+mean*.35-inner*.12;if(Number.isFinite(score)&&score>=base*.7)keep(top,{x,y,width:bw,height:bh,score},160)}}
+ const sel=[];for(const c of top){if(sel.some(q=>iou(q,c)>=.38))continue;sel.push(c);if(sel.length>=MAX_REGIONS)break}
+ return{analysis_width:w,analysis_height:h,global_edge_mean:base,boxes:sel.map(c=>{const x=Math.max(0,Math.round(c.x*g.sx)),y=Math.max(0,Math.round(c.y*g.sy));return{x,y,width:Math.max(1,Math.min(image.width-x,Math.round(c.width*g.sx))),height:Math.max(1,Math.min(image.height-y,Math.round(c.height*g.sy))),score:c.score}})}
+}
+
+let pCatCache=null;
+async function pSafe(e){
+ const r=await e.SAFETY.fetch("https://bazaar-safety.internal/r2-safety");
+ if(!r.ok)throw Error("R2 safety service HTTP "+r.status);
+ const s=await r.json();
+ if(s.halted===true||s.latched===true)throw Error("R2 safety halted: "+String(s.reason||"unknown"));
+ return s;
+}
+function pB64(v){const s=atob(v),o=new Uint8Array(s.length);for(let i=0;i<s.length;i++)o[i]=s.charCodeAt(i);return o}
+function pHexLo(v){return Number.parseInt((v||"0").slice(-8)||"0",16)>>>0}
+function pHexHi(v){const h=v||"0",e=Math.max(0,h.length-8);return Number.parseInt(h.slice(Math.max(0,e-8),e)||"0",16)>>>0}
+function pPop(v){let b=v>>>0;b=b-(b>>>1&1431655765);b=(b&858993459)+(b>>>2&858993459);return Math.imul(b+(b>>>4)&252645135,16843009)>>>24}
+function pHD(ah,al,bh,bl){return(pPop(ah^bh)+pPop(al^bl))/64}
+function pBits(bits){let v=0n;for(const b of bits)v=v<<1n|(b?1n:0n);return v.toString(16).padStart(16,"0")}
+function pDown(image,box,w,h){
+ const o=new Uint8Array(w*h*3),n=4;
+ for(let ty=0;ty<h;ty++)for(let tx=0;tx<w;tx++){let rr=0,gg=0,bb=0;
+  for(let sy=0;sy<n;sy++)for(let sx=0;sx<n;sx++){
+   const x=Math.max(0,Math.min(image.width-1,Math.floor(box.x+(tx+(sx+.5)/n)*box.width/w)));
+   const y=Math.max(0,Math.min(image.height-1,Math.floor(box.y+(ty+(sy+.5)/n)*box.height/h)));
+   const k=(y*image.width+x)*4;rr+=image.data[k];gg+=image.data[k+1];bb+=image.data[k+2]
+  }
+  const k=(ty*w+tx)*3;o[k]=Math.round(rr/16);o[k+1]=Math.round(gg/16);o[k+2]=Math.round(bb/16)
+ }
+ return o
+}
+function pFP(image,box){
+ const rgb=pDown(image,box,16,16);let r=0,g=0,b=0;for(let i=0;i<rgb.length;i+=3){r+=rgb[i];g+=rgb[i+1];b+=rgb[i+2]}
+ const a=pDown(image,box,8,8),ag=[];for(let i=0;i<a.length;i+=3)ag.push(gray(a[i],a[i+1],a[i+2]));const avg=ag.reduce((s,v)=>s+v,0)/ag.length,ah=pBits(ag.map(v=>v>=avg));
+ const d=pDown(image,box,9,8),dg=[];for(let i=0;i<d.length;i+=3)dg.push(gray(d[i],d[i+1],d[i+2]));const bits=[];for(let y=0;y<8;y++)for(let x=0;x<8;x++)bits.push(dg[y*9+x]>dg[y*9+x+1]);const dh=pBits(bits);
+ return{rgb,mean_r:r/256,mean_g:g/256,mean_b:b/256,dhash_hi:pHexHi(dh),dhash_lo:pHexLo(dh),ahash_hi:pHexHi(ah),ahash_lo:pHexLo(ah)}
+}
+function pMae(a,b){if(!a.length||a.length!==b.length)return 1;let t=0;for(let i=0;i<a.length;i++)t+=Math.abs(a[i]-b[i]);return t/(a.length*255)}
+async function pCat(e){
+ if(!pCatCache)pCatCache=(async()=>{const o=await e.BENCHMARK_R2.get("catalogue/visual-catalogue-board-v1.json");if(!o)throw Error("catalogue snapshot missing");const p=JSON.parse(await new Response(o.body).text());if(p?.schema_version!==1||!Array.isArray(p.fingerprints)||p.fingerprints.length!==2659)throw Error("catalogue snapshot invalid");return p.fingerprints.map(x=>({...x,rgb:pB64(x.rgb16),dhash_hi:pHexHi(x.dhash),dhash_lo:pHexLo(x.dhash),ahash_hi:pHexHi(x.ahash),ahash_lo:pHexLo(x.ahash)}))})().catch(x=>{pCatCache=null;throw x});
+ return pCatCache
+}
+function pRank(cat,fp){
+ const color=[];for(const row of cat){const d=Math.abs(row.mean_r-fp.mean_r)+Math.abs(row.mean_g-fp.mean_g)+Math.abs(row.mean_b-fp.mean_b);if(color.length<192){color.push({row,d});color.sort((a,b)=>a.d-b.d)}else if(d<color[191].d){color[191]={row,d};color.sort((a,b)=>a.d-b.d)}}
+ return color.map(({row,d})=>{const rgb=pMae(fp.rgb,row.rgb),hash=(pHD(fp.dhash_hi,fp.dhash_lo,row.dhash_hi,row.dhash_lo)+pHD(fp.ahash_hi,fp.ahash_lo,row.ahash_hi,row.ahash_lo))/2,score=rgb*.72+hash*.2+d/(3*255)*.08;return{asset_path:row.asset_path,render_mode:row.render_mode,source_sha256:row.source_sha256,score,rgb_mae:rgb,hash_distance:hash}}).sort((a,b)=>a.score-b.score||a.asset_path.localeCompare(b.asset_path)).slice(0,8)
+}
+async function pMeta(e,paths){
+ const u=[...new Set(paths)],m=new Map;if(!u.length)return m;
+ for(let off=0;off<u.length;off+=50){const c=u.slice(off,off+50),q=c.map(()=>"?").join(","),r=await e.DB.prepare("SELECT asset_path,sha256,category,resolution_state,candidate_entity_ids_json FROM corpus_objects WHERE asset_path IN ("+q+")").bind(...c).all();
+  for(const x of r.results||[]){let ids=[];try{const z=JSON.parse(x.candidate_entity_ids_json||"[]");if(Array.isArray(z))ids=z.map(String)}catch{}m.set(x.asset_path,{sha256:x.sha256,category:x.category,resolution_state:x.resolution_state,candidate_entity_ids:ids})}
+ }
+ return m
+}
+
+let pCoverageCache=null;
+function pEntityClass(id){
+ const s=String(id||"");
+ for(const k of ["item","hero","monster","merchant","action","skill","enchantment","presentation","visual_object"])if(s.startsWith("bazaar:"+k+":"))return k;
+ return "unknown"
+}
+function pClasses(cands){
+ const m=new Map;
+ for(const c of cands||[]){
+  const ids=c.metadata?.candidate_entity_ids||[];
+  const ks=ids.length?[...new Set(ids.map(pEntityClass))]:[c.metadata?.category||"unknown"];
+  for(const k of ks){const prev=m.get(k);if(!prev||c.score<prev.best_score)m.set(k,{class:k,best_score:c.score,best_rank:c.rank,render_mode:c.render_mode});}
+ }
+ return [...m.values()].sort((a,b)=>a.best_score-b.best_score||a.best_rank-b.best_rank)
+}
+function pRoute(cands,classes){
+ const top=cands?.[0],cls=classes?.[0]?.class||"unknown",mode=top?.render_mode||"unknown";
+ if(mode==="portrait"&&(cls==="hero"||cls==="monster"))return "portrait_catalogue";
+ if(mode==="card_art")return "card_art_catalogue";
+ if(mode==="edge_overlay"||mode==="slot_overlay")return "overlay_catalogue";
+ if(mode==="contained"||mode==="icon")return "ui_asset_catalogue";
+ return "mixed_catalogue"
+}
+function pBoxArea(b){return Math.max(0,b.width)*Math.max(0,b.height)}
+function pContainment(inner,outer){const x1=Math.max(inner.x,outer.x),y1=Math.max(inner.y,outer.y),x2=Math.min(inner.x+inner.width,outer.x+outer.width),y2=Math.min(inner.y+inner.height,outer.y+outer.height),inter=Math.max(0,x2-x1)*Math.max(0,y2-y1);return inter/Math.max(1,pBoxArea(inner))}
+function pLayoutRoots(regions){return regions.filter(r=>!regions.some(q=>{if(q===r)return false;const ra=pBoxArea(r.bbox),qa=pBoxArea(q.bbox);if(qa<ra*1.35)return false;if(pContainment(r.bbox,q.bbox)<.9)return false;const rs=Number(r.proposal?.score||0),qs=Number(q.proposal?.score||0);return qs>=rs*.72}))}
+function pGroups(regions){
+ const layoutRegions=pLayoutRoots(regions),groups=[],seen=new Set;
+ function add(orientation,seed){
+  const b0=seed.bbox,c0x=b0.x+b0.width/2,c0y=b0.y+b0.height/2;
+  let ms=layoutRegions.filter(r=>{
+   const b=r.bbox,cx=b.x+b.width/2,cy=b.y+b.height/2,wr=b.width/b0.width,hr=b.height/b0.height;
+   if(wr<.55||wr>1.8||hr<.55||hr>1.8)return false;
+   return orientation==="horizontal"?Math.abs(cy-c0y)<=Math.max(4,.32*(b.height+b0.height)/2):Math.abs(cx-c0x)<=Math.max(4,.32*(b.width+b0.width)/2)
+  }).sort((a,b)=>orientation==="horizontal"?a.bbox.x-b.bbox.x:a.bbox.y-b.bbox.y);
+  const kept=[];for(const r of ms){if(kept.some(q=>iou(q.bbox,r.bbox)>.18))continue;kept.push(r)}
+  if(kept.length<2)return;
+  const ids=kept.map(r=>r.region_id),key=orientation+":"+ids.join(",");if(seen.has(key))return;seen.add(key);
+  const centers=kept.map(r=>orientation==="horizontal"?r.bbox.x+r.bbox.width/2:r.bbox.y+r.bbox.height/2);
+  const gaps=[];for(let i=1;i<centers.length;i++)gaps.push(centers[i]-centers[i-1]);
+  const meanGap=gaps.reduce((s,v)=>s+v,0)/Math.max(1,gaps.length),gapVar=gaps.reduce((s,v)=>s+(v-meanGap)*(v-meanGap),0)/Math.max(1,gaps.length),spacingCv=meanGap>0?Math.sqrt(gapVar)/meanGap:null;
+  const cross=kept.map(r=>orientation==="horizontal"?r.bbox.y+r.bbox.height/2:r.bbox.x+r.bbox.width/2),crossMean=cross.reduce((s,v)=>s+v,0)/cross.length;
+  const scale=kept.reduce((s,r)=>s+(orientation==="horizontal"?r.bbox.height:r.bbox.width),0)/kept.length;
+  const align=cross.reduce((s,v)=>s+Math.abs(v-crossMean),0)/(cross.length*Math.max(1,scale));
+  groups.push({group_id:"group-"+String(groups.length+1).padStart(2,"0"),orientation,member_region_ids:ids,member_count:ids.length,alignment_error:align,spacing_cv:spacingCv,regularity_score:ids.length/(1+align*4+(spacingCv||0)*2)})
+ }
+ for(const r of layoutRegions){add("horizontal",r);add("vertical",r)}
+ groups.sort((a,b)=>b.regularity_score-a.regularity_score||b.member_count-a.member_count);
+ return groups.slice(0,12)
+}
+async function pCoverage(e){
+ if(pCoverageCache)return pCoverageCache;
+ const q=await e.DB.prepare("SELECT SUM(candidate_entity_ids_json LIKE '%bazaar:item:%') item,SUM(candidate_entity_ids_json LIKE '%bazaar:hero:%') hero,SUM(candidate_entity_ids_json LIKE '%bazaar:monster:%') monster,SUM(candidate_entity_ids_json LIKE '%bazaar:merchant:%') merchant,SUM(candidate_entity_ids_json LIKE '%bazaar:action:%') action,SUM(candidate_entity_ids_json LIKE '%bazaar:skill:%') skill,SUM(candidate_entity_ids_json LIKE '%bazaar:enchantment:%') enchantment FROM corpus_objects").first();
+ pCoverageCache={item:Number(q?.item||0),hero:Number(q?.hero||0),monster:Number(q?.monster||0),merchant:Number(q?.merchant||0),action:Number(q?.action||0),skill:Number(q?.skill||0),enchantment:Number(q?.enchantment||0)};
+ return pCoverageCache
+}
+function pEvidence(regions,groups){
+ const counts={};for(const r of regions){const c=r.class_hypotheses?.[0]?.class||"unknown";counts[c]=(counts[c]||0)+1}
+ return{top_candidate_class_region_counts:counts,horizontal_group_count:groups.filter(g=>g.orientation==="horizontal").length,vertical_group_count:groups.filter(g=>g.orientation==="vertical").length}
+}
+
+const P_V30_AW=192,P_V30_AH=108,P_V30_COUNT=5,P_V30_REG_RADIUS=24,P_V30_REG_STEP=2,P_V30_EDGE_STEP=8;
+function pIntensity(image,x,y){const px=Math.max(0,Math.min(image.width-1,Math.round(x))),py=Math.max(0,Math.min(image.height-1,Math.round(y))),i=(py*image.width+px)*4;return image.data[i]*.299+image.data[i+1]*.587+image.data[i+2]*.114}
+function pV30Gray(image){
+ const out=new Float64Array(P_V30_AW*P_V30_AH);
+ if(image.width%P_V30_AW===0&&image.height%P_V30_AH===0){
+  const bw=image.width/P_V30_AW,bh=image.height/P_V30_AH,n=bw*bh,stride=image.width*4;
+  for(let ty=0;ty<P_V30_AH;ty++){const y0=ty*bh;for(let tx=0;tx<P_V30_AW;tx++){const x0=tx*bw;let r=0,g=0,b=0;for(let y=0;y<bh;y++){let i=(y0+y)*stride+x0*4,e=i+bw*4;for(;i<e;i+=4){r+=image.data[i];g+=image.data[i+1];b+=image.data[i+2]}}out[ty*P_V30_AW+tx]=(r*.299+g*.587+b*.114)/n}}
+  return out
+ }
+ const sx=image.width/P_V30_AW,sy=image.height/P_V30_AH;
+ for(let ty=0;ty<P_V30_AH;ty++){const y0=Math.floor(ty*sy),y1=Math.max(y0+1,Math.ceil((ty+1)*sy));for(let tx=0;tx<P_V30_AW;tx++){const x0=Math.floor(tx*sx),x1=Math.max(x0+1,Math.ceil((tx+1)*sx));let t=0,n=0;for(let y=y0;y<y1&&y<image.height;y++)for(let x=x0;x<x1&&x<image.width;x++){const i=(y*image.width+x)*4;t+=gray(image.data[i],image.data[i+1],image.data[i+2]);n++}out[ty*P_V30_AW+tx]=n?t/n:0}}
+ return out
+}
+function pMove(v,w){const o=new Float64Array(v.length);let t=0;for(let i=0;i<v.length;i++){t+=v[i];if(i>=w)t-=v[i-w];if(i>=w-1)o[i-Math.floor(w/2)]=t}return o}
+function pMedPos(v){const a=Array.from(v).filter(x=>x>0).sort((a,b)=>a-b);return a[Math.floor(a.length/2)]||0}
+function pBoundary(image,box){
+ if(box.x<2||box.y<2||box.x+box.width>=image.width-2||box.y+box.height>=image.height-2)return-Infinity;
+ let s=0,n=0;
+ for(let y=box.y+P_V30_EDGE_STEP;y<box.y+box.height-P_V30_EDGE_STEP;y+=P_V30_EDGE_STEP){s+=Math.abs(pIntensity(image,box.x-2,y)-pIntensity(image,box.x+2,y));s+=Math.abs(pIntensity(image,box.x+box.width-2,y)-pIntensity(image,box.x+box.width+2,y));n+=2}
+ for(let x=box.x+P_V30_EDGE_STEP;x<box.x+box.width-P_V30_EDGE_STEP;x+=P_V30_EDGE_STEP){s+=Math.abs(pIntensity(image,x,box.y-2)-pIntensity(image,x,box.y+2));s+=Math.abs(pIntensity(image,x,box.y+box.height-2)-pIntensity(image,x,box.y+box.height+2));n+=2}
+ return n?s/n:-Infinity
+}
+function pRegisterRow(image,boxes){
+ let bestDx=0,bestDy=0,best=-Infinity,bestDist=Infinity;
+ for(let dy=-P_V30_REG_RADIUS;dy<=P_V30_REG_RADIUS;dy+=P_V30_REG_STEP)for(let dx=-P_V30_REG_RADIUS;dx<=P_V30_REG_RADIUS;dx+=P_V30_REG_STEP){
+  let total=0,ok=true;for(const b of boxes){const s=pBoundary(image,{...b,x:b.x+dx,y:b.y+dy});if(!Number.isFinite(s)){ok=false;break}total+=s}
+  if(!ok)continue;const score=total/boxes.length,dist=Math.abs(dx)+Math.abs(dy);if(score>best||(score===best&&dist<bestDist)){best=score;bestDx=dx;bestDy=dy;bestDist=dist}
+ }
+ return{boxes:boxes.map(b=>({...b,x:b.x+bestDx,y:b.y+bestDy})),best_dx:bestDx,best_dy:bestDy,boundary_score:best}
+}
+function pDetectRowScale(image,cardW,cardH){
+ const gs=pV30Gray(image),col=new Float64Array(P_V30_AW);
+ for(let y=1;y<P_V30_AH-1;y++)for(let x=1;x<P_V30_AW-1;x++){const gx=Math.abs(gs[y*P_V30_AW+x+1]-gs[y*P_V30_AW+x-1]),gy=Math.abs(gs[(y+1)*P_V30_AW+x]-gs[(y-1)*P_V30_AW+x]),e=gx+gy;col[x]+=e}
+ const sx=image.width/P_V30_AW,ww=Math.max(4,Math.round(cardW/sx)),xw=pMove(col,ww),half=Math.floor(ww/2),min=Math.max(ww+1,Math.round(ww*1.05)),max=Math.min(Math.round(ww*1.65),Math.floor((xw.length-2*half)/(P_V30_COUNT-1))),bg=Math.max(1e-9,pMedPos(xw));let best=null;
+ for(let spacing=min;spacing<=max;spacing++){const last=xw.length-1-half-spacing*(P_V30_COUNT-1);for(let start=half;start<=last;start++){const centers=Array.from({length:P_V30_COUNT},(_,i)=>start+i*spacing),vals=centers.map(c=>xw[c]||0);if(vals.some(v=>!Number.isFinite(v)||v<=0))continue;let gt=0,gn=0,valid=true;for(let i=0;i<centers.length-1;i++){const a=Math.ceil(centers[i]+ww/2)+1,b=Math.floor(centers[i+1]-ww/2)-1;if(b-a+1<2){valid=false;break}for(let x=a;x<=b;x++){gt+=col[x]||0;gn++}}if(!valid||!gn)continue;const total=vals.reduce((s,v)=>s+v,0),floor=Math.min(...vals),cm=total/(P_V30_COUNT*ww),fm=floor/ww,gm=gt/gn,rc=(centers[0]+centers[centers.length-1])/2,pen=Math.abs(rc-P_V30_AW/2)/P_V30_AW*bg*.1,obj=cm+fm*.35-gm*.8-pen;if(!best||obj>best.objective)best={centers,objective:obj}}}
+ if(!best)return null;
+ const lefts=best.centers.map(c=>Math.round(c*sx-cardW/2));let topBest=0,topScore=-Infinity;
+ for(let top=4;top+cardH<image.height-4;top+=2){let ts=0,bs=0,n=0;for(const left of lefts)for(let x=left+Math.round(cardW*.12);x<=left+cardW-Math.round(cardW*.12);x+=8){ts+=Math.abs(pIntensity(image,x,top-3)-pIntensity(image,x,top+3));bs+=Math.abs(pIntensity(image,x,top+cardH-3)-pIntensity(image,x,top+cardH+3));n++}if(!n)continue;const tm=ts/n,bm=bs/n,score=tm+bm+Math.min(tm,bm)*.75;if(score>topScore){topScore=score;topBest=top}}
+ if(!Number.isFinite(topScore))return null;
+ const boxes=best.centers.map(c=>({x:Math.round(c*sx-cardW/2),y:Math.round(topBest),width:cardW,height:cardH}));
+ const reg=pRegisterRow(image,boxes);
+ return{...reg,row_objective:best.objective,horizontal_boundary_score:topScore,card_width:cardW,card_height:cardH}
+}
+function pDetectV30Row(image){
+ if(image.width<900||image.height<500)return{detected:false,reason:"image_too_small",boxes:[]};
+ const base=Math.min(image.width/1920,image.height/1080),factors=[.85,1,1.15],tries=[];
+ for(const f of factors){const scale=base*f,w=Math.max(120,Math.round(300*scale)),h=Math.max(160,Math.round(400*scale));try{const r=pDetectRowScale(image,w,h);if(r)tries.push({...r,scale})}catch{}}
+ if(!tries.length)return{detected:false,reason:"no_row_candidate",boxes:[]};
+ tries.sort((a,b)=>b.boundary_score-a.boundary_score||b.row_objective-a.row_objective);const best=tries[0],accepted=Number.isFinite(best.boundary_score)&&best.boundary_score>=45;
+ return{detected:accepted,reason:accepted?"accepted":"weak_boundary_evidence",boxes:accepted?best.boxes:[],boundary_score:best.boundary_score,row_objective:best.row_objective,horizontal_boundary_score:best.horizontal_boundary_score,best_dx:best.best_dx,best_dy:best.best_dy,scale:best.scale,card_width:best.card_width,card_height:best.card_height,candidate_count:tries.length}
+}
+
+const P_V30_MAX_SCORE=.19,P_V30_MIN_MARGIN=.008,P_V30_DIR_MARGIN=.012,P_V30_NEAR_TIE=.0025;
+const P_HR_W=48,P_HR_H=64,P_HR_MAX=.08,P_HR_MARGIN=.0015,P_HR_REL=.05,P_HR_VARIANT="board-highres-png-v1";
+function pSemanticIds(meta){return [...new Set((meta?.candidate_entity_ids||[]).filter(id=>!String(id).startsWith("bazaar:visual_object:")&&!String(id).startsWith("bazaar:presentation:")))].sort()}
+function pAssetResolution(meta){
+ const ids=pSemanticIds(meta);
+ if(meta?.resolution_state==="semantic")return ids.length===1?{resolution:"semantic",entity_ids:ids,reason:"direct_visual_semantic"}:{resolution:"unknown",entity_ids:[],reason:"semantic_asset_without_single_supported_entity"};
+ if(meta?.resolution_state==="ambiguous")return ids.length>=2?{resolution:"ambiguous",entity_ids:ids,reason:"catalogue_ambiguity_preserved"}:{resolution:"unknown",entity_ids:[],reason:"ambiguous_asset_without_supported_candidate_set"};
+ if(meta?.resolution_state==="presentation_only")return{resolution:"presentation_only",entity_ids:[],reason:"presentation_visual_not_promoted"};
+ return{resolution:"unresolved_visual_only",entity_ids:[],reason:"unresolved_visual_not_promoted"}
+}
+function pDirectional(c){
+ if(c?.render_mode!=="card_art")return null;const ids=pSemanticIds(c.metadata);if(ids.length!==1)return null;
+ const em=/^(bazaar:item:.+)-(l|r)$/.exec(ids[0]),pm=/^(.*?)([LR])\.(?:avif|png|webp)$/i.exec(c.asset_path||"");if(!em||!pm)return null;
+ const es=em[2],ps=pm[2].toLowerCase();if(es!==ps)return null;return{family:em[1]+"|"+pm[1].toLowerCase(),side:es}
+}
+function pResolveV30(cands,bbox){
+ const best=cands[0]||null,second=cands[1]||null;
+ if(!best)return{bbox,resolution:"unknown",entity_ids:[],best_asset_path:null,best_score:null,second_score:null,margin:null,accepted:false,reason:"fingerprint_catalogue_empty",near_tie_asset_paths:[]};
+ const margin=second?second.score-best.score:1,near=cands.filter(x=>x.score-best.score<=P_V30_NEAR_TIE).slice(0,8);
+ const common={bbox,best_asset_path:best.asset_path,best_score:best.score,second_score:second?.score??null,margin,near_tie_asset_paths:near.map(x=>x.asset_path)};
+ if(!best.metadata)return{...common,resolution:"unknown",entity_ids:[],accepted:false,reason:"nearest_asset_missing_from_seed"};
+ if(best.score>P_V30_MAX_SCORE)return{...common,resolution:"unknown",entity_ids:[],accepted:false,reason:"visual_distance_above_threshold"};
+ const resolved=pAssetResolution(best.metadata);
+ if(margin<P_V30_MIN_MARGIN){
+  const cohort=cands.filter(x=>x.score-best.score<=P_V30_MIN_MARGIN).slice(0,4),sem=cohort.filter(x=>x.metadata?.resolution_state!=="presentation_only"),sets=new Set(sem.map(x=>JSON.stringify(pSemanticIds(x.metadata))));
+  if(sets.size>1)return{...common,near_tie_asset_paths:sem.map(x=>x.asset_path),resolution:"unknown",entity_ids:[],accepted:false,reason:"visual_near_tie_crosses_semantics"}
+ }
+ const sib=pDirectional(best);
+ if(sib&&resolved.resolution==="semantic"&&resolved.entity_ids.length===1){
+  const rivals=cands.filter(x=>x.asset_path!==best.asset_path&&x.source_sha256!==best.source_sha256&&x.score-best.score<=P_V30_DIR_MARGIN).filter(x=>{if(x.metadata?.resolution_state!=="semantic")return false;const s=pDirectional(x);return s?.family===sib.family&&s.side!==sib.side}).slice(0,3);
+  if(rivals.length)return{...common,near_tie_asset_paths:[best.asset_path,...rivals.map(x=>x.asset_path)],resolution:"unknown",entity_ids:[],accepted:false,reason:"visual_near_tie_crosses_semantics"}
+ }
+ return{...common,resolution:resolved.resolution,entity_ids:resolved.entity_ids,accepted:resolved.resolution!=="unknown",reason:resolved.reason}
+}
+function pBilinear(image,x,y){
+ const cx=Math.max(0,Math.min(image.width-1,x)),cy=Math.max(0,Math.min(image.height-1,y)),x0=Math.floor(cx),y0=Math.floor(cy),x1=Math.min(image.width-1,x0+1),y1=Math.min(image.height-1,y0+1),fx=cx-x0,fy=cy-y0,ox=1-fx,oy=1-fy,s=image.width*4,d=image.data,i00=y0*s+x0*4,i10=y0*s+x1*4,i01=y1*s+x0*4,i11=y1*s+x1*4;
+ return[(d[i00]*ox+d[i10]*fx)*oy+(d[i01]*ox+d[i11]*fx)*fy,(d[i00+1]*ox+d[i10+1]*fx)*oy+(d[i01+1]*ox+d[i11+1]*fx)*fy,(d[i00+2]*ox+d[i10+2]*fx)*oy+(d[i01+2]*ox+d[i11+2]*fx)*fy]
+}
+function pGridPoints(box){
+ const sx=box.width/300,sy=box.height/400,ix=14*sx,iy=14*sy,xs=Array.from({length:P_HR_W},(_,i)=>ix+(i+.5)*(box.width-2*ix)/P_HR_W),ys=Array.from({length:P_HR_H},(_,i)=>iy+(i+.5)*(box.height-2*iy)/P_HR_H);return{xs,ys}
+}
+function pRefGrid(ref,box){
+ const {xs,ys}=pGridPoints(box),o=new Float64Array(P_HR_W*P_HR_H*3),scale=Math.max(box.width/ref.width,box.height/ref.height),dw=ref.width*scale,dh=ref.height*scale,ox=(box.width-dw)/2,oy=(box.height-dh)/2;let k=0;
+ for(const by of ys){const y=(by-oy)*ref.height/dh-.5;for(const bx of xs){const x=(bx-ox)*ref.width/dw-.5,c=pBilinear(ref,x,y);o[k++]=c[0];o[k++]=c[1];o[k++]=c[2]}}
+ return o
+}
+function pShotGrid(image,box,dx,dy){
+ const {xs,ys}=pGridPoints(box),o=new Float64Array(P_HR_W*P_HR_H*3);let k=0;for(const by of ys)for(const bx of xs){const c=pBilinear(image,box.x+dx+bx-.5,box.y+dy+by-.5);o[k++]=c[0];o[k++]=c[1];o[k++]=c[2]}return o
+}
+function pHrMae(grids,ref,box){
+ const rg=pRefGrid(ref,box);let best=Infinity;for(const sg of grids){let t=0;for(let i=0;i<rg.length;i+=3)t+=Math.abs(sg[i]-rg[i])+Math.abs(sg[i+1]-rg[i+1])+Math.abs(sg[i+2]-rg[i+2]);best=Math.min(best,t/(P_HR_W*P_HR_H*3*255))}return best
+}
+async function pConfirmHighres(e,image,diag,byPath){
+ if(diag.reason!=="visual_near_tie_crosses_semantics"||!diag.best_asset_path)return diag;
+ const paths=diag.near_tie_asset_paths||[];if(paths.length<2||paths.length>4)return diag;
+ const cs=paths.map(p=>byPath.get(p)).filter(Boolean);if(cs.length!==paths.length||cs.some(c=>c.render_mode!=="card_art"))return diag;
+ const sets=cs.map(c=>pSemanticIds(c.metadata));if(sets.some(ids=>ids.length>1)||!sets.some(ids=>ids.length===1))return diag;
+ const grids=[];for(const dy of[-2,0,2])for(const dx of[-2,0,2])grids.push(pShotGrid(image,diag.bbox,dx,dy));
+ const scores=[];
+ try{
+  for(const path of paths){const c=byPath.get(path),sha=c.metadata?.sha256;if(!sha)return{...diag,highres_tie_breaker:{applied:false,reason:"highres_reference_key_unavailable",candidate_scores:scores}};const o=await e.BENCHMARK_R2.get("visual-highres/"+P_HR_VARIANT+"/"+sha+".png");if(!o)return{...diag,highres_tie_breaker:{applied:false,reason:"precomputed_reference_object_missing",candidate_scores:scores}};const ref=await png(await new Response(o.body).arrayBuffer());scores.push({asset_path:path,mae:pHrMae(grids,ref,diag.bbox)})}
+ }catch(err){return{...diag,highres_tie_breaker:{applied:false,reason:"precomputed_png_decode_error",detail:err instanceof Error?err.message:String(err),candidate_scores:scores}}}
+ scores.sort((a,b)=>a.mae-b.mae||a.asset_path.localeCompare(b.asset_path));const w=scores[0],r=scores[1],m=r.mae-w.mae,rel=m/Math.max(w.mae,1e-9),ok=w.mae<=P_HR_MAX&&m>=P_HR_MARGIN&&rel>=P_HR_REL;
+ if(!ok)return{...diag,highres_tie_breaker:{applied:false,reason:"precomputed_highres_margin_insufficient",winner_asset_path:w.asset_path,winner_mae:w.mae,runner_up_mae:r.mae,margin:m,relative_margin:rel,candidate_scores:scores}};
+ const win=byPath.get(w.asset_path),res=pAssetResolution(win?.metadata);if(res.resolution!=="semantic"||res.entity_ids.length!==1)return diag;
+ return{...diag,resolution:"semantic",entity_ids:res.entity_ids,accepted:true,reason:"precomputed_highres_tie_confirmed_semantic",highres_tie_breaker:{applied:true,reason:"precomputed_png_reference_confirmed_semantic",winner_asset_path:w.asset_path,winner_mae:w.mae,runner_up_mae:r.mae,margin:m,relative_margin:rel,candidate_scores:scores}}
+}
+
+function pMedian(a){if(!a.length)return 0;const x=[...a].sort((a,b)=>a-b),m=Math.floor(x.length/2);return x.length%2?x[m]:(x[m-1]+x[m])/2}
+function pCentered(width,spacing,y,cardW,cardH){const c=width/2;return Array.from({length:5},(_,i)=>({x:Math.round(c+(i-2)*spacing-cardW/2),y:Math.round(y),width:cardW,height:cardH}))}
+function pRowBoundaryEvidence(image,boxes){const s=boxes.map(b=>pBoundary(image,b));if(s.some(v=>!Number.isFinite(v)))return-Infinity;const mean=s.reduce((a,b)=>a+b,0)/Math.max(1,s.length),floor=Math.min(...s);return mean+floor*.5}
+function pObjectiveV30(items){let accepted=0,value=0;for(const item of items){const ok=item.accepted&&item.resolution!=="presentation_only";if(ok)accepted++;value+=(item.best_score??1)+(ok?0:.25)}return{accepted,value:value/Math.max(1,items.length)}}
+
+async function pRecoveryEval(e,image,cat,boxes,cache){
+ const rows=[],missing=[],paths=[];
+ for(const b of boxes){const key=[b.x,b.y,b.width,b.height].join(",");if(cache.has(key))continue;const ranked=pRank(cat,pFP(image,b));missing.push({key,b,ranked});for(const c of ranked)paths.push(c.asset_path)}
+ if(missing.length){const meta=await pMeta(e,paths);for(const x of missing){const full=x.ranked.map((c,n)=>({...c,rank:n+1,metadata:meta.get(c.asset_path)||null})),diag=pResolveV30(full,{x:x.b.x,y:x.b.y,width:x.b.width,height:x.b.height});cache.set(x.key,{full,diag})}}
+ const fulls=[],diags=[];for(const b of boxes){const hit=cache.get([b.x,b.y,b.width,b.height].join(","));fulls.push(hit.full);diags.push(hit.diag)}
+ return{fulls,diags,score:pObjectiveV30(diags)}
+}
+async function pRecoverV30Row(e,image,cat,specialized){
+ if(!specialized?.detected||!Array.isArray(specialized.boxes)||specialized.boxes.length!==5)return{...specialized,recovery_applied:false,recovery_reason:"not_applicable"};
+ const cache=new Map,baseBoxes=specialized.boxes,cardW=baseBoxes[0].width,cardH=baseBoxes[0].height;
+ const spacing=Math.round(pMedian(baseBoxes.slice(1).map((b,i)=>b.x-baseBoxes[i].x))),baseY=Math.round(pMedian(baseBoxes.map(b=>b.y)));
+ const base=await pRecoveryEval(e,image,cat,baseBoxes,cache),boardAccepted=d=>d.accepted&&d.resolution!=="presentation_only",rejected=base.diags.filter(d=>!boardAccepted(d));
+ const semanticOnly=rejected.length>0&&base.score.accepted>=4&&rejected.every(d=>d.reason==="visual_near_tie_crosses_semantics"&&(d.best_score??1)<=P_V30_MAX_SCORE);
+ if(semanticOnly)return{...specialized,recovery_applied:false,recovery_reason:"semantic_near_tie_deferred_to_highres",recovery_base_y:baseY,recovery_base_accepted:base.score.accepted,recovery_base_objective:base.score.value,recovery_selected_y:baseY,recovery_selected_spacing:spacing,recovery_selected_accepted:base.score.accepted,recovery_selected_objective:base.score.value,recovery_cache_size:cache.size,recovery_evaluations:[]};
+ let selectedBoxes=baseBoxes,selectedScore=base.score,selectedSpacing=spacing,recoveryApplied=false;
+ const strong=()=>selectedScore.accepted===5&&selectedScore.value<.12,evals=[];
+ const consider=async(boxes,sp,boundary,kind)=>{
+  const ev=await pRecoveryEval(e,image,cat,boxes,cache),better=ev.score.accepted>selectedScore.accepted||(ev.score.accepted===selectedScore.accepted&&ev.score.value+.005<selectedScore.value);
+  evals.push({kind,spacing:sp,y:boxes[0]?.y??0,boundary:Number.isFinite(boundary)?boundary:null,accepted:ev.score.accepted,objective:ev.score.value,selected:better});
+  if(better){selectedBoxes=boxes;selectedScore=ev.score;selectedSpacing=sp;recoveryApplied=true}
+ };
+ if(!strong()){
+  const scaleY=cardH/400,raw=Array.from({length:21},(_,i)=>(i-10)*16).filter(x=>x!==0),offsets=raw.sort((a,b)=>Math.abs(a)-Math.abs(b)||a-b).map(x=>Math.round(x*scaleY));
+  for(const off of offsets){if(strong())break;const y=baseY+off;if(y<0||y+cardH>image.height)continue;const boxes=pCentered(image.width,spacing,y,cardW,cardH),boundary=pRowBoundaryEvidence(image,boxes);await consider(boxes,spacing,boundary,"vertical")}
+  if(!strong()){
+   const yRaw=Array.from({length:21},(_,i)=>(i-10)*16).map(x=>Math.round(x*scaleY)),scaleX=cardW/300,spacingCandidates=Array.from({length:10},(_,i)=>Math.round(cardW+(10+i*10)*scaleX)),geom=[];
+   for(const sp of spacingCandidates)for(const off of yRaw){const y=baseY+off;if(y<0||y+cardH>image.height)continue;if(sp===spacing&&off===0)continue;const boxes=pCentered(image.width,sp,y,cardW,cardH),boundary=pRowBoundaryEvidence(image,boxes);if(!Number.isFinite(boundary))continue;geom.push({boxes,spacing:sp,y,boundary,distance:Math.abs(sp-spacing)+Math.abs(off)*.25})}
+   geom.sort((a,b)=>b.boundary-a.boundary||a.distance-b.distance||a.spacing-b.spacing||a.y-b.y);
+   for(const c of geom.slice(0,15)){if(strong())break;await consider(c.boxes,c.spacing,c.boundary,"geometry")}
+  }
+ }
+ return{...specialized,boxes:selectedBoxes,recovery_applied:recoveryApplied,recovery_reason:recoveryApplied?"retrieval_scored_geometry_improvement":"no_better_geometry",recovery_base_y:baseY,recovery_base_accepted:base.score.accepted,recovery_base_objective:base.score.value,recovery_selected_y:selectedBoxes[0]?.y??null,recovery_selected_spacing:selectedSpacing,recovery_selected_accepted:selectedScore.accepted,recovery_selected_objective:selectedScore.value,recovery_cache_size:cache.size,recovery_evaluations:evals}
+}
+function pCtx(rs,gs,sp,img){const bm=new Map(rs.map(r=>[r.region_id,r])),rm=new Map(rs.map(r=>[r.region_id,[]])),bid=new Set(rs.filter(r=>r.proposal?.source==="v30_board_row").map(r=>r.region_id));for(const r of rs){const a=rm.get(r.region_id),c=r.class_hypotheses?.[0]?.class||"unknown",top=r.catalogue_candidates?.[0]||null,m=top?.render_mode||"unknown",genericStrong=Number.isFinite(top?.score)&&top.score<=.16;if(bid.has(r.region_id))a.push({role:"board_slot",confidence:1,basis:"v30_board_row"});if(genericStrong&&m==="portrait"&&(c==="hero"||c==="monster"))a.push({role:"character_portrait_candidate",confidence:.86,basis:"strict_portrait_catalogue_class"});if(genericStrong&&(m==="edge_overlay"||m==="slot_overlay"))a.push({role:"upgrade_or_enchantment_overlay_candidate",confidence:.82,basis:"strict_overlay_visual_match"})}if(sp&&sp.detected&&sp.boxes&&sp.boxes.length===5)return{role_map:rm,choice_group:null};const cs=gs.filter(g=>g.orientation==="horizontal"&&g.member_count>=2&&g.member_count<=5).map(g=>{const ms=g.member_region_ids.map(id=>bm.get(id)).filter(Boolean).filter(r=>!bid.has(r.region_id));if(ms.length<2)return null;const cy=ms.reduce((s,r)=>s+r.bbox.y+r.bbox.height/2,0)/ms.length,up=1-Math.min(1,cy/Math.max(1,img.height)),reg=Math.min(1,Math.max(0,(g.regularity_score||0)/4)),cl=ms.filter(r=>["hero","monster","item","skill","presentation","visual_object"].includes(r.class_hypotheses?.[0]?.class)).length/ms.length,score=Math.min(.96,.28+.12*Math.min(4,ms.length)+.16*up+.18*reg+.12*cl);return{g,ms,score}}).filter(Boolean).sort((a,b)=>b.score-a.score),best=cs[0]||null;if(best&&best.score>=.55)for(const r of best.ms)rm.get(r.region_id).push({role:"choice_option_candidate",confidence:best.score,basis:"regular_horizontal_nonboard_group",group_id:best.g.group_id});return{role_map:rm,choice_group:best?{group_id:best.g.group_id,member_region_ids:best.ms.map(r=>r.region_id),score:best.score}:null}}
+function pScene(rs,sp,ctx){const hs=[];if(sp?.detected&&sp.boxes?.length===5)hs.push({scene:"board_state",score:1,basis:["v30_five_card_row"]});if(ctx?.choice_group){const ids=new Set(ctx.choice_group.member_region_ids),ms=rs.filter(r=>ids.has(r.region_id)),strong=ms.filter(r=>Number.isFinite(r.catalogue_candidates?.[0]?.score)&&r.catalogue_candidates[0].score<=.16),mon=strong.filter(r=>r.class_hypotheses?.[0]?.class==="monster").length;hs.push({scene:"choice_screen",score:ctx.choice_group.score,basis:["regular_horizontal_choice_group","layout_roots_only"]});if(mon>=2)hs.push({scene:"encounter_selection",score:Math.min(.9,ctx.choice_group.score*(.7+.08*Math.min(3,mon))),basis:["choice_group","strict_monster_visual_candidates"]})}hs.push({scene:"mixed_ui",score:.2,basis:["fallback"]});hs.sort((a,b)=>b.score-a.score);const top=hs[0],commit=top?.scene==="board_state"&&top.score>=.98;return{classification:commit?top.scene:"unclassified",reason:commit?"specialized_scene_evidence":"generic_scene_hypotheses_are_nonsemantic",hypotheses:hs.slice(0,5)}}
+function pState(rs,scene,ctx){const has=(r,n)=>(r.context_roles||[]).some(x=>x.role===n),brief=r=>({region_id:r.region_id,bbox:r.bbox,context_roles:r.context_roles||[],class_hypotheses:(r.class_hypotheses||[]).slice(0,3),entity_resolution:r.semantic_claim?{status:"semantic",entity_ids:r.semantic_claim.entity_ids,basis:r.semantic_claim.basis,reason:r.semantic_claim.reason}:{status:"unresolved",entity_ids:[]},catalogue_candidates:(r.catalogue_candidates||[]).slice(0,3).map(c=>({asset_path:c.asset_path,score:c.score,render_mode:c.render_mode,metadata:c.metadata}))});const slots=rs.filter(r=>has(r,"board_slot")).sort((a,b)=>a.bbox.x-b.bbox.x).map((r,i)=>({slot_index:i,...brief(r)}));const ids=new Set(ctx?.choice_group?.member_region_ids||[]),choices=rs.filter(r=>ids.has(r.region_id)).map(brief),portraits=rs.filter(r=>has(r,"character_portrait_candidate")).map(brief),overlays=rs.filter(r=>has(r,"upgrade_or_enchantment_overlay_candidate")).map(brief),unresolved=rs.filter(r=>!r.semantic_claim&&(r.context_roles||[]).length>0).map(r=>r.region_id);return{schema_version:1,scene:{type:scene.classification,hypotheses:scene.hypotheses},board:{present:slots.length>0,slots},choices:{present:choices.length>0,group_id:ctx?.choice_group?.group_id||null,options:choices},characters:portraits,upgrades_or_enchantments:overlays,values:{status:"not_implemented",entries:[]},unresolved_region_ids:unresolved}}
+async function analyze(e,buf){
+ const started=performance.now(),safety=await pSafe(e),ds=performance.now(),image=await png(buf),decode=performance.now()-ds,digest=await crypto.subtle.digest("SHA-256",buf),sha=[...new Uint8Array(digest)].map(v=>v.toString(16).padStart(2,"0")).join("");
+ const cs=performance.now(),cat=await pCat(e),catalogue=performance.now()-cs,ls=performance.now(),detectedSpecialized=pDetectV30Row(image),specialized=await pRecoverV30Row(e,image,cat,detectedSpecialized),genericSkipped=specialized?.detected===true,general=genericSkipped?{analysis_width:224,analysis_height:Math.max(96,Math.min(224,Math.round(image.height/image.width*224))),global_edge_mean:null,boxes:[]}:regions(image),merged=[...specialized.boxes.map(b=>({...b,proposal_source:"v30_board_row",score:specialized.boundary_score}))];for(const b of general.boxes){if(merged.some(x=>iou(x,b)>=.55))continue;merged.push({...b,proposal_source:REGION_VERSION});if(merged.length>=MAX_REGIONS)break}const lay={...general,boxes:merged},layout=performance.now()-ls,rs=performance.now(),tmp=[],paths=[];
+ for(const b of lay.boxes){const ranked=pRank(cat,pFP(image,b));ranked.forEach(c=>paths.push(c.asset_path));tmp.push({b,ranked})}
+ const meta=await pMeta(e,paths),out=[];
+ for(let i=0;i<tmp.length;i++){const x=tmp[i],full=x.ranked.map((c,n)=>({...c,rank:n+1,metadata:meta.get(c.asset_path)||null})),candidates=full.slice(0,5),classes=pClasses(candidates),special=x.b.proposal_source==="v30_board_row";let resolution=null,claim=null;
+  if(special){resolution=pResolveV30(full,{x:x.b.x,y:x.b.y,width:x.b.width,height:x.b.height});resolution=await pConfirmHighres(e,image,resolution,new Map(full.map(c=>[c.asset_path,c])));if(resolution.accepted&&resolution.resolution==="semantic"&&resolution.entity_ids.length===1)claim={resolution:"semantic",entity_ids:resolution.entity_ids,basis:"v30_board_row_fingerprint_with_highres_tie_guard",reason:resolution.reason}}
+  out.push({region_id:"region-"+String(i+1).padStart(2,"0"),bbox:{x:x.b.x,y:x.b.y,width:x.b.width,height:x.b.height},geometry_class:geom(x.b),proposal:{source:x.b.proposal_source||REGION_VERSION,score:x.b.score},catalogue_candidates:candidates,class_hypotheses:classes,routing:{preferred_matcher:pRoute(candidates,classes),semantic_promotion_allowed:special},retrieval_resolution:resolution,semantic_claim:claim})
+ }
+ const groups=pGroups(out),ctx=pCtx(out,groups,specialized,image);for(const r of out)r.context_roles=ctx.role_map.get(r.region_id)||[];const scene=pScene(out,specialized,ctx),coverage=await pCoverage(e),evidence=pEvidence(out,groups),assertions=out.filter(r=>r.semantic_claim).map(r=>({region_id:r.region_id,...r.semantic_claim}));const state=pState(out,scene,ctx);
+ return{schema_version:1,pipeline_version:PIPELINE_VERSION,input:{mime_type:"image/png",encoded_bytes:buf.byteLength,sha256:sha,width:image.width,height:image.height,png_color_type:image.color_type,png_bit_depth:image.bit_depth},scene:{classification:scene.classification,reason:scene.reason,hypotheses:scene.hypotheses,evidence},layout:{detector_version:REGION_VERSION,analysis_width:lay.analysis_width,analysis_height:lay.analysis_height,general_region_count:general.boxes.length,generic_regions_skipped_for_specialized_board:genericSkipped,layout_root_region_ids:pLayoutRoots(out).map(r=>r.region_id),specialized_board_row:specialized,groups,choice_group:ctx.choice_group},capabilities:{catalogue_semantic_prefix_counts:coverage,unsupported_first_class_semantics:Object.entries(coverage).filter(([k,v])=>(k==="merchant"||k==="action")&&v===0).map(([k])=>k)},regions:out,assertions,state,values:state.values.entries,safeguards:{r2_safety_checked:true,r2_safety_reason:safety.reason||null,benchmark_case_id_required:false,benchmark_truth_used:false,validation_or_golden_used:false,generic_regions_may_emit_catalogue_candidates:true,generic_regions_may_emit_semantic_claims:false,specialized_v30_row_may_emit_semantic_claims:true},timings_ms:{decode,catalogue,layout,retrieval:performance.now()-rs,total:performance.now()-started}}
+}
+export default{async fetch(r,e){const u=new URL(r.url);if(r.method==="GET"&&u.pathname==="/health")return j({ok:true,service:"bazaar-perception",pipeline_version:PIPELINE_VERSION,region_detector_version:REGION_VERSION});
+ if(r.method==="POST"&&u.pathname==="/v1/analyze"){if(!await auth(r,e))return j({error:"unauthorized"},401);if(!(r.headers.get("content-type")||"").toLowerCase().includes("image/png"))return j({error:"image_png_required"},415);const declared=Number(r.headers.get("content-length")||"0");if(declared>MAX_BYTES)return j({error:"image_too_large"},413);try{const b=await r.arrayBuffer();if(!b.byteLength||b.byteLength>MAX_BYTES)return j({error:"image_size_outside_allowed_range"},413);return j(await analyze(e,b))}catch(x){console.error("PERCEPTION_ANALYZE_ERROR",x);return j({error:"perception_analysis_failed",detail:x instanceof Error?x.message:String(x),pipeline_version:PIPELINE_VERSION},422)}}return j({error:"not_found"},404)},
+async queue(batch,e){
+ for(const m of batch.messages){
+  try{
+   if(m.body?.kind==="evaluate_train_case"){
+    const caseId=String(m.body.case_id||"");
+    if(!caseId.startsWith("clean-board-"))throw Error("invalid train case id");
+    const row=await e.DB.prepare("SELECT split,case_kind,truth_json FROM benchmark_cases WHERE case_id=?").bind(caseId).first();
+    if(!row||row.split!=="train"||row.case_kind!=="board")throw Error("train board case required");
+    const obj=await e.BENCHMARK_R2.get("clean/train/"+caseId+"/screenshot.png");
+    if(!obj)throw Error("train screenshot missing");
+    const perception=await analyze(e,await new Response(obj.body).arrayBuffer());
+    const truth=JSON.parse(row.truth_json);
+    const preds=perception.regions.filter(r=>r.proposal?.source==="v30_board_row");
+    const remaining=new Set(preds.map((_,i)=>i)),objects=[];let matched=0,top1Asset=0,top5Asset=0,top1Entity=0,claimEntity=0;const ious=[];
+    for(const t of truth.objects||[]){
+     let bi=null,bv=0;for(const i of remaining){const v=iou(t.bbox,preds[i].bbox);if(v>bv){bv=v;bi=i}}
+     if(bi!==null)remaining.delete(bi);
+     const p=bi===null?null:preds[bi],ok=bi!==null&&bv>=.85;
+     if(ok)matched++;ious.push(bv);
+     const cands=p?.catalogue_candidates||[],a1=cands[0]?.asset_path===t.asset_path,a5=cands.some(c=>c.asset_path===t.asset_path);
+     if(a1)top1Asset++;if(a5)top5Asset++;
+     const expected=Array.isArray(t.expected_entity_ids)?t.expected_entity_ids:[];
+     const topIds=cands[0]?.metadata?.candidate_entity_ids||[];
+     const e1=t.expected_resolution==="semantic"&&expected.length>0&&expected.some(id=>topIds.includes(id));
+     if(e1)top1Entity++;const claimIds=p?.semantic_claim?.entity_ids||[],claimOk=t.expected_resolution==="semantic"&&expected.length>0&&expected.some(id=>claimIds.includes(id));if(claimOk)claimEntity++;
+     objects.push({object_id:t.object_id,iou:bv,region_match:ok,prediction_index:bi,top1_asset_match:a1,top5_asset_match:a5,top1_expected_entity_match:e1,semantic_claim_expected_entity_match:claimOk,semantic_claim:p?.semantic_claim||null,retrieval_resolution:p?.retrieval_resolution||null,top1_asset:cands[0]?.asset_path||null});
+    }
+    const n=(truth.objects||[]).length,mean=ious.length?ious.reduce((s,v)=>s+v,0)/ious.length:1,min=ious.length?Math.min(...ious):1;
+    console.log("PERCEPTION_TRAIN_EVAL",JSON.stringify({
+     pipeline_version:perception.pipeline_version,case_id:caseId,
+     metrics:{truth_objects:n,specialized_predictions:preds.length,region_matches_at_085:matched,region_recall:n?matched/n:1,region_precision:preds.length?matched/preds.length:n?0:1,mean_iou:mean,min_iou:min,top1_asset_accuracy:n?top1Asset/n:1,top5_asset_accuracy:n?top5Asset/n:1,top1_expected_entity_accuracy:n?top1Entity/n:1,semantic_claim_expected_entity_accuracy:n?claimEntity/n:1},
+     specialized_board_row:perception.layout?.specialized_board_row||null,
+     objects,
+     safeguards:perception.safeguards
+    }));
+    m.ack();continue
+   }
+   if(m.body?.kind==="store_smoke_chunk"){const id=String(m.body.upload_id||""),idx=Number(m.body.index),value=String(m.body.value||"");if(!/^[a-z0-9-]{4,64}$/.test(id)||!Number.isInteger(idx)||idx<0||idx>63||!/^[A-Za-z0-9+/=]+$/.test(value)||value.length>4000)throw Error("invalid smoke chunk");const key="perception_upload:"+id+":"+String(idx).padStart(3,"0");await e.DB.prepare("INSERT OR REPLACE INTO browser_session_state(key,value,updated_at) VALUES(?,?,CURRENT_TIMESTAMP)").bind(key,value).run();console.log("PERCEPTION_CHUNK_STORED",JSON.stringify({upload_id:id,index:idx,length:value.length}));m.ack();continue}if(m.body?.kind==="analyze_d1_chunks"){await pSafe(e);const id=String(m.body.upload_id||"");const total=Number(m.body.total||0),expectedSha=String(m.body.expected_sha256||"").toLowerCase();if(!/^[a-z0-9-]{4,64}$/.test(id)||!Number.isInteger(total)||total<1||total>512||!/^[0-9a-f]{64}$/.test(expectedSha))throw Error("invalid chunk smoke manifest");const pref="perception_upload:"+id+":";const rows=await e.DB.prepare("SELECT key,value FROM browser_session_state WHERE key LIKE ? ORDER BY key").bind(pref+"%").all(),rr=rows.results||[];if(rr.length!==total)throw Error("chunk smoke incomplete");for(let i=0;i<rr.length;i++){const want=pref+String(i).padStart(4,"0");if(rr[i].key!==want)throw Error("chunk smoke sequence mismatch at "+i)}const s64=rr.map(r=>String(r.value||"")).join(""),max64=Math.ceil(MAX_BYTES/3)*4+4;if(!s64.length||s64.length>max64)throw Error("chunk smoke base64 length outside allowed range");const bin=atob(s64),u=new Uint8Array(bin.length);if(!u.byteLength||u.byteLength>MAX_BYTES)throw Error("chunk smoke decoded size outside allowed range");for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);const result=await analyze(e,u.buffer);if(result.input?.sha256!==expectedSha)throw Error("chunk smoke sha256 mismatch");const st=result.state||{};console.log("PERCEPTION_UPLOAD_SMOKE",JSON.stringify({pipeline_version:result.pipeline_version,upload_id:id,sha256_verified:true,input:result.input,scene:result.scene,layout:{detector_version:result.layout?.detector_version,general_region_count:result.layout?.general_region_count,specialized_board_row:result.layout?.specialized_board_row,choice_group:result.layout?.choice_group},state_summary:{scene:st.scene,board:{present:st.board?.present,slots:(st.board?.slots||[]).map(x=>({slot_index:x.slot_index,region_id:x.region_id,entity_resolution:x.entity_resolution}))},choices:{present:st.choices?.present,group_id:st.choices?.group_id,option_count:st.choices?.options?.length||0},character_count:st.characters?.length||0,upgrade_or_enchantment_count:st.upgrades_or_enchantments?.length||0,values:st.values,unresolved_region_ids:st.unresolved_region_ids},regions:result.regions.map(r=>({region_id:r.region_id,bbox:r.bbox,geometry_class:r.geometry_class,proposal:r.proposal,context_roles:r.context_roles,class_hypotheses:(r.class_hypotheses||[]).slice(0,3),routing:r.routing,retrieval_resolution:r.retrieval_resolution?{resolution:r.retrieval_resolution.resolution,accepted:r.retrieval_resolution.accepted,reason:r.retrieval_resolution.reason,best_asset_path:r.retrieval_resolution.best_asset_path,best_score:r.retrieval_resolution.best_score,second_score:r.retrieval_resolution.second_score,margin:r.retrieval_resolution.margin}:null,top_candidates:(r.catalogue_candidates||[]).slice(0,3).map(c=>({asset_path:c.asset_path,score:c.score,render_mode:c.render_mode,metadata:c.metadata}))})),safeguards:result.safeguards,timings_ms:result.timings_ms}));await e.DB.prepare("DELETE FROM browser_session_state WHERE key LIKE ?").bind(pref+"%").run();m.ack();continue}let buf=null,source=null;
+   if(m.body?.kind==="analyze_base64"){const s=String(m.body.png_base64||""),bin=atob(s),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);buf=u.buffer;source="base64_smoke"}
+   else if(m.body?.kind==="analyze_r2_key"){await pSafe(e);const key=String(m.body.r2_key||"");if(!key.startsWith("clean/train/")||!key.endsWith("/screenshot.png"))throw Error("invalid train smoke key");const o=await e.BENCHMARK_R2.get(key);if(!o)throw Error("train smoke object missing");buf=await new Response(o.body).arrayBuffer();source="train_r2_smoke"}
+   else throw Error("unsupported smoke message");
+   const result=await analyze(e,buf);
+   console.log("PERCEPTION_SMOKE",JSON.stringify({pipeline_version:result.pipeline_version,source,input:result.input,scene:result.scene,layout:result.layout,capabilities:result.capabilities,region_count:result.regions.length,state_summary:{scene:result.state?.scene,board_present:result.state?.board?.present,board_slot_count:result.state?.board?.slots?.length||0,choice_present:result.state?.choices?.present,choice_count:result.state?.choices?.options?.length||0,values:result.state?.values},first_regions:result.regions.slice(0,8).map(r=>({region_id:r.region_id,bbox:r.bbox,geometry_class:r.geometry_class,class_hypotheses:r.class_hypotheses?.slice(0,3),routing:r.routing,top_candidates:r.catalogue_candidates?.slice(0,2),semantic_claim:r.semantic_claim})),timings_ms:result.timings_ms,safeguards:result.safeguards}));
+   m.ack()
+  }catch(x){console.error("PERCEPTION_SMOKE_ERROR",x instanceof Error?x.stack||x.message:String(x));m.ack()}
+ }
+}};
+
+--ebfa35259d95b16bf31e5c8d54e44f40c2d37a722f10bc2c820b0dfa7f52--

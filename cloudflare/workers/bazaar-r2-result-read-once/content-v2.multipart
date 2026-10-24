@@ -1,0 +1,18 @@
+--e404cd0e70dfa484db5cb77841059eed93ab99ec1fdc470c965661716f47
+Content-Disposition: form-data; name="worker.js"; filename="worker.js"
+Content-Type: application/javascript+module
+
+
+const INPUT="perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png";
+const PROBE="perception/probes/item-visual/auto-trust/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393/bazaar-perception-v67-screen-native-item-shortlist-shadow/";
+const ALLOWED_PREFIX="corpus/images/providers/bazaarplanner/";
+function ct(key){const e=key.split(".").pop().toLowerCase();return e==="png"?"image/png":e==="webp"?"image/webp":e==="jpg"||e==="jpeg"?"image/jpeg":"image/avif";}
+export default {async fetch(req,env){
+ const u=new URL(req.url);
+ if(u.pathname==="/fixture.png"){const o=await env.BUCKET.get(INPUT);if(!o)return new Response("missing",{status:404});return new Response(o.body,{headers:{"content-type":"image/png","cache-control":"no-store"}});}
+ if(u.pathname==="/view") return new Response('<!doctype html><html><body style="margin:0;background:#000"><img src="/fixture.png" width="2048" height="1409"></body></html>',{headers:{"content-type":"text/html","cache-control":"no-store"}});
+ if(u.pathname==="/asset"){const key=u.searchParams.get("key")||"";if(!key.startsWith(ALLOWED_PREFIX))return new Response("forbidden",{status:403});const o=await env.ASSETS.get(key);if(!o)return new Response("missing",{status:404});return new Response(o.body,{headers:{"content-type":ct(key),"cache-control":"no-store"}});}
+ if(u.pathname==="/probe"){const id=u.searchParams.get("id")||"";if(!/^region-\d{2}$/.test(id))return new Response("bad id",{status:400});const o=await env.BUCKET.get(PROBE+id+".json");if(!o)return new Response("missing",{status:404});const v=JSON.parse(await o.text());const out={id,bbox:v.bbox||v.region?.bbox||null,candidate_summaries:v.candidate_summaries||v.candidates||null,local_feature:v.local_feature||v.item_local_feature_shadow||null,trust:v.trust_shadow||v.trust||null,keys:Object.keys(v)};return new Response(JSON.stringify(out),{headers:{"content-type":"application/json","cache-control":"no-store"}});}
+ return new Response("not found",{status:404});
+}};
+--e404cd0e70dfa484db5cb77841059eed93ab99ec1fdc470c965661716f47--

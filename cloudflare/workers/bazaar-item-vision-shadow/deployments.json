@@ -1,0 +1,38 @@
+{
+  "deployments": [
+    {
+      "annotations": {
+        "workers/message": "GitHub 81d8cac isolated Gemma verifier v2",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-06T20:43:19.845309Z",
+      "id": "a600eb7d-94a7-4b9f-9b49-36abf0ccdd9b",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "4d6831e6-34dd-4681-93b5-3ffa38673a52"
+        }
+      ]
+    },
+    {
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "author_email": "allaboutstudios@gmail.com",
+      "created_on": "2026-10-06T19:56:48.694364Z",
+      "id": "a696066c-23f9-4617-a8c3-1ff3db522c66",
+      "source": "api",
+      "strategy": "percentage",
+      "versions": [
+        {
+          "percentage": 100,
+          "version_id": "482f21ea-6d98-4513-b6a4-8a8d17009614"
+        }
+      ]
+    }
+  ]
+}
