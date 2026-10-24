@@ -57,7 +57,7 @@ async function glDenseRareShardV1(env, body) {
   const inputKey=String(body.input_key||"perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png");
   const benchmark="perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png";
   // General input path keeps the native image dimensions and avoids resizing.
-  const tr=inputKey===benchmark?await glLoadFullTargetDense(env,ds):
+  const tr=inputKey===benchmark&&body.fresh!==true?await glLoadFullTargetDense(env,ds):
     await (async()=>{const loaded=await loadProofInputs(env,inputKey),im=loaded.image;
       return {width:im.width,height:im.height,descriptor_scale:ds,
         features:lgExtractSpatialFastGrid(im.rgba,im.width,im.height,16,12,32,2,ds)};})();
@@ -66,7 +66,8 @@ async function glDenseRareShardV1(env, body) {
   if(idx.reference_count!==bank.refs.length) throw new Error("packed index/bank reference mismatch for shard "+si);
   const topN=Math.max(8,Math.min(40,Number(body.shortlist)||24));
   const maxBucket=Math.max(8,Math.min(96,Number(body.max_bucket)||48));
-  const votes=glRareVotePacked(tr.features,bank.refs,idx,topN,maxBucket);
+  const allVotes=glRareVotePacked(tr.features,bank.refs,idx,bank.refs.length,maxBucket);
+  const votes=allVotes.slice(0,topN);
   const found=glDenseRarePairsV1(tr.features,bank,idx,votes,maxBucket,192);
   const refs=found.selected.map(i=>bank.refs[i]);
   // Only the selected references are geometrically estimated.
@@ -81,6 +82,9 @@ async function glDenseRareShardV1(env, body) {
     schema_version:1,proof_version:"dense-rare-shortlist-v1",input_key:inputKey,
     shard_index:si,descriptor_scale:ds,target_feature_count:tr.features.length,
     reference_count:bank.refs.length,shortlist_count:shortlist.length,
+    rank_sgw:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))+1 || null,
+    rank_hands:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("HandsOfTime"))+1 || null,
+    fresh_extraction:body.fresh===true,full_ranking_count:allVotes.length,
     candidate_reference_count:rows.length,geometry_executed_count:rows.length,
     accepted_count:accepted.length,accepted,top:rows.slice(0,24),shortlist,
     diagnostics:found.stats
