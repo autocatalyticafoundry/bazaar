@@ -1,0 +1,1019 @@
+{
+  "schema_version": 1,
+  "version": "region-fullcatalog-convolution-v1",
+  "input_key": "perception/inputs/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a.png",
+  "regions": [
+    {
+      "region_id": "region-01",
+      "bbox": {
+        "x": 714,
+        "y": 399,
+        "width": 288,
+        "height": 280
+      },
+      "compared": 53,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RegalBlade.avif",
+          "source_sha256": "a817f86bef8f56f932496806a03ef1da495216aa91fb66c100d65c2b3ddc0566",
+          "score": 0.84117,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.91913,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.5926,
+          "pde_hog": 0.70781
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Motherboard.avif",
+          "source_sha256": "7894a62ac097815a5a930764d1a9d9ac3e8523dce4b54c2826689ded7dcb3370",
+          "score": 0.734052,
+          "mode": "cover",
+          "shift": 0,
+          "coarse_color_score": 0.84622,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.48083,
+          "pde_hog": 0.5047
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/SharpeningStone.avif",
+          "source_sha256": "56a7e754ee04effaaef2bfefa9c7afeb80c866641fa02bf5354585596d623d6a",
+          "score": 0.73209,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.77348,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.49167,
+          "pde_hog": 0.50982
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/EmergencyBurn.avif",
+          "source_sha256": "421a8a4f4917e78091ffa5291dbfe1a6936a6aecf1ef2ebfbecc936a02525236",
+          "score": 0.703087,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.7537,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.48029,
+          "pde_hog": 0.41267
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/NanobotConstruction.avif",
+          "source_sha256": "5cbf421cb183e36e2d8cd9d6fc0bfc9899c4a822414ad7d48292b9e674d8fd97",
+          "score": 0.693814,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.83267,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.45778,
+          "pde_hog": 0.36924
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/CausticSolvent.avif",
+          "source_sha256": "434d84d58475f415b12bb7751ecc4df756641431d98199c50a369f7b8dbaa31b",
+          "score": 0.688694,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.77996,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.47275,
+          "pde_hog": 0.38903
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-01.json",
+      "errors": []
+    },
+    {
+      "region_id": "region-02",
+      "bbox": {
+        "x": 1016,
+        "y": 399,
+        "width": 293,
+        "height": 280
+      },
+      "compared": 52,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/MoneyFurnace.avif",
+          "source_sha256": "b05b3e43ce55241ac3b52a550491d9907a7b8c196fec8013f68235d99f63d23d",
+          "score": 0.870001,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.87201,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.73092,
+          "pde_hog": 0.69366
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/BrickBuddy.avif",
+          "source_sha256": "5367451fa16d47d2451e7c2c6290931d4e87041300fd4bbe06a1fd34a2bc9286",
+          "score": 0.707293,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.75032,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.49475,
+          "pde_hog": 0.52093
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Hogwash.avif",
+          "source_sha256": "1aeea84bd3197acdf37adfb944c080b144e5cb9c920f828fdc2dedb7d136b9e6",
+          "score": 0.667974,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.75166,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.53061,
+          "pde_hog": 0.51155
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/DeathCaps.avif",
+          "source_sha256": "a82ba8bb9478f799cd6189cb1c3426bb194ce0e7097f091c192d49f0d7972067",
+          "score": 0.657726,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.82032,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.41409,
+          "pde_hog": 0.31355
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Disguise.avif",
+          "source_sha256": "c38d82a1f3abe7e58ef881bf381ab614c9650a275b0af92b87b033a91118b4ef",
+          "score": 0.650323,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.79777,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.47191,
+          "pde_hog": 0.44352
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Butter.avif",
+          "source_sha256": "a2883b778df66fb65d65d5c3271c68865d41acf215e23d54f05623e7fb244c9b",
+          "score": 0.647784,
+          "mode": "cover",
+          "shift": 0,
+          "coarse_color_score": 0.7214,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.38754,
+          "pde_hog": 0.33781
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-02.json",
+      "errors": []
+    },
+    {
+      "region_id": "region-03",
+      "bbox": {
+        "x": 1323,
+        "y": 399,
+        "width": 281,
+        "height": 280
+      },
+      "compared": 53,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Boomerang.avif",
+          "source_sha256": "186d86b83873b2483bf659c01ce786fb2195d302d9fb63d0065d3763a76d596a",
+          "score": 0.869157,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.78751,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.74906,
+          "pde_hog": 0.72607
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/MonsterTracker.avif",
+          "source_sha256": "a8ea72b5b8b5799ae517c9f6f0bc1daf85d2fa668a8446394dd2570c9f680d8b",
+          "score": 0.673412,
+          "mode": "cover",
+          "shift": 0,
+          "coarse_color_score": 0.6955,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.49565,
+          "pde_hog": 0.47505
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/HeavyMachinery.avif",
+          "source_sha256": "d6aa23ffa00269f51097922067a9b444e2ff7947d6e189181778d04c1bffc9c9",
+          "score": 0.650876,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.69542,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.47126,
+          "pde_hog": 0.49528
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ReachingtheSummit.avif",
+          "source_sha256": "efd72b93cf8abb68417617db1a7cdba703a5e7fa192126cbcaf86ffb622e6dc1",
+          "score": 0.650177,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.67383,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.50485,
+          "pde_hog": 0.48177
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/FrozenFlame.avif",
+          "source_sha256": "a57296f9da2b493a97aaa865fdda7d517e177c00be0fe03ff1cae668113eacf4",
+          "score": 0.646492,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.6975,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.44783,
+          "pde_hog": 0.42043
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Outmaneuver.avif",
+          "source_sha256": "6bd388d341fa411001271c034be230b3713cb6ab7dc45edaa59b52a0a72a943a",
+          "score": 0.643247,
+          "mode": "cover",
+          "shift": 0,
+          "coarse_color_score": 0.69271,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.43001,
+          "pde_hog": 0.39317
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-03.json",
+      "errors": []
+    },
+    {
+      "region_id": "region-04",
+      "bbox": {
+        "x": 560,
+        "y": 729,
+        "width": 132,
+        "height": 276
+      },
+      "compared": 54,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/BrassKnuckles.avif",
+          "source_sha256": "a3ebe51efb9b55b7c7862ae18116645478d012e22c5e75bca7f0d7e8f9f2e0f4",
+          "score": 0.792574,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.77915,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.65091,
+          "pde_hog": 0.55199
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/MagShield.avif",
+          "source_sha256": "54f3583b81ba68b7eb678e7b5be5ca8f67dd049d87e1ee38f24aab2d86e4fe1f",
+          "score": 0.63179,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.71293,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.46427,
+          "pde_hog": 0.53326
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Shipment.avif",
+          "source_sha256": "65bfd7527c7fbb912955dd97b8d68b62cf7dddefc6e1cf749ca48f0b17d93d64",
+          "score": 0.621021,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.77847,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.42117,
+          "pde_hog": 0.38387
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/BoobyTrap.avif",
+          "source_sha256": "ebda59bd60a5b31ea719f3cd446f2b859a854ecd80bf584e4c0b17542e783ae1",
+          "score": 0.613997,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.70592,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.39196,
+          "pde_hog": 0.41031
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Pitchfork.avif",
+          "source_sha256": "4f0c09034434bd0e0c078f2a500b97439336f317b3402247349e01fdacfa46c0",
+          "score": 0.607014,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.7262,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.52215,
+          "pde_hog": 0.44828
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/YetiCrab.avif",
+          "source_sha256": "10ce8b50e501f2834e14b97bd54b71a12fcb2d4d48297d4544e2e7b587447c17",
+          "score": 0.603226,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.71589,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.41166,
+          "pde_hog": 0.32326
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-04.json",
+      "errors": []
+    },
+    {
+      "region_id": "region-05",
+      "bbox": {
+        "x": 706,
+        "y": 729,
+        "width": 136,
+        "height": 276
+      },
+      "compared": 54,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TuskedHelm.avif",
+          "source_sha256": "582f753b501de3c70177a1f4787b81971dded6018ea94637400bdb2b68a70296",
+          "score": 0.673858,
+          "mode": "cover",
+          "shift": 0,
+          "coarse_color_score": 0.75161,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.55377,
+          "pde_hog": 0.56431
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/PowderKeg.avif",
+          "source_sha256": "52667c6869652cf532b92c741ea103ff538270db48067e9f7ff1f98f4dcd777d",
+          "score": 0.634658,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.74399,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.41492,
+          "pde_hog": 0.43337
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RedLantern.avif",
+          "source_sha256": "23f0bd96f0b87c6f2303ac6c095373409377b98085ac804d769d025bba363fae",
+          "score": 0.620548,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.70623,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.56395,
+          "pde_hog": 0.527
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Forklift.avif",
+          "source_sha256": "1787e9ac6bf48a9631f90eecb1088c2820f0f6e137a6a0db477af91b7f95f456",
+          "score": 0.614806,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.70807,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.42853,
+          "pde_hog": 0.45307
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ConcealedDagger.avif",
+          "source_sha256": "7fd105a2adf6609826597db829bf75cb6f69999082f206d6404dee22e66a909e",
+          "score": 0.599288,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.72172,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.46985,
+          "pde_hog": 0.40979
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Toughness.avif",
+          "source_sha256": "960608d812fff36621f97ec0840fbb7295d865907d5c1e7d49ca5ca1227d899b",
+          "score": 0.596837,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.70682,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.42129,
+          "pde_hog": 0.39669
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-05.json",
+      "errors": []
+    },
+    {
+      "region_id": "region-06",
+      "bbox": {
+        "x": 856,
+        "y": 729,
+        "width": 140,
+        "height": 276
+      },
+      "compared": 53,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/UwashiwaliBird.avif",
+          "source_sha256": "2ffc0981e94efb419d4d8c082586086df77ad663190a5e19c1250f185e5d8ac6",
+          "score": 0.760679,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.77086,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.55781,
+          "pde_hog": 0.58468
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/SiftingPan.avif",
+          "source_sha256": "7d7e6a7b9097e86549c7f0aa85e92b7634825fecf58aea8145b7d7f5ec361444",
+          "score": 0.599033,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.71788,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.46475,
+          "pde_hog": 0.34649
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Propeller.avif",
+          "source_sha256": "cb79649865bffac3a4e01f478b5ac3c04b887d4086d6732e03166558b10433a4",
+          "score": 0.588677,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.71966,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.48741,
+          "pde_hog": 0.39633
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Tripwire.avif",
+          "source_sha256": "3f02e33d497e81c197f469518469a6e5997b74bd11032a182c78e3c502af3a0a",
+          "score": 0.586527,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.74915,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.45132,
+          "pde_hog": 0.436
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/FarmersMarket.avif",
+          "source_sha256": "04582fab922c01283064c45e7afb179f8e427e1228e6a3f2d81d490297d73a2c",
+          "score": 0.585377,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.72184,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.35108,
+          "pde_hog": 0.34569
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VoidRender.avif",
+          "source_sha256": "a85d17ad388497575115111b14c20f399510ddee1ac1a031568428efb5eb1464",
+          "score": 0.582887,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.72924,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.46366,
+          "pde_hog": 0.43354
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-06.json",
+      "errors": []
+    },
+    {
+      "region_id": "region-07",
+      "bbox": {
+        "x": 1010,
+        "y": 729,
+        "width": 144,
+        "height": 276
+      },
+      "compared": 53,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Succulents.avif",
+          "source_sha256": "6b1c57c1f75776ca29d8acb7c90f46fa86b184cd09dc46037cbd1f08ca683e20",
+          "score": 0.688343,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.7397,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.52487,
+          "pde_hog": 0.52054
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/SlowandSteady.avif",
+          "source_sha256": "f659fb4f4bc235c5298f9a740917c9de946a27183f62abf1ca5a9c426d07d26f",
+          "score": 0.606144,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.67934,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.40883,
+          "pde_hog": 0.47612
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Virus.avif",
+          "source_sha256": "52f97c0a07b8690c4d941271257ed96a6a773e041f051bbe4158af462010af7b",
+          "score": 0.605385,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.68424,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.50412,
+          "pde_hog": 0.43564
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/DirtyDishes.avif",
+          "source_sha256": "2f54a0de6eb39240e50fba11fe8f690c952788f202f6f51a32bebf20a4d834e8",
+          "score": 0.602925,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.67135,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.51901,
+          "pde_hog": 0.53729
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/LiquidCooled.avif",
+          "source_sha256": "324da65eb3984823445f81fb71ecf809504f898441f352bcee82d26ada1a54bd",
+          "score": 0.601628,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.67272,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.54571,
+          "pde_hog": 0.54434
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/MagicCarpet.avif",
+          "source_sha256": "18d0adbf016f8bc2221bffa1095af8e948704e81796f58d02094b132e079510a",
+          "score": 0.599602,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.6742,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.54231,
+          "pde_hog": 0.49334
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-07.json",
+      "errors": []
+    },
+    {
+      "region_id": "region-08",
+      "bbox": {
+        "x": 1168,
+        "y": 729,
+        "width": 291,
+        "height": 276
+      },
+      "compared": 53,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/GolfClubs.avif",
+          "source_sha256": "77f30cd6bd2ae8d08bbbcb81838abe86c64e74fac3a4c4387bee2ce43ab55ab9",
+          "score": 0.82832,
+          "mode": "cover",
+          "shift": 0,
+          "coarse_color_score": 0.88308,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.62264,
+          "pde_hog": 0.62784
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/CashRegister.avif",
+          "source_sha256": "cdbe49201e692c0ae1c839d55d8251f286c572873acd8996b6caa7ee2350a1cc",
+          "score": 0.669556,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.75474,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.54015,
+          "pde_hog": 0.55663
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Windmill.avif",
+          "source_sha256": "3c86914772803bc40d688beb70c335d3d317ed42a66b4cbc37bd0e11a19d1a43",
+          "score": 0.634158,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.74823,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.48603,
+          "pde_hog": 0.40382
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Bunker.avif",
+          "source_sha256": "e6ec3cc19502ee2ed7c635d79f56504142c848b23f08eb324946091094d3a380",
+          "score": 0.62547,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.83024,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.45406,
+          "pde_hog": 0.41626
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Dinosawer.avif",
+          "source_sha256": "371939815caed8ab4fc4352d15ccea7fd12a8947eb1e7acf7f5201f99de02a12",
+          "score": 0.619947,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.78952,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.39284,
+          "pde_hog": 0.42843
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Fort.avif",
+          "source_sha256": "0f11378acf5d6abb74a3636567decf091638adcd084a3aa1cb55f55173bd6e9f",
+          "score": 0.616139,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.80209,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.41169,
+          "pde_hog": 0.38905
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-08.json",
+      "errors": []
+    },
+    {
+      "region_id": "region-09",
+      "bbox": {
+        "x": 1473,
+        "y": 729,
+        "width": 139,
+        "height": 276
+      },
+      "compared": 53,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/PepperSpray.avif",
+          "source_sha256": "d38287d86e065853d9d00bdfe162de98afb2344486c6698780bdbbdb8dd6984e",
+          "score": 0.781189,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.87309,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.59974,
+          "pde_hog": 0.65254
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/DinoDisguise.avif",
+          "source_sha256": "284b27cb2b2a8d2802c81ea4a85b0c089cb72fd1a124a5834847f211d42066e9",
+          "score": 0.627048,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.78764,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.51294,
+          "pde_hog": 0.52889
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/GumballMachine.avif",
+          "source_sha256": "6ce2fc929e2aeafd744d5d07768b139df74a29b1719a2c9a2dd5c4491d056134",
+          "score": 0.621709,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.74078,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.40965,
+          "pde_hog": 0.33613
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Calico.avif",
+          "source_sha256": "855a661cee876559bf24f68ca9f65e43e59684b60201c7aee056fda42aa194fe",
+          "score": 0.615511,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.74688,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.41755,
+          "pde_hog": 0.40115
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Rust.avif",
+          "source_sha256": "b12d2be51a119289667f8c0298af8927a4f0c314488c2bc5c3be7f108ccff07c",
+          "score": 0.61308,
+          "mode": "cover",
+          "shift": -0.16,
+          "coarse_color_score": 0.79237,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.47725,
+          "pde_hog": 0.41267
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/HuntersAxe.avif",
+          "source_sha256": "2e1f351e4dcf9cb59a03caf358589977ec11fe205b6415380f944afe603ed102",
+          "score": 0.610497,
+          "mode": "cover",
+          "shift": 0,
+          "coarse_color_score": 0.74434,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.35424,
+          "pde_hog": 0.36565
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-09.json",
+      "errors": []
+    },
+    {
+      "region_id": "region-10",
+      "bbox": {
+        "x": 1626,
+        "y": 729,
+        "width": 134,
+        "height": 276
+      },
+      "compared": 54,
+      "ranked_top": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Bandages.avif",
+          "source_sha256": "87b86d207f5a57c8a109c9fe8f7a915c0997a029644a84bf50a2803072372f7d",
+          "score": 0.795826,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.89594,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.60624,
+          "pde_hog": 0.56657
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/AbovetheClouds.avif",
+          "source_sha256": "13435715a26512b9d3e6c9d90ab76a5d6b122cbb5184931a974a58d27e9763bc",
+          "score": 0.660747,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.78993,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.40725,
+          "pde_hog": 0.48396
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Refractor.avif",
+          "source_sha256": "d5fdabdbc2f5093b89824d1ecd6232580bd0a6d871ad7e5cf1a022c326af4bce",
+          "score": 0.649999,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.7262,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.48737,
+          "pde_hog": 0.46848
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/DistilledSunlight.avif",
+          "source_sha256": "1217315561473ccd549e3f61b52860f7191e9099352622fe2bf2109428a2dc50",
+          "score": 0.641528,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.73643,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.41999,
+          "pde_hog": 0.37098
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/HuntersJournal.avif",
+          "source_sha256": "0c27d9acdae894aa683280ac0f7e2dda6b029963823ab10356fceeef5cc44519",
+          "score": 0.613169,
+          "mode": "cover",
+          "shift": 0.16,
+          "coarse_color_score": 0.73184,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.38358,
+          "pde_hog": 0.37687
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Quicksilver.avif",
+          "source_sha256": "812c932565ed140c79441bd438644b542ba212b61624643ac5647319e3aca66d",
+          "score": 0.612508,
+          "mode": "stretch",
+          "shift": 0,
+          "coarse_color_score": 0.72501,
+          "source": "full_catalogue_coarse",
+          "gaussian_hog": 0.42557,
+          "pde_hog": 0.40408
+        },
+        "--- TRUNCATED --- 18 more items"
+      ],
+      "full_score_artifact": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/region-10.json",
+      "errors": []
+    }
+  ],
+  "region_count": 10,
+  "total_comparisons": 532,
+  "candidate_universe": 1483,
+  "coarse_reference_comparisons": 14830,
+  "detailed_reference_comparisons": 532,
+  "warning": "Low-resolution full-catalogue retrieval. Candidate ranks do not imply calibrated likelihood or accepted identity.",
+  "generated_at": "2026-10-24T21:26:37.056Z",
+  "verified_evaluation": {
+    "provenance": "User corrected four IDs and rejected six previous top guesses; no identities provided for six unknown regions.",
+    "correct_human_confirmed_top1": 4,
+    "known_positive_count": 4,
+    "original_wrong_names_remaining_top1": 0,
+    "newly_confirmed_lower_count": 0,
+    "unlabelled_new_lower_hypotheses_count": 6,
+    "source_old_corrected_fixture": "cloudflare/project-status/2026-10-24-region-first-feedback-gold.json",
+    "per_region": [
+      {
+        "region_id": "region-01",
+        "bbox": {
+          "x": 714,
+          "y": 399,
+          "width": 288,
+          "height": 280
+        },
+        "top_name": "RegalBlade",
+        "top_score": 0.84117,
+        "second_score": 0.734052,
+        "score_gap": 0.107118,
+        "known_true_name": "RegalBlade",
+        "known_correct": true,
+        "original_false_top1": null,
+        "unknown_ground_truth": false
+      },
+      {
+        "region_id": "region-02",
+        "bbox": {
+          "x": 1016,
+          "y": 399,
+          "width": 293,
+          "height": 280
+        },
+        "top_name": "MoneyFurnace",
+        "top_score": 0.870001,
+        "second_score": 0.707293,
+        "score_gap": 0.162708,
+        "known_true_name": "MoneyFurnace",
+        "known_correct": true,
+        "original_false_top1": null,
+        "unknown_ground_truth": false
+      },
+      {
+        "region_id": "region-03",
+        "bbox": {
+          "x": 1323,
+          "y": 399,
+          "width": 281,
+          "height": 280
+        },
+        "top_name": "Boomerang",
+        "top_score": 0.869157,
+        "second_score": 0.673412,
+        "score_gap": 0.195745,
+        "known_true_name": "Boomerang",
+        "known_correct": true,
+        "original_false_top1": null,
+        "unknown_ground_truth": false
+      },
+      {
+        "region_id": "region-04",
+        "bbox": {
+          "x": 560,
+          "y": 729,
+          "width": 132,
+          "height": 276
+        },
+        "top_name": "BrassKnuckles",
+        "top_score": 0.792574,
+        "second_score": 0.63179,
+        "score_gap": 0.160784,
+        "known_true_name": null,
+        "known_correct": false,
+        "original_false_top1": "LiquidCooled",
+        "unknown_ground_truth": true
+      },
+      {
+        "region_id": "region-05",
+        "bbox": {
+          "x": 706,
+          "y": 729,
+          "width": 136,
+          "height": 276
+        },
+        "top_name": "TuskedHelm",
+        "top_score": 0.673858,
+        "second_score": 0.634658,
+        "score_gap": 0.0392,
+        "known_true_name": null,
+        "known_correct": false,
+        "original_false_top1": "WarpDrive",
+        "unknown_ground_truth": true
+      },
+      {
+        "region_id": "region-06",
+        "bbox": {
+          "x": 856,
+          "y": 729,
+          "width": 140,
+          "height": 276
+        },
+        "top_name": "UwashiwaliBird",
+        "top_score": 0.760679,
+        "second_score": 0.599033,
+        "score_gap": 0.161646,
+        "known_true_name": null,
+        "known_correct": false,
+        "original_false_top1": "ValleyFever",
+        "unknown_ground_truth": true
+      },
+      {
+        "region_id": "region-07",
+        "bbox": {
+          "x": 1010,
+          "y": 729,
+          "width": 144,
+          "height": 276
+        },
+        "top_name": "Succulents",
+        "top_score": 0.688343,
+        "second_score": 0.606144,
+        "score_gap": 0.082199,
+        "known_true_name": null,
+        "known_correct": false,
+        "original_false_top1": "Whisk",
+        "unknown_ground_truth": true
+      },
+      {
+        "region_id": "region-08",
+        "bbox": {
+          "x": 1168,
+          "y": 729,
+          "width": 291,
+          "height": 276
+        },
+        "top_name": "GolfClubs",
+        "top_score": 0.82832,
+        "second_score": 0.669556,
+        "score_gap": 0.158764,
+        "known_true_name": "GolfClubs",
+        "known_correct": true,
+        "original_false_top1": null,
+        "unknown_ground_truth": false
+      },
+      {
+        "region_id": "region-09",
+        "bbox": {
+          "x": 1473,
+          "y": 729,
+          "width": 139,
+          "height": 276
+        },
+        "top_name": "PepperSpray",
+        "top_score": 0.781189,
+        "second_score": 0.627048,
+        "score_gap": 0.154141,
+        "known_true_name": null,
+        "known_correct": false,
+        "original_false_top1": "Wallace",
+        "unknown_ground_truth": true
+      },
+      {
+        "region_id": "region-10",
+        "bbox": {
+          "x": 1626,
+          "y": 729,
+          "width": 134,
+          "height": 276
+        },
+        "top_name": "Bandages",
+        "top_score": 0.795826,
+        "second_score": 0.660747,
+        "score_gap": 0.135079,
+        "known_true_name": null,
+        "known_correct": false,
+        "original_false_top1": "UluKnife",
+        "unknown_ground_truth": true
+      }
+    ],
+    "caveats": [
+      "The full 1483-ref palette pass is at 4x4; 532 candidates are reranked at 16x16. This is not a deep full-res comparison of 1483 per region.",
+      "All new narrow labels are hypotheses, not established identities.",
+      "Raw correlation scores are not probabilities.",
+      "Existing geometric verification is unchanged; no new candidate automatically accepted."
+    ]
+  },
+  "deployment": {
+    "worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "deployment_id": "1c5c1795cd6d4d33ad7a10ab85cd634a",
+    "branch": "experiment/dense-rarity-20261023",
+    "production_unchanged": true,
+    "fullcolor_module": "src/recognition/fullcatalog-convolution-v1.js",
+    "pde_module": "src/recognition/convolution-affine-pde-v1.js"
+  }
+}
