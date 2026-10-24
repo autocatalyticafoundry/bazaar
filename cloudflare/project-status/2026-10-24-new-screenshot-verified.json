@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "aggregation_version": "screen-dedupe-v1",
+  "input_key": "perception/inputs/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a.png",
+  "width": 2048,
+  "height": 1338,
+  "descriptors": "brief128-v3",
+  "input_shard_keys": [
+    "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-00.json",
+    "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-01.json",
+    "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-02.json",
+    "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-03.json",
+    "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-04.json",
+    "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-05.json",
+    "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-06.json",
+    "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-07.json"
+  ],
+  "candidate_count": 2,
+  "detection_count": 2,
+  "duplicate_count": 0,
+  "detections": [
+    {
+      "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RegalBlade.avif",
+      "source_sha256": "a817f86bef8f56f932496806a03ef1da495216aa91fb66c100d65c2b3ddc0566",
+      "bbox": {
+        "x": 712.2662441144043,
+        "y": 386.8691927606044,
+        "width": 283.71755345342126,
+        "height": 283.71755345342126
+      },
+      "instance_state": {
+        "bbox": {
+          "x": 712.2662441144043,
+          "y": 386.8691927606044,
+          "width": 283.71755345342126,
+          "height": 283.71755345342126
+        },
+        "art_scale": 1.1078995236995623,
+        "rotation_deg": -0.01925023259480184
+      },
+      "proof": {
+        "inlier_count": 24,
+        "mean_residual_px": 0.8795406120809447,
+        "mean_hamming": 6.708333333333333,
+        "shard_index": 5,
+        "source_result_key": "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-05.json"
+      },
+      "identity_scope": "verified_visual_reference"
+    },
+    {
+      "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/GolfClubs.avif",
+      "source_sha256": "77f30cd6bd2ae8d08bbbcb81838abe86c64e74fac3a4c4387bee2ce43ab55ab9",
+      "bbox": {
+        "x": 1171.460401069831,
+        "y": 713.2657525607036,
+        "width": 283.72403966316665,
+        "height": 283.72403966316676
+      },
+      "instance_state": {
+        "bbox": {
+          "x": 1171.460401069831,
+          "y": 713.2657525607036,
+          "width": 283.72403966316665,
+          "height": 283.72403966316676
+        },
+        "art_scale": 1.107678195875697,
+        "rotation_deg": -0.0320187683329502
+      },
+      "proof": {
+        "inlier_count": 18,
+        "mean_residual_px": 0.928538497775945,
+        "mean_hamming": 7.722222222222222,
+        "shard_index": 2,
+        "source_result_key": "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-02.json"
+      },
+      "identity_scope": "verified_visual_reference"
+    }
+  ],
+  "suppressed_duplicates": [],
+  "important_limit": "Visual reference identities and artwork bboxes only; semantic game data and unseen cards not inferred.",
+  "verification": {
+    "eight_shards_complete": true,
+    "descriptor_scale": 1,
+    "available_references": 1483,
+    "geometry_checked": 192,
+    "accepted_hits": 2,
+    "source_r2_key": "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/aggregated.json",
+    "not_accepted_candidate_names_are_not_detections": true,
+    "generated_at": "2026-10-24T20:04:23.967Z"
+  }
+}
