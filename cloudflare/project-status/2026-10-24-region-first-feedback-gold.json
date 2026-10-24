@@ -1,0 +1,655 @@
+{
+  "schema_version": 1,
+  "kind": "human-corrected-per-region-evaluation",
+  "source": "user supplied the correctness of each top-1 candidate; source screenshot and programmatic boxes are preserved",
+  "screenshot_sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+  "source_result_r2": "debug/region-hypotheses-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/result.json",
+  "source_result_github": "cloudflare/project-status/2026-10-24-region-first-demo.json",
+  "evaluation": {
+    "total": 10,
+    "correct_top1": 4,
+    "incorrect_top1": 6,
+    "accuracy_top1_pct": 40,
+    "upper": {
+      "total": 3,
+      "correct_top1": 3,
+      "incorrect_top1": 0,
+      "accuracy_top1_pct": 100
+    },
+    "lower": {
+      "total": 7,
+      "correct_top1": 1,
+      "incorrect_top1": 6,
+      "accuracy_top1_pct": 14.29
+    },
+    "wide": {
+      "total": 4,
+      "correct_top1": 4,
+      "incorrect_top1": 0,
+      "accuracy_top1_pct": 100
+    },
+    "narrow": {
+      "total": 6,
+      "correct_top1": 0,
+      "incorrect_top1": 6,
+      "accuracy_top1_pct": 0
+    },
+    "geometry_accepted_top1": 2,
+    "accepted_geometry_wrong": 0,
+    "unverified_but_correct": [
+      "region-02",
+      "region-03"
+    ],
+    "max_incorrect_top1_raw_score": 5.61071,
+    "min_correct_top1_raw_score": 8.41888,
+    "score_separation_is_observation_only": true,
+    "probabilities_calibrated": false
+  },
+  "caveats": [
+    "This fixture has 4 confirmed positive IDs and 6 explicit top-1 negatives; do not infer identities for the six unknowns.",
+    "No top-3 recall can be established for unknown identities.",
+    "Single screenshot is not enough to calibrate numeric identity probabilities or a production trust threshold."
+  ],
+  "regions": [
+    {
+      "region_id": "region-01",
+      "box": {
+        "x": 714,
+        "y": 399,
+        "width": 288,
+        "height": 280
+      },
+      "position": "upper",
+      "width_class": "wide",
+      "top1_predicted_visual_name": "RegalBlade",
+      "top1_confirmed_correct": true,
+      "known_ground_truth_visual_name": "RegalBlade",
+      "true_identity_known": true,
+      "negative_label_when_incorrect": {
+        "false_name": null,
+        "reason": null
+      },
+      "top1_raw_score": 9.30289,
+      "top1_relative_support_pct": 39.23,
+      "verified_geometry": true,
+      "original_candidates": [
+        {
+          "name": "RegalBlade",
+          "raw_score": 9.30289,
+          "relative_support_pct": 39.23,
+          "verified": true
+        },
+        {
+          "name": "VoidRender",
+          "raw_score": 7.65796,
+          "relative_support_pct": 13.86,
+          "verified": false
+        },
+        {
+          "name": "Lethargy",
+          "raw_score": 7.43358,
+          "relative_support_pct": 12.03,
+          "verified": false
+        },
+        {
+          "name": "UluKnife",
+          "raw_score": 7.39804,
+          "relative_support_pct": 11.76,
+          "verified": false
+        },
+        {
+          "name": "WalterCooler",
+          "raw_score": 7.37787,
+          "relative_support_pct": 11.61,
+          "verified": false
+        },
+        {
+          "name": "ToxicWeapons",
+          "raw_score": 7.36327,
+          "relative_support_pct": 11.51,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "region_id": "region-02",
+      "box": {
+        "x": 1016,
+        "y": 399,
+        "width": 293,
+        "height": 280
+      },
+      "position": "upper",
+      "width_class": "wide",
+      "top1_predicted_visual_name": "MoneyFurnace",
+      "top1_confirmed_correct": true,
+      "known_ground_truth_visual_name": "MoneyFurnace",
+      "true_identity_known": true,
+      "negative_label_when_incorrect": {
+        "false_name": null,
+        "reason": null
+      },
+      "top1_raw_score": 8.97423,
+      "top1_relative_support_pct": 28.96,
+      "verified_geometry": false,
+      "original_candidates": [
+        {
+          "name": "MoneyFurnace",
+          "raw_score": 8.97423,
+          "relative_support_pct": 28.96,
+          "verified": false
+        },
+        {
+          "name": "Zoarcid",
+          "raw_score": 8.15161,
+          "relative_support_pct": 16.89,
+          "verified": false
+        },
+        {
+          "name": "Trojan",
+          "raw_score": 8.09544,
+          "relative_support_pct": 16.28,
+          "verified": false
+        },
+        {
+          "name": "Weaselpede",
+          "raw_score": 7.8437,
+          "relative_support_pct": 13.8,
+          "verified": false
+        },
+        {
+          "name": "YLWM4NT1S",
+          "raw_score": 7.63881,
+          "relative_support_pct": 12.07,
+          "verified": false
+        },
+        {
+          "name": "VitalityPotion",
+          "raw_score": 7.62871,
+          "relative_support_pct": 11.99,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "region_id": "region-03",
+      "box": {
+        "x": 1323,
+        "y": 399,
+        "width": 281,
+        "height": 280
+      },
+      "position": "upper",
+      "width_class": "wide",
+      "top1_predicted_visual_name": "Boomerang",
+      "top1_confirmed_correct": true,
+      "known_ground_truth_visual_name": "Boomerang",
+      "true_identity_known": true,
+      "negative_label_when_incorrect": {
+        "false_name": null,
+        "reason": null
+      },
+      "top1_raw_score": 8.63538,
+      "top1_relative_support_pct": 37.46,
+      "verified_geometry": false,
+      "original_candidates": [
+        {
+          "name": "Boomerang",
+          "raw_score": 8.63538,
+          "relative_support_pct": 37.46,
+          "verified": false
+        },
+        {
+          "name": "ToxicShield",
+          "raw_score": 7.50745,
+          "relative_support_pct": 17.37,
+          "verified": false
+        },
+        {
+          "name": "ThrowingKnives",
+          "raw_score": 6.90572,
+          "relative_support_pct": 11.53,
+          "verified": false
+        },
+        {
+          "name": "PartingShot",
+          "raw_score": 6.88681,
+          "relative_support_pct": 11.38,
+          "verified": false
+        },
+        {
+          "name": "VoidRender",
+          "raw_score": 6.85751,
+          "relative_support_pct": 11.16,
+          "verified": false
+        },
+        {
+          "name": "VitalReserve",
+          "raw_score": 6.85045,
+          "relative_support_pct": 11.1,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "region_id": "region-04",
+      "box": {
+        "x": 560,
+        "y": 729,
+        "width": 132,
+        "height": 276
+      },
+      "position": "lower",
+      "width_class": "narrow",
+      "top1_predicted_visual_name": "LiquidCooled",
+      "top1_confirmed_correct": false,
+      "known_ground_truth_visual_name": null,
+      "true_identity_known": false,
+      "negative_label_when_incorrect": {
+        "false_name": "LiquidCooled",
+        "reason": "user explicitly says only Golf Clubs is correct in lower row"
+      },
+      "top1_raw_score": 3.25978,
+      "top1_relative_support_pct": 19.28,
+      "verified_geometry": false,
+      "original_candidates": [
+        {
+          "name": "LiquidCooled",
+          "raw_score": 3.25978,
+          "relative_support_pct": 19.28,
+          "verified": false
+        },
+        {
+          "name": "ViperCane",
+          "raw_score": 3.23754,
+          "relative_support_pct": 18.58,
+          "verified": false
+        },
+        {
+          "name": "VatofAcid",
+          "raw_score": 3.19292,
+          "relative_support_pct": 17.25,
+          "verified": false
+        },
+        {
+          "name": "FrozenFlames",
+          "raw_score": 3.14741,
+          "relative_support_pct": 15.99,
+          "verified": false
+        },
+        {
+          "name": "VIPPass",
+          "raw_score": 3.093,
+          "relative_support_pct": 14.6,
+          "verified": false
+        },
+        {
+          "name": "Renovation",
+          "raw_score": 3.07986,
+          "relative_support_pct": 14.29,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "region_id": "region-05",
+      "box": {
+        "x": 706,
+        "y": 729,
+        "width": 136,
+        "height": 276
+      },
+      "position": "lower",
+      "width_class": "narrow",
+      "top1_predicted_visual_name": "WarpDrive",
+      "top1_confirmed_correct": false,
+      "known_ground_truth_visual_name": null,
+      "true_identity_known": false,
+      "negative_label_when_incorrect": {
+        "false_name": "WarpDrive",
+        "reason": "user explicitly says only Golf Clubs is correct in lower row"
+      },
+      "top1_raw_score": 5.61071,
+      "top1_relative_support_pct": 22.98,
+      "verified_geometry": false,
+      "original_candidates": [
+        {
+          "name": "WarpDrive",
+          "raw_score": 5.61071,
+          "relative_support_pct": 22.98,
+          "verified": false
+        },
+        {
+          "name": "VeggieGarden",
+          "raw_score": 5.45336,
+          "relative_support_pct": 19.48,
+          "verified": false
+        },
+        {
+          "name": "VoidShield",
+          "raw_score": 5.21838,
+          "relative_support_pct": 15.23,
+          "verified": false
+        },
+        {
+          "name": "VenomousDose",
+          "raw_score": 5.18233,
+          "relative_support_pct": 14.67,
+          "verified": false
+        },
+        {
+          "name": "BarbspikeWarden",
+          "raw_score": 5.14287,
+          "relative_support_pct": 14.07,
+          "verified": false
+        },
+        {
+          "name": "UnstableGravWell",
+          "raw_score": 5.1083,
+          "relative_support_pct": 13.57,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "region_id": "region-06",
+      "box": {
+        "x": 856,
+        "y": 729,
+        "width": 140,
+        "height": 276
+      },
+      "position": "lower",
+      "width_class": "narrow",
+      "top1_predicted_visual_name": "ValleyFever",
+      "top1_confirmed_correct": false,
+      "known_ground_truth_visual_name": null,
+      "true_identity_known": false,
+      "negative_label_when_incorrect": {
+        "false_name": "ValleyFever",
+        "reason": "user explicitly says only Golf Clubs is correct in lower row"
+      },
+      "top1_raw_score": 4.73717,
+      "top1_relative_support_pct": 22.71,
+      "verified_geometry": false,
+      "original_candidates": [
+        {
+          "name": "ValleyFever",
+          "raw_score": 4.73717,
+          "relative_support_pct": 22.71,
+          "verified": false
+        },
+        {
+          "name": "ToxicShield",
+          "raw_score": 4.63682,
+          "relative_support_pct": 20.05,
+          "verified": false
+        },
+        {
+          "name": "WorkinHard",
+          "raw_score": 4.43979,
+          "relative_support_pct": 15.7,
+          "verified": false
+        },
+        {
+          "name": "VoidDisruptor",
+          "raw_score": 4.37731,
+          "relative_support_pct": 14.52,
+          "verified": false
+        },
+        {
+          "name": "UwashiwaliBird",
+          "raw_score": 4.33108,
+          "relative_support_pct": 13.71,
+          "verified": false
+        },
+        {
+          "name": "WantedPoster",
+          "raw_score": 4.30733,
+          "relative_support_pct": 13.31,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "region_id": "region-07",
+      "box": {
+        "x": 1010,
+        "y": 729,
+        "width": 144,
+        "height": 276
+      },
+      "position": "lower",
+      "width_class": "narrow",
+      "top1_predicted_visual_name": "Whisk",
+      "top1_confirmed_correct": false,
+      "known_ground_truth_visual_name": null,
+      "true_identity_known": false,
+      "negative_label_when_incorrect": {
+        "false_name": "Whisk",
+        "reason": "user explicitly says only Golf Clubs is correct in lower row"
+      },
+      "top1_raw_score": 3.46151,
+      "top1_relative_support_pct": 18.29,
+      "verified_geometry": false,
+      "original_candidates": [
+        {
+          "name": "Whisk",
+          "raw_score": 3.46151,
+          "relative_support_pct": 18.29,
+          "verified": false
+        },
+        {
+          "name": "VoidRender",
+          "raw_score": 3.4428,
+          "relative_support_pct": 17.72,
+          "verified": false
+        },
+        {
+          "name": "ThrownNet",
+          "raw_score": 3.43958,
+          "relative_support_pct": 17.63,
+          "verified": false
+        },
+        {
+          "name": "Toolbox",
+          "raw_score": 3.41243,
+          "relative_support_pct": 16.85,
+          "verified": false
+        },
+        {
+          "name": "LiquidCooled",
+          "raw_score": 3.34795,
+          "relative_support_pct": 15.13,
+          "verified": false
+        },
+        {
+          "name": "Truffleholic",
+          "raw_score": 3.31719,
+          "relative_support_pct": 14.38,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "region_id": "region-08",
+      "box": {
+        "x": 1168,
+        "y": 729,
+        "width": 291,
+        "height": 276
+      },
+      "position": "lower",
+      "width_class": "wide",
+      "top1_predicted_visual_name": "GolfClubs",
+      "top1_confirmed_correct": true,
+      "known_ground_truth_visual_name": "GolfClubs",
+      "true_identity_known": true,
+      "negative_label_when_incorrect": {
+        "false_name": null,
+        "reason": null
+      },
+      "top1_raw_score": 8.41888,
+      "top1_relative_support_pct": 33.98,
+      "verified_geometry": true,
+      "original_candidates": [
+        {
+          "name": "GolfClubs",
+          "raw_score": 8.41888,
+          "relative_support_pct": 33.98,
+          "verified": true
+        },
+        {
+          "name": "TreeClub",
+          "raw_score": 7.129,
+          "relative_support_pct": 13.8,
+          "verified": false
+        },
+        {
+          "name": "WeldingHelmet",
+          "raw_score": 7.10311,
+          "relative_support_pct": 13.55,
+          "verified": false
+        },
+        {
+          "name": "ToxicShield",
+          "raw_score": 7.07392,
+          "relative_support_pct": 13.28,
+          "verified": false
+        },
+        {
+          "name": "StretchPants",
+          "raw_score": 7.01705,
+          "relative_support_pct": 12.76,
+          "verified": false
+        },
+        {
+          "name": "TriNet",
+          "raw_score": 7.00297,
+          "relative_support_pct": 12.63,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "region_id": "region-09",
+      "box": {
+        "x": 1473,
+        "y": 729,
+        "width": 139,
+        "height": 276
+      },
+      "position": "lower",
+      "width_class": "narrow",
+      "top1_predicted_visual_name": "Wallace",
+      "top1_confirmed_correct": false,
+      "known_ground_truth_visual_name": null,
+      "true_identity_known": false,
+      "negative_label_when_incorrect": {
+        "false_name": "Wallace",
+        "reason": "user explicitly says only Golf Clubs is correct in lower row"
+      },
+      "top1_raw_score": 4.05452,
+      "top1_relative_support_pct": 18.48,
+      "verified_geometry": false,
+      "original_candidates": [
+        {
+          "name": "Wallace",
+          "raw_score": 4.05452,
+          "relative_support_pct": 18.48,
+          "verified": false
+        },
+        {
+          "name": "UpgradeHammer",
+          "raw_score": 4.00787,
+          "relative_support_pct": 17.27,
+          "verified": false
+        },
+        {
+          "name": "WardingGlyphs",
+          "raw_score": 4.00082,
+          "relative_support_pct": 17.09,
+          "verified": false
+        },
+        {
+          "name": "TriNet",
+          "raw_score": 3.98234,
+          "relative_support_pct": 16.64,
+          "verified": false
+        },
+        {
+          "name": "VialofBlood",
+          "raw_score": 3.93333,
+          "relative_support_pct": 15.5,
+          "verified": false
+        },
+        {
+          "name": "WildQuillback",
+          "raw_score": 3.91123,
+          "relative_support_pct": 15.01,
+          "verified": false
+        }
+      ]
+    },
+    {
+      "region_id": "region-10",
+      "box": {
+        "x": 1626,
+        "y": 729,
+        "width": 134,
+        "height": 276
+      },
+      "position": "lower",
+      "width_class": "narrow",
+      "top1_predicted_visual_name": "UluKnife",
+      "top1_confirmed_correct": false,
+      "known_ground_truth_visual_name": null,
+      "true_identity_known": false,
+      "negative_label_when_incorrect": {
+        "false_name": "UluKnife",
+        "reason": "user explicitly says only Golf Clubs is correct in lower row"
+      },
+      "top1_raw_score": 4.27919,
+      "top1_relative_support_pct": 19.42,
+      "verified_geometry": false,
+      "original_candidates": [
+        {
+          "name": "UluKnife",
+          "raw_score": 4.27919,
+          "relative_support_pct": 19.42,
+          "verified": false
+        },
+        {
+          "name": "RivetGun",
+          "raw_score": 4.21281,
+          "relative_support_pct": 17.72,
+          "verified": false
+        },
+        {
+          "name": "DooleysScarf",
+          "raw_score": 4.20301,
+          "relative_support_pct": 17.49,
+          "verified": false
+        },
+        {
+          "name": "YLWM4NT1S",
+          "raw_score": 4.17586,
+          "relative_support_pct": 16.85,
+          "verified": false
+        },
+        {
+          "name": "ToolFight",
+          "raw_score": 4.06596,
+          "relative_support_pct": 14.48,
+          "verified": false
+        },
+        {
+          "name": "Wrench",
+          "raw_score": 4.04338,
+          "relative_support_pct": 14.04,
+          "verified": false
+        }
+      ]
+    }
+  ]
+}
