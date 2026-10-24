@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-24T02:54:53.221Z",
+  "project": "Bazaar",
+  "benchmark": {
+    "screenshot_sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+    "visible_playable_cards": 11,
+    "confirmed_unique_recognized": [
+      "Stained Glass Window"
+    ],
+    "confirmed_recall": "1/11",
+    "hands_of_time_playable": false
+  },
+  "defect": {
+    "previous_descriptor_bits": 128,
+    "unique_comparisons": 17,
+    "repeat_every_n_bits": 17,
+    "remediation": "new deterministic 128-unique-comparison BRIEF descriptors"
+  },
+  "bank_v2": {
+    "reference_count": 1483,
+    "missing": 0,
+    "bank_key": "debug/whole-screen-local-feature-bank-v2/bank.json",
+    "packed_index_shards": 8
+  },
+  "v3": {
+    "descriptor_version": "brief128-v3",
+    "status": "experimental, rebuilding all eight shards",
+    "confirmed_shard": 6,
+    "reference_count_in_shard": 192,
+    "target_feature_count": 5560,
+    "packed_shard_6": "debug/global-local-packed-index-v3/shard-06.bin",
+    "packed_reference_features_in_shard_6": 23655
+  },
+  "experiment": {
+    "output_key": "debug/global-local-full-dense-v5-brief128/s06-rarity-raritypair-d100.json",
+    "shortlisted_references": 40,
+    "geometrically_verified_references": 40,
+    "stained_glass_window_rank": 16,
+    "stained_glass_window_accepted": true,
+    "inliers": 13,
+    "mean_residual_px": 0.8069887792619715,
+    "mean_hamming": 11.153846153846153,
+    "bbox": {
+      "x": 1005.5315398720069,
+      "y": 388.8146886460057,
+      "width": 299.8029769180988,
+      "height": 299.8029769180988
+    },
+    "other_accepted_in_shard": 0,
+    "hands_of_time_accepted": false,
+    "whole_screenshot_recall_unproved": true
+  },
+  "control": {
+    "production_worker_unchanged": true,
+    "production_worker_deployment_id": "448be080-f7b0-47a0-8a4c-34dcc019d389",
+    "experimental_proof_worker_deployment_id": "5c29fb45b7b74780b7cc8923338c6602",
+    "github_experiment_branch": "experiment/dense-rarity-20261023",
+    "github_experiment_head": "27e4133141f05860aa2db1f19017d213c1257901",
+    "server_side_only": true,
+    "free_only": true
+  },
+  "remaining": "Finish remaining v3 bank shards and packed indexes, run all-shard benchmark, aggregate/dedupe accepted geometry, validate HUD negative case. No production promotion."
+}
