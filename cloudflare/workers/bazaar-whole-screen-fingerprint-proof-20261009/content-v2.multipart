@@ -996,6 +996,7 @@ async function glFastTile(env,ti){const r=await glFastRange(env,ti,0,8),out="deb
 
 
 
+
 // Repair previously failed normalized references into a versioned bank/index.
 // All writes stay under v2 prefixes; v1 packed geometry baseline is untouched.
 const GL_REPAIR_V2_PREFIX="debug/whole-screen-local-feature-bank-v2/";
@@ -1370,6 +1371,44 @@ function glDenseExactRankV1(target,refs,idx) {
   return {rows,diagnostics:{tested,exact,skipped_very_common,refs_with_exact:rows.length}};
 }
 
+
+function glHoughShortlistV1(pairsByRef,poolVotes,refs,limit=24){
+  // Vote for mutually consistent translations at a small, generic set of
+  // plausible image scales. This is a CHEAP shortlist, not RANSAC verification.
+  const scales=[0.65,0.8,0.95,1.1,1.25,1.4,1.6],
+    bin=48,shifts=[0,24],rows=[];
+  for(let n=0;n<poolVotes.length;n++){
+    const ref=poolVotes[n],raw=pairsByRef[n]||[],
+      bestPairs=raw.filter(p=>p.distance<=22)
+        .sort((a,b)=>a.distance-b.distance||a.ti-b.ti).slice(0,160),
+      bins=new Map();
+    for(const p of bestPairs){
+      for(let k=0;k<scales.length;k++){
+        const scale=scales[k],dx=p.target_x-scale*p.reference_x,
+          dy=p.target_y-scale*p.reference_y;
+        for(let sh=0;sh<shifts.length;sh++){
+          const q=shifts[sh],bx=Math.floor((dx+q)/bin),by=Math.floor((dy+q)/bin),
+            key=k+":"+sh+":"+bx+":"+by;
+          let entry=bins.get(key);
+          if(!entry){entry={count:0,targets:new Set(),references:new Set(),sum_distance:0,scale,dx,dy};bins.set(key,entry);}
+          if(entry.targets.has(p.ti)||entry.references.has(p.ri))continue;
+          entry.targets.add(p.ti);entry.references.add(p.ri);
+          entry.count++;entry.sum_distance+=p.distance;
+        }
+      }
+    }
+    let peak=null;
+    for(const v of bins.values())if(!peak||v.count>peak.count||
+      (v.count===peak.count&&v.sum_distance/v.count<peak.sum_distance/peak.count))peak=v;
+    const peakCount=peak?.count||0,peakH=peakCount?peak.sum_distance/peakCount:128;
+    rows.push({...ref,score:peakCount*10-peakH*0.03+Math.log1p(raw.length)*0.01,
+      hough_peak:peakCount,hough_scale:peak?.scale||null,
+      hough_mean_hamming:peakCount?peakH:null,raw_pairs:raw.length,pool_position:n});
+  }
+  rows.sort((a,b)=>b.score-a.score||b.hough_peak-a.hough_peak||a.pool_position-b.pool_position);
+  return rows.slice(0,Math.max(8,Math.min(64,limit)));
+}
+
 async function glDenseRareShardV1(env, body) {
   const si=Math.max(0,Math.min(7,Number(body.shard_index)||0));
   const ds=Math.max(.45,Math.min(1.25,Number(body.scale)||1));
@@ -1391,9 +1430,15 @@ async function glDenseRareShardV1(env, body) {
   const rarity=glRareVotePacked(tr.features,bank.refs,idx,bank.refs.length,maxBucket);
   const exact=glDenseExactRankV1(tr.features,bank.refs,idx);
   const mode=String(body.ranking||"rarity");
+  const houghMode=mode==="hough";
   const allVotes=mode==="exact"?exact.rows:rarity;
-  const votes=allVotes.slice(0,topN);
-  const found=glDenseRarePairsV1(tr.features,bank,idx,votes,maxBucket,192);
+  const poolN=houghMode?Math.max(topN,Math.min(bank.refs.length,Number(body.pool)||64)):topN;
+  const preliminary=allVotes.slice(0,poolN);
+  const foundPool=glDenseRarePairsV1(tr.features,bank,idx,preliminary,maxBucket,192);
+  const votes=houghMode?glHoughShortlistV1(foundPool.per,preliminary,bank.refs,topN):preliminary;
+  const positions=new Map(preliminary.map((v,i)=>[v.i,i]));
+  const found=houghMode?{...foundPool,
+    selected:votes.map(v=>v.i),per:votes.map(v=>foundPool.per[positions.get(v.i)])}:foundPool;
   const baselinePairs=body.pair_mode==="baseline"?
     glCollectPairsSelectivePackedFast(tr.features,bank.refs,idx,128):null;
   const verifyPairs=baselinePairs?
@@ -1406,7 +1451,8 @@ async function glDenseRareShardV1(env, body) {
       ||(t.inlier_count>=4&&t.mean_hamming<=4&&t.mean_residual<=1));});
   const shortlist=votes.map((v,rank)=>({rank:rank+1,name:basename(bank.refs[v.i].asset_path),
     asset_path:bank.refs[v.i].asset_path,score:v.score,votes:v.votes,hits:v.hits,
-    raw_pairs:verifyPairs[rank].length}));
+    raw_pairs:verifyPairs[rank].length,
+    hough_peak:v.hough_peak??null,hough_scale:v.hough_scale??null}));
   const result={
     schema_version:1,proof_version:"dense-rare-shortlist-v1",input_key:inputKey,
     shard_index:si,bank_version:version,descriptor_scale:ds,target_feature_count:tr.features.length,
@@ -1414,7 +1460,7 @@ async function glDenseRareShardV1(env, body) {
     rank_sgw:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))+1 || null,
     rank_hands:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("HandsOfTime"))+1 || null,
     fresh_extraction:body.fresh===true,full_ranking_count:allVotes.length,
-    ranking_mode:mode,pair_mode:body.pair_mode==="baseline"?"baseline":"rarity",
+    ranking_mode:mode,pool_count:poolN,pair_mode:body.pair_mode==="baseline"?"baseline":"rarity",
     candidate_reference_count:rows.length,geometry_executed_count:rows.length,
     accepted_count:accepted.length,accepted,top:rows.slice(0,24),shortlist,
     diagnostics:{...found.stats,exact:exact.diagnostics},
