@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "kind": "development_v8_independent_benchmark_and_workflow",
+  "generated_at": "2026-10-24T21:51:33.333Z",
+  "project_goal": "Arbitrary Bazaar screenshots -> localized game objects -> canonical identities -> trusted game metadata and visible instance state, all free and server-side.",
+  "production_worker_changed": false,
+  "experiment": {
+    "branch": "experiment/dense-rarity-20261023",
+    "worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "latest_deployment_id": "ce6737d0c00e48c79ae32bf3d4dfd0bf",
+    "successful_deployment_kind": "module_worker_with_region_full_catalogue_workflow_and_fallback_probes",
+    "region_queue": "bazaar-region-rank-v1-20261024",
+    "module_paths": [
+      "src/recognition/fullcatalog-workflow-v2.js",
+      "src/recognition/region-hypotheses-v1.js",
+      "src/recognition/fullcatalog-convolution-v1.js",
+      "src/recognition/isolated-region-probe-v1.js",
+      "src/recognition/gold-evaluator-v1.js",
+      "src/ingestion/screenshot-upload-v1.js"
+    ],
+    "screenshot_default_ingestion_job": "fullcatalog_start_v2",
+    "companion_image_matcher_job": "global_full_dense_rare_shortlist",
+    "upload_auth_required": true,
+    "upload_auth_configured_unverified": true,
+    "processing_status_job": "fullcatalog_status_v2",
+    "idempotent_restart_test": {
+      "input_sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+      "old_existing_regions": 10,
+      "queued_count": 0,
+      "completed_count": 10,
+      "queue_state": "not_required"
+    },
+    "queue_backlog_after_runs": 0
+  },
+  "confirmed_screenshot": {
+    "sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+    "truth_gold_key": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-confirmed.json",
+    "evaluator_key": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/evaluation.json",
+    "human_labeled_count": 10,
+    "programmatic_region_count": 10,
+    "correct_top1": 10,
+    "correct_top3": 10,
+    "score_calibration": "uncalibrated",
+    "missing_gold_regions": 0,
+    "generalization_claim": "one fully human-verified screenshot only"
+  },
+  "independent_benchmark": {
+    "sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+    "dimensions": [
+      2048,
+      1409
+    ],
+    "historical_ground_truth_playable_count": 11,
+    "programmatic_regions_found": 10,
+    "verified_card_identity_count": 1,
+    "verified_identity": "StainedGlassWindow",
+    "verified_region_id": "region-02",
+    "full_catalogue_color_comparisons": 14830,
+    "detailed_convolution_comparisons": 480,
+    "top_candidates": [
+      {
+        "region_id": "region-01",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Speedrunner.avif",
+        "comparison_score": 0.815227,
+        "runner_up_score": 0.636108,
+        "identity_status": "unverified"
+      },
+      {
+        "region_id": "region-02",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/StainedGlassWindow.avif",
+        "comparison_score": 0.841194,
+        "runner_up_score": 0.608225,
+        "identity_status": "user_confirmed_previously"
+      },
+      {
+        "region_id": "region-03",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Marbles.avif",
+        "comparison_score": 0.776889,
+        "runner_up_score": 0.706917,
+        "identity_status": "unverified"
+      },
+      {
+        "region_id": "region-04",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Sapphire.avif",
+        "comparison_score": 0.76907,
+        "runner_up_score": 0.693902,
+        "identity_status": "unverified"
+      },
+      {
+        "region_id": "region-05",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Battery.avif",
+        "comparison_score": 0.727995,
+        "runner_up_score": 0.635077,
+        "identity_status": "unverified"
+      },
+      {
+        "region_id": "region-06",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TheBoulder.avif",
+        "comparison_score": 0.61677,
+        "runner_up_score": 0.616255,
+        "identity_status": "unverified"
+      },
+      {
+        "region_id": "region-07",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Venomander.avif",
+        "comparison_score": 0.779368,
+        "runner_up_score": 0.66066,
+        "identity_status": "unverified"
+      },
+      {
+        "region_id": "region-08",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Flare.avif",
+        "comparison_score": 0.70917,
+        "runner_up_score": 0.65476,
+        "identity_status": "unverified"
+      },
+      {
+        "region_id": "region-09",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/BakedPotato.avif",
+        "comparison_score": 0.78093,
+        "runner_up_score": 0.701286,
+        "identity_status": "unverified"
+      },
+      {
+        "region_id": "region-10",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Bayonet.avif",
+        "comparison_score": 0.662485,
+        "runner_up_score": 0.62657,
+        "identity_status": "unverified"
+      }
+    ],
+    "results_r2": "debug/region-fullcatalog-convolution-v1/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393/result.json",
+    "status_snapshot_r2": "debug/region-fullcatalog-convolution-v1/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393/status-snapshot.json",
+    "gold_count_not_yet_localized": 1,
+    "warning": "Ten top-ranked identities are hypotheses. One historically confirmed identity; cannot calculate accuracy of the other nine."
+  },
+  "isolated_fallback": {
+    "old_screenshot": {
+      "speculative_regions": 3,
+      "art_hypotheses": [
+        {
+          "region_id": "fallback-01",
+          "top": "UluKnife",
+          "score": 0.649561,
+          "bbox": {
+            "x": 1043,
+            "y": 66,
+            "width": 108,
+            "height": 215
+          }
+        },
+        {
+          "region_id": "fallback-02",
+          "top": "ColossalPopsicle",
+          "score": 0.610214,
+          "bbox": {
+            "x": 1165,
+            "y": 66,
+            "width": 105,
+            "height": 215
+          }
+        },
+        {
+          "region_id": "fallback-03",
+          "top": "Lens",
+          "score": 0.584416,
+          "bbox": {
+            "x": 330,
+            "y": 1139,
+            "width": 284,
+            "height": 236
+          }
+        }
+      ],
+      "result_key": "debug/region-fallback-v1/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393/result.json",
+      "accepted_cards": 0
+    },
+    "confirmed_screenshot": {
+      "speculative_regions": 3,
+      "top_hypotheses": [
+        "ShadowedCloak",
+        "BlackRose",
+        "3DPrinter"
+      ],
+      "result_key": "debug/region-fallback-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/result.json",
+      "accepted_cards": 0
+    },
+    "policy": "Diagnostic-only. Do not infer missed card from isolated fallback score or admit HUD as a card without separate verification."
+  },
+  "measurements": {
+    "performance_on_confirmed_screenshot": "10/10",
+    "independent_screenshot_localization": "10/11 proposals (not identities)",
+    "independent_screenshot_confirmed_identity": "1/11 confirmed; other predictions unverified",
+    "complete_scene_structured_metadata": "not implemented end-to-end",
+    "screenshot_upload_status_endpoint": "implemented in experimental Worker; authentication still requires validated configuration",
+    "probability_calibration": "not implemented"
+  },
+  "next_tasks": [
+    "Recover remaining one card on 11-card benchmark with a general localization method, using independently validated labels.",
+    "Evaluate older benchmark top predictions with human truth rather than implying correct unseen guesses.",
+    "Add controlled crop-affine verification for full-catalogue candidates; current score remains a similarity score.",
+    "Connect canonical card identities to full game metadata/visible instance state, not just visual art identities.",
+    "Test additional independent screenshots before production promotion."
+  ]
+}
