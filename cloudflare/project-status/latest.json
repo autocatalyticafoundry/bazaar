@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24T20:05:41.278Z",
+  "updated_at": "2026-10-24T20:36:11.938Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,10 +110,10 @@
     }
   },
   "next_steps": [
-    "Test full native-resolution multiscale descriptors for small card sizes and verify new matches geometrically",
-    "Improve first-stage proposal/routing coverage rather than reporting unverified shortlist names",
-    "Test 8-shard aggregation at multiple scales and dedupe overlapping discoveries",
-    "Preserve all checks for original 11-card benchmark and do not modify production without a demonstrated gain"
+    "Improve retrieval accuracy for narrow cards; per-region rankings exist but many guesses are weak",
+    "Label full gold regions, assess IoU and top-1/top-3 per region, then calibrate probabilities and unknown class",
+    "Make complete screenshot upload and matching response automatically refresh verified geometry when asynchronous matching finishes",
+    "Keep production intact until robust measured gains"
   ],
   "preservation": {
     "status": "complete",
@@ -219,6 +219,27 @@
       "reason": "screenshot-upload auth secret not yet bound to Worker",
       "queue_binding": "bazaar-fullgeo-v1-20261014",
       "production_unchanged": true
+    },
+    "region_first_recognition": {
+      "version": "region-first-candidate-sets-v1",
+      "status": "implemented_deployed_executed_and_persisted",
+      "worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+      "deployment_id": "367af86a5c394033a7b1a95c8714daf1",
+      "experiment_branch": "experiment/dense-rarity-20261023",
+      "source_path": "src/recognition/region-hypotheses-v1.js",
+      "result_github": "cloudflare/project-status/2026-10-24-region-first-demo.json",
+      "result_r2": "debug/region-hypotheses-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/result.json",
+      "screenshot_sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+      "candidate_reference_count": 1483,
+      "screenshot_region_count": 10,
+      "verified_recognition_count": 2,
+      "candidate_per_region_count": 6,
+      "region_location_method": "native pixel border repetition; server side",
+      "relative_support_pct_calibrated": false,
+      "prior_screenshot_gold_11_region_proposals": 10,
+      "production_changed": false,
+      "upload_route_requires_authorization_secret": true,
+      "notes": "End-to-end region-first candidate sets experimentally tested. Relative support percentages are within-shortlist softmax weights, not posterior probabilities. Eight lower-card identities remain unverified."
     }
   }
 }
