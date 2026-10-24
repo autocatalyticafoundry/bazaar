@@ -1,0 +1,826 @@
+{
+  "schema_version": 1,
+  "version": "region-first-candidate-sets-v1",
+  "input_key": "perception/inputs/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a.png",
+  "sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+  "width": 2048,
+  "height": 1338,
+  "region_count": 10,
+  "regions": [
+    {
+      "region_id": "region-01",
+      "bbox": {
+        "x": 714,
+        "y": 399,
+        "width": 288,
+        "height": 280
+      },
+      "proposal_score": 64.616,
+      "target_feature_count": 147,
+      "status": "verified_visual_reference",
+      "verified": {
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RegalBlade.avif",
+        "proof": {
+          "inlier_count": 24,
+          "mean_residual_px": 0.8795406120809447,
+          "mean_hamming": 6.708333333333333,
+          "shard_index": 5,
+          "source_result_key": "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-05.json"
+        },
+        "overlap_iou": 0.9057
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RegalBlade.avif",
+          "raw_score": 9.30289,
+          "relative_support_pct": 39.23,
+          "votes": 112.4072,
+          "hits": 137,
+          "shard_index": 5,
+          "verification": "accepted_geometry"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VoidRender.avif",
+          "raw_score": 7.65796,
+          "relative_support_pct": 13.86,
+          "votes": 82.1224,
+          "hits": 129,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Lethargy.avif",
+          "raw_score": 7.43358,
+          "relative_support_pct": 12.03,
+          "votes": 59.4687,
+          "hits": 118,
+          "shard_index": 4,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/UluKnife.avif",
+          "raw_score": 7.39804,
+          "relative_support_pct": 11.76,
+          "votes": 77.5913,
+          "hits": 124,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WalterCooler.avif",
+          "raw_score": 7.37787,
+          "relative_support_pct": 11.61,
+          "votes": 74.5128,
+          "hits": 128,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ToxicWeapons.avif",
+          "raw_score": 7.36327,
+          "relative_support_pct": 11.51,
+          "votes": 62.9118,
+          "hits": 118,
+          "shard_index": 7,
+          "verification": "unverified"
+        }
+      ]
+    },
+    {
+      "region_id": "region-02",
+      "bbox": {
+        "x": 1016,
+        "y": 399,
+        "width": 293,
+        "height": 280
+      },
+      "proposal_score": 71.687,
+      "target_feature_count": 156,
+      "status": "unverified_hypotheses",
+      "verified": null,
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/MoneyFurnace.avif",
+          "raw_score": 8.97423,
+          "relative_support_pct": 28.96,
+          "votes": 118.3782,
+          "hits": 153,
+          "shard_index": 4,
+          "verification": "unverified"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Zoarcid.avif",
+          "raw_score": 8.15161,
+          "relative_support_pct": 16.89,
+          "votes": 84.714,
+          "hits": 139,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Trojan.avif",
+          "raw_score": 8.09544,
+          "relative_support_pct": 16.28,
+          "votes": 108.6118,
+          "hits": 144,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Weaselpede.avif",
+          "raw_score": 7.8437,
+          "relative_support_pct": 13.8,
+          "votes": 90.7974,
+          "hits": 137,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/YLWM4NT1S.avif",
+          "raw_score": 7.63881,
+          "relative_support_pct": 12.07,
+          "votes": 102.4854,
+          "hits": 139,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VitalityPotion.avif",
+          "raw_score": 7.62871,
+          "relative_support_pct": 11.99,
+          "votes": 82.5171,
+          "hits": 137,
+          "shard_index": 7,
+          "verification": "unverified"
+        }
+      ]
+    },
+    {
+      "region_id": "region-03",
+      "bbox": {
+        "x": 1323,
+        "y": 399,
+        "width": 281,
+        "height": 280
+      },
+      "proposal_score": 63.74,
+      "target_feature_count": 130,
+      "status": "unverified_hypotheses",
+      "verified": null,
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Boomerang.avif",
+          "raw_score": 8.63538,
+          "relative_support_pct": 37.46,
+          "votes": 81.4661,
+          "hits": 122,
+          "shard_index": 0,
+          "verification": "unverified"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ToxicShield.avif",
+          "raw_score": 7.50745,
+          "relative_support_pct": 17.37,
+          "votes": 60.0596,
+          "hits": 115,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ThrowingKnives.avif",
+          "raw_score": 6.90572,
+          "relative_support_pct": 11.53,
+          "votes": 56.1023,
+          "hits": 108,
+          "shard_index": 6,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/PartingShot.avif",
+          "raw_score": 6.88681,
+          "relative_support_pct": 11.38,
+          "votes": 47.2136,
+          "hits": 91,
+          "shard_index": 4,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VoidRender.avif",
+          "raw_score": 6.85751,
+          "relative_support_pct": 11.16,
+          "votes": 73.5386,
+          "hits": 123,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VitalReserve.avif",
+          "raw_score": 6.85045,
+          "relative_support_pct": 11.1,
+          "votes": 43.8643,
+          "hits": 104,
+          "shard_index": 7,
+          "verification": "unverified"
+        }
+      ]
+    },
+    {
+      "region_id": "region-04",
+      "bbox": {
+        "x": 560,
+        "y": 729,
+        "width": 132,
+        "height": 276
+      },
+      "proposal_score": 66.935,
+      "target_feature_count": 62,
+      "status": "unverified_hypotheses",
+      "verified": null,
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/LiquidCooled.avif",
+          "raw_score": 3.25978,
+          "relative_support_pct": 19.28,
+          "votes": 32.2702,
+          "hits": 52,
+          "shard_index": 4,
+          "verification": "unverified"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ViperCane.avif",
+          "raw_score": 3.23754,
+          "relative_support_pct": 18.58,
+          "votes": 31.5556,
+          "hits": 50,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VatofAcid.avif",
+          "raw_score": 3.19292,
+          "relative_support_pct": 17.25,
+          "votes": 42.8375,
+          "hits": 56,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/FrozenFlames.avif",
+          "raw_score": 3.14741,
+          "relative_support_pct": 15.99,
+          "votes": 18.0805,
+          "hits": 34,
+          "shard_index": 2,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VIPPass.avif",
+          "raw_score": 3.093,
+          "relative_support_pct": 14.6,
+          "votes": 41.4969,
+          "hits": 56,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Renovation.avif",
+          "raw_score": 3.07986,
+          "relative_support_pct": 14.29,
+          "votes": 19.7208,
+          "hits": 37,
+          "shard_index": 5,
+          "verification": "unverified"
+        }
+      ]
+    },
+    {
+      "region_id": "region-05",
+      "bbox": {
+        "x": 706,
+        "y": 729,
+        "width": 136,
+        "height": 276
+      },
+      "proposal_score": 71.68,
+      "target_feature_count": 106,
+      "status": "unverified_hypotheses",
+      "verified": null,
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WarpDrive.avif",
+          "raw_score": 5.61071,
+          "relative_support_pct": 22.98,
+          "votes": 75.2756,
+          "hits": 100,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VeggieGarden.avif",
+          "raw_score": 5.45336,
+          "relative_support_pct": 19.48,
+          "votes": 73.1646,
+          "hits": 99,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VoidShield.avif",
+          "raw_score": 5.21838,
+          "relative_support_pct": 15.23,
+          "votes": 69.8171,
+          "hits": 98,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VenomousDose.avif",
+          "raw_score": 5.18233,
+          "relative_support_pct": 14.67,
+          "votes": 51.3024,
+          "hits": 85,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/BarbspikeWarden.avif",
+          "raw_score": 5.14287,
+          "relative_support_pct": 14.07,
+          "votes": 54.6695,
+          "hits": 91,
+          "shard_index": 0,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/UnstableGravWell.avif",
+          "raw_score": 5.1083,
+          "relative_support_pct": 13.57,
+          "votes": 68.535,
+          "hits": 99,
+          "shard_index": 7,
+          "verification": "unverified"
+        }
+      ]
+    },
+    {
+      "region_id": "region-06",
+      "bbox": {
+        "x": 856,
+        "y": 729,
+        "width": 140,
+        "height": 276
+      },
+      "proposal_score": 96.179,
+      "target_feature_count": 84,
+      "status": "unverified_hypotheses",
+      "verified": null,
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ValleyFever.avif",
+          "raw_score": 4.73717,
+          "relative_support_pct": 22.71,
+          "votes": 33.8301,
+          "hits": 59,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ToxicShield.avif",
+          "raw_score": 4.63682,
+          "relative_support_pct": 20.05,
+          "votes": 37.0946,
+          "hits": 66,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WorkinHard.avif",
+          "raw_score": 4.43979,
+          "relative_support_pct": 15.7,
+          "votes": 36.3413,
+          "hits": 67,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VoidDisruptor.avif",
+          "raw_score": 4.37731,
+          "relative_support_pct": 14.52,
+          "votes": 37.3998,
+          "hits": 67,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/UwashiwaliBird.avif",
+          "raw_score": 4.33108,
+          "relative_support_pct": 13.71,
+          "votes": 54.0952,
+          "hits": 81,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WantedPoster.avif",
+          "raw_score": 4.30733,
+          "relative_support_pct": 13.31,
+          "votes": 57.7889,
+          "hits": 83,
+          "shard_index": 7,
+          "verification": "unverified"
+        }
+      ]
+    },
+    {
+      "region_id": "region-07",
+      "bbox": {
+        "x": 1010,
+        "y": 729,
+        "width": 144,
+        "height": 276
+      },
+      "proposal_score": 77.86,
+      "target_feature_count": 68,
+      "status": "unverified_hypotheses",
+      "verified": null,
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Whisk.avif",
+          "raw_score": 3.46151,
+          "relative_support_pct": 18.29,
+          "votes": 41.6821,
+          "hits": 62,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VoidRender.avif",
+          "raw_score": 3.4428,
+          "relative_support_pct": 17.72,
+          "votes": 36.9199,
+          "hits": 56,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ThrownNet.avif",
+          "raw_score": 3.43958,
+          "relative_support_pct": 17.63,
+          "votes": 46.1468,
+          "hits": 56,
+          "shard_index": 6,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Toolbox.avif",
+          "raw_score": 3.41243,
+          "relative_support_pct": 16.85,
+          "votes": 45.7826,
+          "hits": 61,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/LiquidCooled.avif",
+          "raw_score": 3.34795,
+          "relative_support_pct": 15.13,
+          "votes": 33.1431,
+          "hits": 54,
+          "shard_index": 4,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Truffleholic.avif",
+          "raw_score": 3.31719,
+          "relative_support_pct": 14.38,
+          "votes": 36.338,
+          "hits": 54,
+          "shard_index": 7,
+          "verification": "unverified"
+        }
+      ]
+    },
+    {
+      "region_id": "region-08",
+      "bbox": {
+        "x": 1168,
+        "y": 729,
+        "width": 291,
+        "height": 276
+      },
+      "proposal_score": 66.701,
+      "target_feature_count": 149,
+      "status": "verified_visual_reference",
+      "verified": {
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/GolfClubs.avif",
+        "proof": {
+          "inlier_count": 18,
+          "mean_residual_px": 0.928538497775945,
+          "mean_hamming": 7.722222222222222,
+          "shard_index": 2,
+          "source_result_key": "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-02.json"
+        },
+        "overlap_iou": 0.8969
+      },
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/GolfClubs.avif",
+          "raw_score": 8.41888,
+          "relative_support_pct": 33.98,
+          "votes": 112.9511,
+          "hits": 131,
+          "shard_index": 2,
+          "verification": "accepted_geometry"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TreeClub.avif",
+          "raw_score": 7.129,
+          "relative_support_pct": 13.8,
+          "votes": 95.6456,
+          "hits": 132,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WeldingHelmet.avif",
+          "raw_score": 7.10311,
+          "relative_support_pct": 13.55,
+          "votes": 65.8715,
+          "hits": 112,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ToxicShield.avif",
+          "raw_score": 7.07392,
+          "relative_support_pct": 13.28,
+          "votes": 56.5914,
+          "hits": 109,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/StretchPants.avif",
+          "raw_score": 7.01705,
+          "relative_support_pct": 12.76,
+          "votes": 57.0068,
+          "hits": 103,
+          "shard_index": 6,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TriNet.avif",
+          "raw_score": 7.00297,
+          "relative_support_pct": 12.63,
+          "votes": 93.9547,
+          "hits": 133,
+          "shard_index": 7,
+          "verification": "unverified"
+        }
+      ]
+    },
+    {
+      "region_id": "region-09",
+      "bbox": {
+        "x": 1473,
+        "y": 729,
+        "width": 139,
+        "height": 276
+      },
+      "proposal_score": 65.809,
+      "target_feature_count": 80,
+      "status": "unverified_hypotheses",
+      "verified": null,
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Wallace.avif",
+          "raw_score": 4.05452,
+          "relative_support_pct": 18.48,
+          "votes": 48.485,
+          "hits": 72,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/UpgradeHammer.avif",
+          "raw_score": 4.00787,
+          "relative_support_pct": 17.27,
+          "votes": 44.8094,
+          "hits": 67,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WardingGlyphs.avif",
+          "raw_score": 4.00082,
+          "relative_support_pct": 17.09,
+          "votes": 53.6767,
+          "hits": 72,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TriNet.avif",
+          "raw_score": 3.98234,
+          "relative_support_pct": 16.64,
+          "votes": 53.4287,
+          "hits": 71,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VialofBlood.avif",
+          "raw_score": 3.93333,
+          "relative_support_pct": 15.5,
+          "votes": 39.1361,
+          "hits": 62,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WildQuillback.avif",
+          "raw_score": 3.91123,
+          "relative_support_pct": 15.01,
+          "votes": 47.0974,
+          "hits": 72,
+          "shard_index": 7,
+          "verification": "unverified"
+        }
+      ]
+    },
+    {
+      "region_id": "region-10",
+      "bbox": {
+        "x": 1626,
+        "y": 729,
+        "width": 134,
+        "height": 276
+      },
+      "proposal_score": 72.741,
+      "target_feature_count": 77,
+      "status": "unverified_hypotheses",
+      "verified": null,
+      "top_candidates": [
+        {
+          "rank": 1,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/UluKnife.avif",
+          "raw_score": 4.27919,
+          "relative_support_pct": 19.42,
+          "votes": 44.8805,
+          "hits": 69,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 2,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RivetGun.avif",
+          "raw_score": 4.21281,
+          "relative_support_pct": 17.72,
+          "votes": 42.1281,
+          "hits": 66,
+          "shard_index": 5,
+          "verification": "unverified"
+        },
+        {
+          "rank": 3,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/DooleysScarf.avif",
+          "raw_score": 4.20301,
+          "relative_support_pct": 17.49,
+          "votes": 46.4238,
+          "hits": 69,
+          "shard_index": 1,
+          "verification": "unverified"
+        },
+        {
+          "rank": 4,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/YLWM4NT1S.avif",
+          "raw_score": 4.17586,
+          "relative_support_pct": 16.85,
+          "votes": 56.025,
+          "hits": 75,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 5,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ToolFight.avif",
+          "raw_score": 4.06596,
+          "relative_support_pct": 14.48,
+          "votes": 36.3671,
+          "hits": 65,
+          "shard_index": 7,
+          "verification": "unverified"
+        },
+        {
+          "rank": 6,
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Wrench.avif",
+          "raw_score": 4.04338,
+          "relative_support_pct": 14.04,
+          "votes": 50.9851,
+          "hits": 74,
+          "shard_index": 7,
+          "verification": "unverified"
+        }
+      ]
+    }
+  ],
+  "catalogue_reference_count": 1483,
+  "verified_region_count": 2,
+  "metrics": {
+    "localizer": {
+      "vertical_segments": 110,
+      "band_candidates": 4,
+      "accepted_row_bands": 2,
+      "method": "native-boundary-repetition-v1"
+    },
+    "region_count": 10,
+    "shard_count": 8,
+    "ranked_region_shard_pairs": 80
+  },
+  "score_semantics": {
+    "raw_score": "rare BRIEF128 feature votes, normalized for reference feature count",
+    "relative_support_pct": "softmax-normalized weight within top candidates ONLY, not a calibrated probability",
+    "unknown_class": "not estimated; missing candidates and artwork absence remain possible",
+    "probability_calibrated": false,
+    "verification": "accepted geometric verification only, never inferred from candidate scores"
+  },
+  "generated_at": "2026-10-24T20:32:26.545Z",
+  "validation": {
+    "current_image": {
+      "card_region_proposals": 10,
+      "verified_visual_identities": 2,
+      "geometry_verification_regression": "preserved",
+      "reference_count": 1483,
+      "ranked_candidates_per_region": 6
+    },
+    "prior_benchmark": {
+      "input_sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+      "gold_playable_cards": 11,
+      "region_proposal_count": 10,
+      "recall_not_assumed": "proposals not IoU matched against all gold cards"
+    },
+    "non_calibrated_weights": true,
+    "not_production_qualified": true
+  },
+  "deployment": {
+    "proof_worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "deployment_id": "367af86a5c394033a7b1a95c8714daf1",
+    "queue": "bazaar-region-rank-v1-20261024",
+    "source_branch": "experiment/dense-rarity-20261023",
+    "production_worker_unchanged": true
+  }
+}
