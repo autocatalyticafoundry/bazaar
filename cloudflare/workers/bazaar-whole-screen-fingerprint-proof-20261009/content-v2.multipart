@@ -1790,6 +1790,12 @@ async function bzScreenshotUploadV1(request,env){
     recognition_status="queued";
     queued_count=shardJobs.length;
   }
+  if(env.REGION_QUEUE){
+    await env.REGION_QUEUE.send({kind:"region_localize_v1",input_key:key,dispatch:true,
+      output_key:bzRegionBaseV1(sha)+"error-localization.json"});
+    queued_count++;
+    recognition_status="region_localization_and_matching_queued";
+  }
   const response={schema_version:1,ok:true,input_key:key,sha256:sha,
     width,height,bytes:ab.byteLength,previously_present:!!prior,
     recognition_status,queued_count,runtime:"Cloudflare server-side"};
@@ -1841,7 +1847,14 @@ async function bzExperimentalScreenshotStatusV1(request,env,sha){
       aggregate=saved?JSON.parse(await new Response(saved.body).text()):aggregate;
     }
   }
+  const regionKey=bzRegionBaseV1(sha)+"result.json";
+  const regionObject=await env.BENCHMARK_R2.get(regionKey);
+  const regionResult=regionObject?JSON.parse(await new Response(regionObject.body).text()):null;
   return new Response(JSON.stringify({schema_version:1,sha256:sha,
+    region_result_key:regionKey,region_ready:!!regionResult,
+    region_count:regionResult?.region_count||0,
+    verified_region_count:regionResult?.verified_region_count||0,
+    region_result:regionResult,
     input_key:"perception/inputs/"+sha+".png",all_complete:allComplete,
     complete_shards:shardKeys.length,status,
     aggregate_ready:!!aggregate,aggregate}),{
