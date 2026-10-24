@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "kind": "development_v9_cadence_wide_region_diagnostic",
+  "generated_at": "2026-10-24T22:58:06.227Z",
+  "goal": "Pixels -> playable object proposals -> canonical identities -> actual game metadata and visible state, all server-side and free-compatible",
+  "branch": "experiment/dense-rarity-20261023",
+  "source_paths": [
+    "src/recognition/region-hypotheses-v1.js",
+    "src/recognition/isolated-region-probe-v1.js",
+    "src/recognition/fullcatalog-workflow-v2.js",
+    "cloudflare/workers/bazaar-whole-screen-fingerprint-proof-20261009/content-v2.multipart"
+  ],
+  "latest_source_commit": "50528e48a6fd952c8cea92a011a2cbea96f8e496",
+  "experimental_worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+  "experimental_version_id": "1b7a526a-610d-45fa-870c-ad1c164e67b9",
+  "production_worker": "bazaar-clean-benchmark",
+  "production_preserved_deployment_id": "448be080-f7b0-47a0-8a4c-34dcc019d389",
+  "production_changed": false,
+  "change": {
+    "algorithm": "Infer ordinary frame pitch within repeated rows and separately test textured wide gaps with 2.35–4.1 inferred units, max 33% of screen width; never accept card identity from region geometry or similarity alone",
+    "execution": "Full-catalogue default workflow automatically dispatches or reuses supplementary wide-row ranking and exposes candidate lists in fullcatalog_status_v2",
+    "protocol": "All supplementary output is unverified; no HUD or other fallback accepted as playable cards",
+    "max_primary_regions_unchanged": 36
+  },
+  "old_screenshot": {
+    "sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+    "historical_human_playable_count": 11,
+    "primary_regions_before": 10,
+    "primary_regions_after": 10,
+    "supplementary_wide_before": 0,
+    "supplementary_wide_after": 1,
+    "total_ranked_region_candidates": 11,
+    "supplemental_bbox": {
+      "x": 350,
+      "y": 748,
+      "width": 470,
+      "height": 298
+    },
+    "wide_span_units": 3.006,
+    "top_hypotheses": [
+      {
+        "name": "Igloo",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Igloo.avif",
+        "score": 0.846541
+      },
+      {
+        "name": "Refreshing Treat",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RefreshingTreat.avif",
+        "score": 0.683234
+      },
+      {
+        "name": "Nanobot Blue",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/NanobotBlue.avif",
+        "score": 0.673978
+      }
+    ],
+    "human_verified_identities": 1,
+    "confirmed_identity": "Stained Glass Window",
+    "score_calibrated": false,
+    "new_region_identity_human_verified": false,
+    "new_region_geometry_independently_verified": false,
+    "wide_region_compared_detailed": 48,
+    "expected_coarse_reference_count": 1483,
+    "fullcatalog_status_r2": "debug/region-wide-diagnostic-v2/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393/automated-status.json",
+    "fallback_v2_result_r2": "debug/region-fallback-v2/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393/result.json",
+    "region_proposals_r2": "debug/region-hypotheses-v1/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393/regions.json"
+  },
+  "control_screenshot": {
+    "sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+    "primary_regions_before": 10,
+    "primary_regions_after": 10,
+    "supplemental_wide_region_count": 0,
+    "previously_human_confirmed_card_identities": 10,
+    "regression_evaluated_human_labels": 10,
+    "regression_top1": 10,
+    "regression_top3": 10,
+    "regression_proposal_misses": 0,
+    "regression_r2": "debug/region-wide-diagnostic-v2/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-regression.json",
+    "fullcatalog_status_r2": "debug/region-wide-diagnostic-v2/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/automated-status.json"
+  },
+  "cost_safety": {
+    "new_wide_region_detailed_comparisons": 48,
+    "full_catalogue_size": 1483,
+    "separate_manual_fallbacks_old_scene": 3,
+    "automatic_extra_wide_candidates_old_scene": 1,
+    "queue_backlog_after_probes": 0,
+    "no_client_side_inference": true,
+    "no_paid_vision_api": true,
+    "no_auto_accept_for_wide_regions": true
+  },
+  "limitations": [
+    "The extra Igloo hypothesis is not an independently verified game identity.",
+    "Eleven ranked candidate regions do NOT mean 11/11 card recall or accuracy.",
+    "Only one of the older screenshot identities has human ground truth; nine original hypotheses remain unverified.",
+    "Not yet independently benchmarked against additional unseen screenshots.",
+    "Still no full canonical gameplay metadata/instance-state extraction or verified screenshot upload auth."
+  ],
+  "next_tasks": [
+    "Obtain human truth for the tenth previously unverified and newly discovered wide card (the Igloo hypothesis) plus remaining nine original regions.",
+    "Independently verify wide-region geometry and avoid HUD/decorative false positives across unseen screenshots.",
+    "Calibrate score reliability or use crop-aware geometric verification to separate trust from hypothesis.",
+    "Integrate canonical gameplay metadata and visible instance state.",
+    "Verify authenticated upload/status API and free-tier cost budget before production promotion."
+  ]
+}
