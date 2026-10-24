@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-24T02:44:13.016Z",
+  "project": "Bazaar",
+  "goal": "pixels -> recognized game objects -> canonical identities -> structured game data + visible instance state",
+  "benchmark": {
+    "image_sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+    "playable_cards": 11,
+    "verified_accepted_unique": [
+      "Stained Glass Window"
+    ],
+    "false_positive_rejected": "Hands of Time",
+    "confirmed_recall": "1/11; no demonstrated improvement yet"
+  },
+  "reference_bank": {
+    "v1": {
+      "references": 1457,
+      "missing": 26
+    },
+    "v2": {
+      "references": 1483,
+      "missing": 0,
+      "bank_key": "debug/whole-screen-local-feature-bank-v2/bank.json",
+      "packed_index_prefix": "debug/global-local-packed-index-v2/",
+      "shards_built": 8,
+      "shards_indexed": 8
+    },
+    "v3": {
+      "status": "building",
+      "descriptor": "brief128-v3",
+      "unique_tests": 128,
+      "parts_submitted": 124,
+      "expected_references": 1483,
+      "output_prefix": "debug/whole-screen-local-feature-bank-v3/"
+    }
+  },
+  "root_cause": {
+    "original_descriptor_encoded_bits": 128,
+    "original_descriptor_unique_pixel_comparisons": 17,
+    "period": 17,
+    "verified_programmatically": true,
+    "consequence": "extreme descriptor collisions and non-discriminative retrieval"
+  },
+  "experiment": {
+    "github_branch": "experiment/dense-rarity-20261023",
+    "github_head": "dd5ca270cddff7e640c3471a7f6d0617faf12f7c",
+    "proof_worker_deployment_id": "8aa77f1608694eacbac13169e8877b79",
+    "v2_exact_results": "No accepted matches in completed shards; incomplete whole-set evaluation",
+    "v3_status": "Worker implementation deployed; reference descriptor extraction jobs submitted; retrieval benchmark pending"
+  },
+  "constraints": {
+    "server_side_only": true,
+    "free_only": true,
+    "assistant_vision_not_runtime": true,
+    "production_promotion_disabled": true
+  },
+  "production": {
+    "worker": "bazaar-clean-benchmark",
+    "deployment_id": "448be080-f7b0-47a0-8a4c-34dcc019d389",
+    "unchanged": true
+  },
+  "next_action": "Finish v3 shards, build v3 packed indexes, run full-native eight-shard retrieval; preserve Stained Glass Window and reject Hands/HUD; report measured recall without guessing identities."
+}
