@@ -1,0 +1,1081 @@
+{
+  "schema_version": 1,
+  "version": "convolution-affine-candidate-sets-v1",
+  "input_key": "perception/inputs/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a.png",
+  "width": 2048,
+  "height": 1338,
+  "region_count": 10,
+  "regions": [
+    {
+      "region_id": "region-01",
+      "bbox": {
+        "x": 714,
+        "y": 399,
+        "width": 288,
+        "height": 280
+      },
+      "verified": {
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RegalBlade.avif",
+        "proof": {
+          "inlier_count": 24,
+          "mean_residual_px": 0.8795406120809447,
+          "mean_hamming": 6.708333333333333,
+          "shard_index": 5,
+          "source_result_key": "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-05.json"
+        },
+        "overlap_iou": 0.9057
+      },
+      "old_top1": "corpus/images/providers/bazaarplanner/items/RegalBlade.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/RegalBlade.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RegalBlade.avif",
+          "feature_score": 9.30289,
+          "comparison_score": 0.898973,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.94805,
+            "chroma_correlation": 0.84735,
+            "gaussian_hog": 0.87506,
+            "pde_hog": 0.86147,
+            "pde_correlation": 0.96228
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/UluKnife.avif",
+          "feature_score": 7.39804,
+          "comparison_score": 0.683651,
+          "warp_mode": "cover",
+          "cover_shift": -0.16,
+          "components": {
+            "gaussian_correlation": 0.73139,
+            "chroma_correlation": 0.6183,
+            "gaussian_hog": 0.68113,
+            "pde_hog": 0.62731,
+            "pde_correlation": 0.75241
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TankyAnky.avif",
+          "feature_score": 7.05463,
+          "comparison_score": 0.639037,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.65197,
+            "chroma_correlation": 0.73596,
+            "gaussian_hog": 0.61719,
+            "pde_hog": 0.46005,
+            "pde_correlation": 0.66648
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Flail.avif",
+          "feature_score": 7.00869,
+          "comparison_score": 0.615633,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.60522,
+            "chroma_correlation": 0.61655,
+            "gaussian_hog": 0.64823,
+            "pde_hog": 0.57512,
+            "pde_correlation": 0.61686
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ExperimentalGarage.avif",
+          "feature_score": 7.0176,
+          "comparison_score": 0.582126,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.5439,
+            "chroma_correlation": 0.59063,
+            "gaussian_hog": 0.63638,
+            "pde_hog": 0.58612,
+            "pde_correlation": 0.54592
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ToxicShield.avif",
+          "feature_score": 7.36129,
+          "comparison_score": 0.576865,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.55137,
+            "chroma_correlation": 0.63778,
+            "gaussian_hog": 0.59003,
+            "pde_hog": 0.52456,
+            "pde_correlation": 0.55668
+          }
+        }
+      ],
+      "compared": 26,
+      "errors": []
+    },
+    {
+      "region_id": "region-02",
+      "bbox": {
+        "x": 1016,
+        "y": 399,
+        "width": 293,
+        "height": 280
+      },
+      "verified": null,
+      "old_top1": "corpus/images/providers/bazaarplanner/items/MoneyFurnace.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/MoneyFurnace.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/MoneyFurnace.avif",
+          "feature_score": 8.97423,
+          "comparison_score": 0.906357,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.94018,
+            "chroma_correlation": 0.886,
+            "gaussian_hog": 0.88295,
+            "pde_hog": 0.85841,
+            "pde_correlation": 0.95912
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Pendulum.avif",
+          "feature_score": 7.27839,
+          "comparison_score": 0.712402,
+          "warp_mode": "cover",
+          "cover_shift": -0.16,
+          "components": {
+            "gaussian_correlation": 0.74238,
+            "chroma_correlation": 0.7047,
+            "gaussian_hog": 0.69953,
+            "pde_hog": 0.63445,
+            "pde_correlation": 0.76256
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Weights.avif",
+          "feature_score": 7.6285,
+          "comparison_score": 0.676189,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.70473,
+            "chroma_correlation": 0.5293,
+            "gaussian_hog": 0.73286,
+            "pde_hog": 0.70676,
+            "pde_correlation": 0.72811
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ProductShowcase.avif",
+          "feature_score": 7.52006,
+          "comparison_score": 0.666833,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.59622,
+            "chroma_correlation": 0.60757,
+            "gaussian_hog": 0.78674,
+            "pde_hog": 0.75718,
+            "pde_correlation": 0.6075
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/FlameSigil.avif",
+          "feature_score": 7.31462,
+          "comparison_score": 0.646857,
+          "warp_mode": "cover",
+          "cover_shift": -0.16,
+          "components": {
+            "gaussian_correlation": 0.54277,
+            "chroma_correlation": 0.67164,
+            "gaussian_hog": 0.74681,
+            "pde_hog": 0.74074,
+            "pde_correlation": 0.55068
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Grenade.avif",
+          "feature_score": 7.18362,
+          "comparison_score": 0.629675,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.52691,
+            "chroma_correlation": 0.77733,
+            "gaussian_hog": 0.68033,
+            "pde_hog": 0.61089,
+            "pde_correlation": 0.5264
+          }
+        }
+      ],
+      "compared": 25,
+      "errors": []
+    },
+    {
+      "region_id": "region-03",
+      "bbox": {
+        "x": 1323,
+        "y": 399,
+        "width": 281,
+        "height": 280
+      },
+      "verified": null,
+      "old_top1": "corpus/images/providers/bazaarplanner/items/Boomerang.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/Boomerang.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Boomerang.avif",
+          "feature_score": 8.63538,
+          "comparison_score": 0.894348,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.9103,
+            "chroma_correlation": 0.83525,
+            "gaussian_hog": 0.90676,
+            "pde_hog": 0.90644,
+            "pde_correlation": 0.92501
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WorkinHard.avif",
+          "feature_score": 6.47798,
+          "comparison_score": 0.673206,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.70735,
+            "chroma_correlation": 0.67003,
+            "gaussian_hog": 0.65638,
+            "pde_hog": 0.5831,
+            "pde_correlation": 0.72621
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TurtleShell.avif",
+          "feature_score": 6.48411,
+          "comparison_score": 0.625316,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.52053,
+            "chroma_correlation": 0.71441,
+            "gaussian_hog": 0.69526,
+            "pde_hog": 0.67212,
+            "pde_correlation": 0.52429
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VenomousDose.avif",
+          "feature_score": 6.69082,
+          "comparison_score": 0.597377,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.55418,
+            "chroma_correlation": 0.63198,
+            "gaussian_hog": 0.63606,
+            "pde_hog": 0.60061,
+            "pde_correlation": 0.55721
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TranquilPurge.avif",
+          "feature_score": 6.48887,
+          "comparison_score": 0.597047,
+          "warp_mode": "cover",
+          "cover_shift": -0.16,
+          "components": {
+            "gaussian_correlation": 0.58471,
+            "chroma_correlation": 0.73778,
+            "gaussian_hog": 0.53625,
+            "pde_hog": 0.50449,
+            "pde_correlation": 0.59027
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/LongStrides.avif",
+          "feature_score": 6.67436,
+          "comparison_score": 0.587066,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.53329,
+            "chroma_correlation": 0.69435,
+            "gaussian_hog": 0.59117,
+            "pde_hog": 0.5647,
+            "pde_correlation": 0.53614
+          }
+        }
+      ],
+      "compared": 24,
+      "errors": []
+    },
+    {
+      "region_id": "region-04",
+      "bbox": {
+        "x": 560,
+        "y": 729,
+        "width": 132,
+        "height": 276
+      },
+      "verified": null,
+      "old_top1": "corpus/images/providers/bazaarplanner/items/LiquidCooled.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/Athanor.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Athanor.avif",
+          "feature_score": 2.88212,
+          "comparison_score": 0.630772,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.67895,
+            "chroma_correlation": 0.47896,
+            "gaussian_hog": 0.67056,
+            "pde_hog": 0.64108,
+            "pde_correlation": 0.70017
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VatofAcid.avif",
+          "feature_score": 3.19292,
+          "comparison_score": 0.623946,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.64647,
+            "chroma_correlation": 0.50941,
+            "gaussian_hog": 0.67675,
+            "pde_hog": 0.63177,
+            "pde_correlation": 0.66394
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TriNet.avif",
+          "feature_score": 3.0584,
+          "comparison_score": 0.608246,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.56648,
+            "chroma_correlation": 0.639,
+            "gaussian_hog": 0.66673,
+            "pde_hog": 0.57264,
+            "pde_correlation": 0.57382
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VoidRender.avif",
+          "feature_score": 3.04909,
+          "comparison_score": 0.607774,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.65588,
+            "chroma_correlation": 0.38741,
+            "gaussian_hog": 0.70547,
+            "pde_hog": 0.63248,
+            "pde_correlation": 0.672
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VIPPass.avif",
+          "feature_score": 3.093,
+          "comparison_score": 0.603305,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.55303,
+            "chroma_correlation": 0.55225,
+            "gaussian_hog": 0.71116,
+            "pde_hog": 0.64414,
+            "pde_correlation": 0.55804
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/DarkstoneFocuser.avif",
+          "feature_score": 2.91609,
+          "comparison_score": 0.596041,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.5924,
+            "chroma_correlation": 0.48423,
+            "gaussian_hog": 0.69911,
+            "pde_hog": 0.59853,
+            "pde_correlation": 0.60033
+          }
+        }
+      ],
+      "compared": 26,
+      "errors": []
+    },
+    {
+      "region_id": "region-05",
+      "bbox": {
+        "x": 706,
+        "y": 729,
+        "width": 136,
+        "height": 276
+      },
+      "verified": null,
+      "old_top1": "corpus/images/providers/bazaarplanner/items/WarpDrive.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/TuskedHelm.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TuskedHelm.avif",
+          "feature_score": 4.93479,
+          "comparison_score": 0.732303,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.73604,
+            "chroma_correlation": 0.69194,
+            "gaussian_hog": 0.75186,
+            "pde_hog": 0.73217,
+            "pde_correlation": 0.75661
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/LaunchTower.avif",
+          "feature_score": 4.6885,
+          "comparison_score": 0.659431,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.65941,
+            "chroma_correlation": 0.60179,
+            "gaussian_hog": 0.71252,
+            "pde_hog": 0.6409,
+            "pde_correlation": 0.67754
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Grenade.avif",
+          "feature_score": 4.71846,
+          "comparison_score": 0.63975,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.584,
+            "chroma_correlation": 0.69119,
+            "gaussian_hog": 0.67999,
+            "pde_hog": 0.6485,
+            "pde_correlation": 0.58975
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/28HourFitness.avif",
+          "feature_score": 4.74907,
+          "comparison_score": 0.625611,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.62388,
+            "chroma_correlation": 0.48836,
+            "gaussian_hog": 0.73773,
+            "pde_hog": 0.65065,
+            "pde_correlation": 0.62956
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Exoskeleton.avif",
+          "feature_score": 4.89215,
+          "comparison_score": 0.62293,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.62233,
+            "chroma_correlation": 0.59996,
+            "gaussian_hog": 0.65114,
+            "pde_hog": 0.59727,
+            "pde_correlation": 0.63667
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/BarbspikeWarden.avif",
+          "feature_score": 5.14287,
+          "comparison_score": 0.618695,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.6095,
+            "chroma_correlation": 0.43373,
+            "gaussian_hog": 0.7452,
+            "pde_hog": 0.70912,
+            "pde_correlation": 0.62757
+          }
+        }
+      ],
+      "compared": 25,
+      "errors": []
+    },
+    {
+      "region_id": "region-06",
+      "bbox": {
+        "x": 856,
+        "y": 729,
+        "width": 140,
+        "height": 276
+      },
+      "verified": null,
+      "old_top1": "corpus/images/providers/bazaarplanner/items/ValleyFever.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/UwashiwaliBird.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/UwashiwaliBird.avif",
+          "feature_score": 4.33108,
+          "comparison_score": 0.819065,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.84465,
+            "chroma_correlation": 0.76244,
+            "gaussian_hog": 0.82034,
+            "pde_hog": 0.81336,
+            "pde_correlation": 0.86315
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/GingerbreadHouse.avif",
+          "feature_score": 4.0068,
+          "comparison_score": 0.637597,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.62043,
+            "chroma_correlation": 0.56848,
+            "gaussian_hog": 0.69768,
+            "pde_hog": 0.68025,
+            "pde_correlation": 0.63798
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/RightHanded.avif",
+          "feature_score": 4.09062,
+          "comparison_score": 0.623247,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.63152,
+            "chroma_correlation": 0.54871,
+            "gaussian_hog": 0.66677,
+            "pde_hog": 0.63227,
+            "pde_correlation": 0.6422
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/MechMoles.avif",
+          "feature_score": 4.0904,
+          "comparison_score": 0.616779,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.68623,
+            "chroma_correlation": 0.62327,
+            "gaussian_hog": 0.51781,
+            "pde_hog": 0.55131,
+            "pde_correlation": 0.70437
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/BombingRun.avif",
+          "feature_score": 3.93395,
+          "comparison_score": 0.596386,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.64386,
+            "chroma_correlation": 0.4927,
+            "gaussian_hog": 0.59955,
+            "pde_hog": 0.60705,
+            "pde_correlation": 0.65311
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WantedPoster.avif",
+          "feature_score": 4.30733,
+          "comparison_score": 0.577994,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.57282,
+            "chroma_correlation": 0.48634,
+            "gaussian_hog": 0.65089,
+            "pde_hog": 0.60982,
+            "pde_correlation": 0.57784
+          }
+        }
+      ],
+      "compared": 25,
+      "errors": []
+    },
+    {
+      "region_id": "region-07",
+      "bbox": {
+        "x": 1010,
+        "y": 729,
+        "width": 144,
+        "height": 276
+      },
+      "verified": null,
+      "old_top1": "corpus/images/providers/bazaarplanner/items/Whisk.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/Succulents.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Succulents.avif",
+          "feature_score": 3.24675,
+          "comparison_score": 0.71463,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.69458,
+            "chroma_correlation": 0.69783,
+            "gaussian_hog": 0.75666,
+            "pde_hog": 0.70015,
+            "pde_correlation": 0.72314
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Karst.avif",
+          "feature_score": 3.18696,
+          "comparison_score": 0.672194,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.70315,
+            "chroma_correlation": 0.63135,
+            "gaussian_hog": 0.65967,
+            "pde_hog": 0.64399,
+            "pde_correlation": 0.72596
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VoidRender.avif",
+          "feature_score": 3.4428,
+          "comparison_score": 0.642148,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.7217,
+            "chroma_correlation": 0.43728,
+            "gaussian_hog": 0.67371,
+            "pde_hog": 0.65059,
+            "pde_correlation": 0.7508
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TheCore.avif",
+          "feature_score": 3.21252,
+          "comparison_score": 0.641623,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.68658,
+            "chroma_correlation": 0.54277,
+            "gaussian_hog": 0.67852,
+            "pde_hog": 0.57669,
+            "pde_correlation": 0.70889
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Fort.avif",
+          "feature_score": 3.25395,
+          "comparison_score": 0.627104,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.59956,
+            "chroma_correlation": 0.55414,
+            "gaussian_hog": 0.70363,
+            "pde_hog": 0.68226,
+            "pde_correlation": 0.61347
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/WardingGlyphs.avif",
+          "feature_score": 3.30987,
+          "comparison_score": 0.626248,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.63983,
+            "chroma_correlation": 0.5799,
+            "gaussian_hog": 0.643,
+            "pde_hog": 0.60876,
+            "pde_correlation": 0.662
+          }
+        }
+      ],
+      "compared": 26,
+      "errors": []
+    },
+    {
+      "region_id": "region-08",
+      "bbox": {
+        "x": 1168,
+        "y": 729,
+        "width": 291,
+        "height": 276
+      },
+      "verified": {
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/GolfClubs.avif",
+        "proof": {
+          "inlier_count": 18,
+          "mean_residual_px": 0.928538497775945,
+          "mean_hamming": 7.722222222222222,
+          "shard_index": 2,
+          "source_result_key": "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/shard-02.json"
+        },
+        "overlap_iou": 0.8969
+      },
+      "old_top1": "corpus/images/providers/bazaarplanner/items/GolfClubs.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/GolfClubs.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/GolfClubs.avif",
+          "feature_score": 8.41888,
+          "comparison_score": 0.89565,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.89972,
+            "chroma_correlation": 0.87537,
+            "gaussian_hog": 0.90074,
+            "pde_hog": 0.88078,
+            "pde_correlation": 0.9267
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/GiantSling.avif",
+          "feature_score": 6.60623,
+          "comparison_score": 0.682459,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.69327,
+            "chroma_correlation": 0.60896,
+            "gaussian_hog": 0.72835,
+            "pde_hog": 0.66265,
+            "pde_correlation": 0.71864
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TreeClub.avif",
+          "feature_score": 7.129,
+          "comparison_score": 0.650572,
+          "warp_mode": "cover",
+          "cover_shift": -0.16,
+          "components": {
+            "gaussian_correlation": 0.65864,
+            "chroma_correlation": 0.62709,
+            "gaussian_hog": 0.67403,
+            "pde_hog": 0.60193,
+            "pde_correlation": 0.67825
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/StretchPants.avif",
+          "feature_score": 7.01705,
+          "comparison_score": 0.626655,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.67366,
+            "chroma_correlation": 0.53987,
+            "gaussian_hog": 0.64768,
+            "pde_hog": 0.56397,
+            "pde_correlation": 0.69614
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TriNet.avif",
+          "feature_score": 7.00297,
+          "comparison_score": 0.624297,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.58385,
+            "chroma_correlation": 0.61157,
+            "gaussian_hog": 0.71061,
+            "pde_hog": 0.60131,
+            "pde_correlation": 0.59658
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Dooltron.avif",
+          "feature_score": 6.6344,
+          "comparison_score": 0.623548,
+          "warp_mode": "cover",
+          "cover_shift": -0.16,
+          "components": {
+            "gaussian_correlation": 0.58615,
+            "chroma_correlation": 0.63477,
+            "gaussian_hog": 0.6656,
+            "pde_hog": 0.63274,
+            "pde_correlation": 0.59828
+          }
+        }
+      ],
+      "compared": 25,
+      "errors": []
+    },
+    {
+      "region_id": "region-09",
+      "bbox": {
+        "x": 1473,
+        "y": 729,
+        "width": 139,
+        "height": 276
+      },
+      "verified": null,
+      "old_top1": "corpus/images/providers/bazaarplanner/items/Wallace.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/TriNet.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/TriNet.avif",
+          "feature_score": 3.98234,
+          "comparison_score": 0.650703,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.65981,
+            "chroma_correlation": 0.57952,
+            "gaussian_hog": 0.68737,
+            "pde_hog": 0.65806,
+            "pde_correlation": 0.67648
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/PlowsharestoSwords.avif",
+          "feature_score": 3.67815,
+          "comparison_score": 0.638551,
+          "warp_mode": "cover",
+          "cover_shift": -0.16,
+          "components": {
+            "gaussian_correlation": 0.64662,
+            "chroma_correlation": 0.63442,
+            "gaussian_hog": 0.64168,
+            "pde_hog": 0.59578,
+            "pde_correlation": 0.66517
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Tripwire.avif",
+          "feature_score": 3.78964,
+          "comparison_score": 0.632732,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.63135,
+            "chroma_correlation": 0.54598,
+            "gaussian_hog": 0.69119,
+            "pde_hog": 0.66258,
+            "pde_correlation": 0.64476
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/VialofBlood.avif",
+          "feature_score": 3.93333,
+          "comparison_score": 0.632606,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.64378,
+            "chroma_correlation": 0.63383,
+            "gaussian_hog": 0.61432,
+            "pde_hog": 0.61828,
+            "pde_correlation": 0.65456
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Hacksaw.avif",
+          "feature_score": 3.73685,
+          "comparison_score": 0.623516,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.64908,
+            "chroma_correlation": 0.6062,
+            "gaussian_hog": 0.61674,
+            "pde_hog": 0.57019,
+            "pde_correlation": 0.66358
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/LemonadeStand.avif",
+          "feature_score": 3.70491,
+          "comparison_score": 0.614456,
+          "warp_mode": "cover",
+          "cover_shift": -0.16,
+          "components": {
+            "gaussian_correlation": 0.60263,
+            "chroma_correlation": 0.55118,
+            "gaussian_hog": 0.68087,
+            "pde_hog": 0.61443,
+            "pde_correlation": 0.62442
+          }
+        }
+      ],
+      "compared": 25,
+      "errors": []
+    },
+    {
+      "region_id": "region-10",
+      "bbox": {
+        "x": 1626,
+        "y": 729,
+        "width": 134,
+        "height": 276
+      },
+      "verified": null,
+      "old_top1": "corpus/images/providers/bazaarplanner/items/UluKnife.avif",
+      "new_top1": "corpus/images/providers/bazaarplanner/items/ShowGlobe.avif",
+      "top_candidates": [
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ShowGlobe.avif",
+          "feature_score": 3.99768,
+          "comparison_score": 0.636111,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.7445,
+            "chroma_correlation": 0.53483,
+            "gaussian_hog": 0.58088,
+            "pde_hog": 0.54942,
+            "pde_correlation": 0.76271
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/BombingRun.avif",
+          "feature_score": 3.72628,
+          "comparison_score": 0.624885,
+          "warp_mode": "cover",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.72247,
+            "chroma_correlation": 0.58526,
+            "gaussian_hog": 0.53507,
+            "pde_hog": 0.53148,
+            "pde_correlation": 0.74097
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ZShield.avif",
+          "feature_score": 3.96317,
+          "comparison_score": 0.597321,
+          "warp_mode": "cover",
+          "cover_shift": -0.16,
+          "components": {
+            "gaussian_correlation": 0.62318,
+            "chroma_correlation": 0.54814,
+            "gaussian_hog": 0.61011,
+            "pde_hog": 0.55953,
+            "pde_correlation": 0.63903
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Vengeance.avif",
+          "feature_score": 3.94113,
+          "comparison_score": 0.592907,
+          "warp_mode": "cover",
+          "cover_shift": 0.16,
+          "components": {
+            "gaussian_correlation": 0.56579,
+            "chroma_correlation": 0.69356,
+            "gaussian_hog": 0.57885,
+            "pde_hog": 0.52778,
+            "pde_correlation": 0.57208
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/UwashiwaliBird.avif",
+          "feature_score": 3.89322,
+          "comparison_score": 0.574366,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.64034,
+            "chroma_correlation": 0.44666,
+            "gaussian_hog": 0.5802,
+            "pde_hog": 0.55769,
+            "pde_correlation": 0.65428
+          }
+        },
+        {
+          "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/DooleysScarf.avif",
+          "feature_score": 4.20301,
+          "comparison_score": 0.57042,
+          "warp_mode": "stretch",
+          "cover_shift": 0,
+          "components": {
+            "gaussian_correlation": 0.55502,
+            "chroma_correlation": 0.59401,
+            "gaussian_hog": 0.56316,
+            "pde_hog": 0.5863,
+            "pde_correlation": 0.56121
+          }
+        }
+      ],
+      "compared": 24,
+      "errors": []
+    }
+  ],
+  "metrics": {
+    "candidates_compared": 251,
+    "failed_reference_decodes": 0,
+    "old_verified_hits": 2
+  },
+  "evaluation_requirement": "Compare against independent human truth: do not infer correctness for unknown card IDs.",
+  "scoring_semantics": "Gaussian color/edge plus anisotropic-diffusion HOG under center-crop and nonuniform stretch. Scores are not probabilities.",
+  "generated_at": "2026-10-24T21:17:59.876Z",
+  "validation": {
+    "human_truth_basis": "2026-10-24-region-first-feedback-gold.json",
+    "results": {
+      "verified_name_top1_retained": 4,
+      "verified_name_total": 4,
+      "six_old_incorrect_names_still_top1": 0,
+      "new_truth_for_six_missing": true,
+      "full_catalogue_searched_by_new_filter": false,
+      "reranked_candidates_only": true,
+      "exact_ground_truth": {
+        "region-01": "RegalBlade",
+        "region-02": "MoneyFurnace",
+        "region-03": "Boomerang",
+        "region-08": "GolfClubs"
+      },
+      "matched_region_count": 10,
+      "compared_count": 251,
+      "failed_png_decodes": 0,
+      "correct_wide_score_range": [
+        0.894348,
+        0.906357
+      ],
+      "unknown_narrow_score_range": [
+        0.630772,
+        0.819065
+      ],
+      "unknown_narrow_are_not_false_until_identity_known": true,
+      "score_is_probability": false
+    },
+    "notes": [
+      "This experiment reranks existing candidates. It does not discover missing identities outside the shortlist.",
+      "All four confirmed correct identities remain rank 1.",
+      "All six previously incorrect top-1 names change, but replacement identity accuracy is UNKNOWN.",
+      "Raw convolution+PDE score is not a calibrated posterior probability; no production acceptance threshold is authorized."
+    ]
+  },
+  "deployment": {
+    "worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "deployment_id": "f081e8dbb1004ebd8c9926e69914bdcf",
+    "queue": "bazaar-region-rank-v1-20261024",
+    "branch": "experiment/dense-rarity-20261023",
+    "production_unchanged": true
+  }
+}
