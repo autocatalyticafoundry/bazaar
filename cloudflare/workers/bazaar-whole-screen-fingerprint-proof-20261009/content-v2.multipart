@@ -1994,10 +1994,19 @@ function bzRegionsFromPixelsV1(im){
         mass,count:g.length,y0:bzMedianV1(g.map(t=>t.y0)),
         y1:bzMedianV1(g.map(t=>t.y1))};
     }).sort((a,b)=>a.x-b.x);
-    const regions=[];
+    // Preserve conservative primary output. Expose cadence-supported wider
+    // spans for diagnostic ranking only; no card identity or location rules.
+    const regions=[],wideSpans=[];
+    const minSpan=Math.max(65,Math.round(w*.049)),maxOrdinary=Math.round(w*.205);
+    const ordinaryWidths=centers.slice(1).map((c,i)=>c.x-centers[i].x)
+      .filter(v=>v>=minSpan&&v<=maxOrdinary);
+    const unitWidth=bzMedianV1(ordinaryWidths.filter(v=>v<=Math.round(w*.11)))||
+      bzMedianV1(ordinaryWidths);
     for(let k=0;k<centers.length-1;k++){
       const a=centers[k],b=centers[k+1],span=b.x-a.x;
-      if(span<Math.max(65,Math.round(w*.049))||span>Math.round(w*.205))continue;
+      const wide=span>maxOrdinary;
+      if(span<minSpan||span>Math.round(w*.33))continue;
+      if(wide&&(!unitWidth||span/unitWidth<2.35||span/unitWidth>4.1))continue;
       // The frame boundary contains ornaments; take the artwork interior.
       const inX=Math.max(3,Math.round(w*.0034)),inY=Math.max(3,Math.round(h*.006));
       const box={x:Math.max(0,a.x+inX),y:Math.max(0,yBand+inY),
@@ -2018,11 +2027,14 @@ function bzRegionsFromPixelsV1(im){
       const region={bbox:box,proposal_score:Number((deviation+2*edgeContrast).toFixed(3)),
         border_evidence:{left_x:a.x,right_x:b.x,row_y:yBand,segment_height:medianL},
         texture_stddev:Number(deviation.toFixed(3))};
-      regions.push(region);
+      if(wide)wideSpans.push({...region,
+        source:"wide_cadence_frame_span",inferred_unit_width:unitWidth,
+        span_in_units:Number((span/unitWidth).toFixed(3))});
+      else regions.push(region);
     }
     // A single rectangle from HUD decoration is not considered an item row.
-    if(regions.length<3){rejectedBands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,y0:c.y0,y1:c.y1,count:c.count})),candidates:regions.map(p=>p.bbox)});continue;}
-    bands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,count:c.count,mass:c.mass,y0:c.y0,y1:c.y1})),candidate_spans:centers.slice(1).map((c,i)=>({left:centers[i].x,right:c.x,width:c.x-centers[i].x}))});
+    if(regions.length<3){rejectedBands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,y0:c.y0,y1:c.y1,count:c.count})),candidates:regions.map(p=>p.bbox),wide_spans:wideSpans});continue;}
+    bands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,count:c.count,mass:c.mass,y0:c.y0,y1:c.y1})),candidate_spans:centers.slice(1).map((c,i)=>({left:centers[i].x,right:c.x,width:c.x-centers[i].x})),wide_spans:wideSpans});
     proposals.push(...regions);
   }
   proposals.sort((a,b)=>a.bbox.y-b.bbox.y||a.bbox.x-b.bbox.x);
@@ -2038,7 +2050,7 @@ function bzRegionsFromPixelsV1(im){
   }
   return {regions:unique.slice(0,36),bands,rejected_bands:rejectedBands,
     diagnostics:{vertical_segments:lineSegments.length,band_candidates:chosen.length,
-      accepted_row_bands:bands.length,method:"native-boundary-repetition-v1"}};
+      accepted_row_bands:bands.length,wide_span_probes:bands.reduce((n,b)=>n+(b.wide_spans?.length||0),0),method:"native-boundary-repetition-v1-plus-cadence-diagnostics"}};
 }
 async function bzLocalizeRegionsV1(env,body){
   const inputKey=String(body.input_key||""),
@@ -2729,7 +2741,7 @@ async function bzFullcatalogStatusSnapshotV2(env,body){
 // Optional diagnostic-only regions omitted by the repeated-card-row gate.
 // Never merges fallback guesses into accepted cards without independent evidence.
 function bzFallbackBaseV1(inputKey){
-  return "debug/region-fallback-v1/"+bzRegionImageShaV1(inputKey)+"/";
+  return "debug/region-fallback-v2/"+bzRegionImageShaV1(inputKey)+"/";
 }
 async function bzFallbackStartV1(env,body){
   const inputKey=String(body.input_key||""),sha=bzRegionImageShaV1(inputKey),
@@ -2743,15 +2755,33 @@ async function bzFallbackStartV1(env,body){
       regions.push({
         region_id:"fallback-"+String(regions.length+1).padStart(2,"0"),
         bbox:b,source_band_y:band.y,band_proposal_count:band.proposal_count,
-        proposal_status:"rejected_by_primary_localizer"
+        proposal_status:"rejected_by_primary_localizer",source:"isolated_rejected_band"
+      });
+    }
+  }
+  // Supplemental wider rectangles are evidence-only. Never mix them into
+  // primary playable-card counts or assert an identity without verification.
+  for(const band of loc.bands||[]){
+    if(band.proposal_count<3)continue;
+    for(const probe of band.wide_spans||[]){
+      const b=probe.bbox;
+      if(!b||!(b.width>80&&b.height>100))continue;
+      if(loc.regions.some(x=>bzRegionIoUV1(b,x.bbox)>.25))continue;
+      if(regions.some(x=>bzRegionIoUV1(b,x.bbox)>.66))continue;
+      regions.push({
+        region_id:"fallback-"+String(regions.length+1).padStart(2,"0"),
+        bbox:b,source_band_y:band.y,band_proposal_count:band.proposal_count,
+        proposal_status:"diagnostic_only",source:"wide_cadence_frame_span",
+        proposal_score:probe.proposal_score,texture_stddev:probe.texture_stddev,
+        span_in_units:probe.span_in_units,border_evidence:probe.border_evidence
       });
     }
   }
   const base=bzFallbackBaseV1(inputKey),
-    doc={schema_version:1,version:"isolated-frame-probes-v1",
+    doc={schema_version:1,version:"isolated-and-wide-frame-probes-v2",
       input_key:inputKey,regions,region_count:regions.length,
       acceptance_policy:"diagnostic_only_never_promote_without_verification",
-      comparison_source:"rejected_bands from primary pixel edge detector",
+      comparison_source:"rejected_bands and wide_spans from accepted pixel-frame rows",
       generated_at:new Date().toISOString()};
   await env.BENCHMARK_R2.put(base+"regions.json",JSON.stringify(doc),{
     httpMetadata:{contentType:"application/json"}});
@@ -2777,13 +2807,13 @@ async function bzFallbackAggregateV1(env,body){
     if(!v)throw new Error("fallback_comparison_missing "+r.region_id);
     const x=JSON.parse(await new Response(v.body).text());
     rows.push({region_id:r.region_id,bbox:r.bbox,
-      status:"unverified_isolated_region",compared:x.compared,
+      status:"unverified_fallback_region",source:r.source,span_in_units:r.span_in_units||null,compared:x.compared,
       top:x.top.slice(0,6),source_band_y:r.source_band_y});
   }
-  const result={schema_version:1,version:"isolated-frame-probes-v1",
+  const result={schema_version:1,version:"isolated-and-wide-frame-probes-v2",
     input_key:inputKey,region_count:rows.length,regions:rows,
     all_regions_unverified:true,no_identity_acceptances:true,
-    warnings:["Rejected band regions may be HUD or decoration","Ranked candidates are not card detections"],
+    warnings:["Rejected band regions may be HUD or decoration","Wide spans may be non-card panels","Ranked candidates are not card detections"],
     generated_at:new Date().toISOString()};
   await env.BENCHMARK_R2.put(base+"result.json",JSON.stringify(result),{
     httpMetadata:{contentType:"application/json"}});
