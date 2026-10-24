@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24T21:27:32.922Z",
+  "updated_at": "2026-10-24T21:36:17.904Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,10 +110,11 @@
     }
   },
   "next_steps": [
-    "Collect true identities for six narrow card regions and score new recognition accuracy",
-    "Extend pipeline to crop-aware geometric verification of newly proposed narrow-card identities",
-    "Evaluate full-catalogue convolution retrieval on unseen benchmark screenshots and track false positives",
-    "Maintain R2 proof and main production unchanged until independent accuracy gains confirmed"
+    "Use the ten human-confirmed identities as a fixed regression fixture for every matcher revision; do not leak the fixture into retrieval",
+    "Run independent full-catalogue per-region evaluation on the earlier 11-card screenshot, including known Stained Glass Window and missed localization",
+    "Measure accuracy and score margins on additional user-labelled screenshots before calibrating probabilities or promoting to production",
+    "Improve region recall for screenshots with overlapping cards, and integrate currently separate candidate ranking with verified geometry",
+    "Preserve existing production deployment and free/server-side constraints"
   ],
   "preservation": {
     "status": "complete",
@@ -331,6 +332,57 @@
       "r2_run": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/result.json",
       "production_changed": false,
       "important_limits": "Unverified new narrow IDs. Search uses full catalogue low-res color filter, then 532 detailed convolution+PDE comparisons; not calibrated posterior."
+    },
+    "confirmed_full_catalogue_accuracy": {
+      "status": "all_ten_user_confirmed_correct_single_screenshot",
+      "screenshot_sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+      "gold_github": "cloudflare/project-status/2026-10-24-gold-10-of-10-fullcatalog-confirmed.json",
+      "gold_r2": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-confirmed.json",
+      "sample_size": 10,
+      "original_region_first_top1": {
+        "correct": 4,
+        "total": 10
+      },
+      "crop_aware_existing_shortlist_top1": {
+        "correct": 7,
+        "total": 10
+      },
+      "full_catalogue_convolution_top1": {
+        "correct": 10,
+        "total": 10
+      },
+      "wide_cards": {
+        "correct": 4,
+        "total": 4
+      },
+      "narrow_cards": {
+        "correct": 6,
+        "total": 6
+      },
+      "first_stage_comparisons": 14830,
+      "convolution_pde_detail_comparisons": 532,
+      "out_of_original_top_six_recovered": 5,
+      "original_catalogue_size": 1483,
+      "known_verified_geometry_objects": 2,
+      "score_calibration": "not_calibrated",
+      "unseen_accuracy": "not_established",
+      "production_promoted": false,
+      "last_experiment_worker_deployment_id": "1c5c1795cd6d4d33ad7a10ab85cd634a"
+    },
+    "independent_visual_control": {
+      "screenshot_sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+      "proven_card": "StainedGlassWindow",
+      "region_id": "region-02",
+      "full_catalogue_r2": "debug/region-fullcatalog-convolution-v1/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393/region-02.json",
+      "coarse_candidates_seen": 1483,
+      "detailed_comparisons": 48,
+      "correct_card_rank": 1,
+      "correct_card_score": 0.841194,
+      "next_best_score": 0.608225,
+      "score_gap": 0.232969,
+      "other_cards_gold_unavailable": true,
+      "gold_card_total_11": true,
+      "region_proposals_10": true
     }
   }
 }
