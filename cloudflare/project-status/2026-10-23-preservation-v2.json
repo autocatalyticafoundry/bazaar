@@ -78,7 +78,6 @@
     "status": "connected_write_enabled",
     "visibility": "public",
     "cloudflare_snapshot_commit": "f89ae079b3a1e003a37c94cf1a063ed3fd1b44c6",
-    "current_head_at_preservation": "13f9f71f0480aa40647dc3647dd3ec225ff57fc0",
     "backup_date": "2026-10-23",
     "backup_scope": {
       "workers": 64,
@@ -102,7 +101,13 @@
     "legacy_repositories_to_ignore": [
       "allaboutstudios/bazaar",
       "heavymediumtool/bazaar"
-    ]
+    ],
+    "head_before_preservation_mirror": "13f9f71f0480aa40647dc3647dd3ec225ff57fc0",
+    "preservation_mirror_commits": {
+      "status": "8b00440f3fd7807105f419fb01cceceb47f36086",
+      "handoff": "b1a8a1fe81c6f3e0533b277bf2cc6bedf2a55d61",
+      "preservation_checkpoint": "1de6b5eb3b260438fad347dae21098d9873d09f4"
+    }
   },
   "next_steps": [
     "Evaluate denser native-resolution full-frame extractor against packed index",
