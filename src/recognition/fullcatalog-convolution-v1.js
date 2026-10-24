@@ -15,9 +15,14 @@ function bzFullConvColorDistanceV1(target,ref){
 }
 async function bzFullConvRegionV1(env,body){
   const inputKey=String(body.input_key||""),
-    sha=bzRegionImageShaV1(inputKey),base=bzFullConvBaseV1(inputKey),
+    sha=bzRegionImageShaV1(inputKey),
+    fallback=body.region_set==="fallback",
+    base=fallback?bzFallbackBaseV1(inputKey):bzFullConvBaseV1(inputKey),
     id=String(body.region_id||"");
-  const data=await env.BENCHMARK_R2.get(bzRegionBaseV1(sha)+"regions.json");
+  if(fallback&&!/^fallback-\d{2}$/.test(id))
+    throw new Error("invalid_fallback_region_id");
+  const data=await env.BENCHMARK_R2.get(fallback?base+"regions.json":
+    bzRegionBaseV1(sha)+"regions.json");
   if(!data)throw new Error("missing card-region proposals");
   const loc=JSON.parse(await new Response(data.body).text()),
     r=loc.regions.find(a=>a.region_id===id);
@@ -93,7 +98,7 @@ async function bzFullConvRegionV1(env,body){
   for(const x of loc.regions)if(!await env.BENCHMARK_R2.head(base+x.region_id+".json")){
     complete=false;break;
   }
-  if(complete)await bzFullConvAggregateV1(env,{input_key:inputKey});
+  if(complete)await (fallback?bzFallbackAggregateV1(env,{input_key:inputKey}):bzFullConvAggregateV1(env,{input_key:inputKey}));
   return {region_id:id,coarse_count:coarse.length,compared:ranking.length,top:ranking.slice(0,5)};
 }
 async function bzFullConvAggregateV1(env,body){
