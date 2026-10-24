@@ -138,8 +138,12 @@ async function glDenseRareShardV1(env, body) {
   if(idx.reference_count!==bank.refs.length) throw new Error("packed index/bank reference mismatch for shard "+si);
   const topN=Math.max(8,Math.min(40,Number(body.shortlist)||24));
   const maxBucket=Math.max(8,Math.min(96,Number(body.max_bucket)||48));
-  const rarity=glRareVotePacked(tr.features,bank.refs,idx,bank.refs.length,maxBucket);
-  const exact=glDenseExactRankV1(tr.features,bank.refs,idx);
+  const rarityCacheKey=String(body.rarity_ranking_key||"");
+  const rarity=rarityCacheKey?await glReadRarityCacheV1(env,rarityCacheKey,{
+    si,version,ds,inputKey,bank,maxBucket,targetCount:tr.features.length
+  }):glRareVotePacked(tr.features,bank.refs,idx,bank.refs.length,maxBucket);
+  const exact=rarityCacheKey?{rows:[],diagnostics:{skipped_due_to_rarity_cache:true}}:
+    glDenseExactRankV1(tr.features,bank.refs,idx);
   const mode=String(body.ranking||"rarity");
   const houghMode=mode==="hough";
   const allVotes=mode==="exact"?exact.rows:rarity;
@@ -174,6 +178,7 @@ async function glDenseRareShardV1(env, body) {
     rank_hands:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("HandsOfTime"))+1 || null,
     fresh_extraction:body.fresh===true,full_ranking_count:allVotes.length,
     ranking_mode:mode,pool_count:poolN,pool_start:poolStart,diagnostic_only:body.diagnostic_only===true,
+    rarity_cache_key:rarityCacheKey||null,
     pair_mode:body.pair_mode==="baseline"?"baseline":"rarity",
     candidate_reference_count:rows.length,geometry_executed_count:rows.length,
     accepted_count:accepted.length,accepted,top:rows.slice(0,24),shortlist,
