@@ -51,6 +51,37 @@ function glDenseRarePairsV1(target, bank, idx, shortlist, maxBucket=64, maxCandi
   }
   return {per,selected,stats:{sampled,capped_target_features:capped,hamming_evaluations:verified,near_pairs:near}};
 }
+
+function glDenseExactRankV1(target,refs,idx) {
+  // Confirm all 128 bits, not just a common 16-bit bucket.
+  // Count distinct matched reference features to suppress repetitive UI art.
+  const hits=new Uint32Array(refs.length),unique=Array.from({length:refs.length},()=>new Set());
+  const seen=new Uint32Array(refs.length);
+  let tested=0,exact=0,skipped_very_common=0;
+  for(let ti=0;ti<target.length;ti++) {
+    const d=target[ti].descriptor,base=(d[0]<<8)|d[1],
+      start=idx.heads[base],end=idx.heads[base+1];
+    if(end-start>384){skipped_very_common++;continue;}
+    for(let j=start;j<end;j++){
+      const code=idx.codes[j],ri=Math.floor(code/256),fi=code%256;
+      if(ri>=refs.length)continue;
+      const rd=refs[ri].features[fi]?.descriptor;
+      if(!rd)continue;
+      tested++;let equal=true;
+      for(let byte=2;byte<16;byte++) if(d[byte]!==rd[byte]){equal=false;break;}
+      if(!equal)continue;
+      exact++;unique[ri].add(fi);
+      if(seen[ri]!==ti+1){seen[ri]=ti+1;hits[ri]++;}
+    }
+  }
+  const rows=[];
+  for(let i=0;i<refs.length;i++)if(hits[i])rows.push({i,hits:hits[i],
+    distinct_ref_features:unique[i].size,
+    score:(hits[i]+3*unique[i].size)/Math.sqrt(Math.max(1,refs[i].features.length))});
+  rows.sort((a,b)=>b.score-a.score||b.distinct_ref_features-a.distinct_ref_features||b.hits-a.hits);
+  return {rows,diagnostics:{tested,exact,skipped_very_common,refs_with_exact:rows.length}};
+}
+
 async function glDenseRareShardV1(env, body) {
   const si=Math.max(0,Math.min(7,Number(body.shard_index)||0));
   const ds=Math.max(.45,Math.min(1.25,Number(body.scale)||1));
@@ -68,18 +99,25 @@ async function glDenseRareShardV1(env, body) {
   if(idx.reference_count!==bank.refs.length) throw new Error("packed index/bank reference mismatch for shard "+si);
   const topN=Math.max(8,Math.min(40,Number(body.shortlist)||24));
   const maxBucket=Math.max(8,Math.min(96,Number(body.max_bucket)||48));
-  const allVotes=glRareVotePacked(tr.features,bank.refs,idx,bank.refs.length,maxBucket);
+  const rarity=glRareVotePacked(tr.features,bank.refs,idx,bank.refs.length,maxBucket);
+  const exact=glDenseExactRankV1(tr.features,bank.refs,idx);
+  const mode=String(body.ranking||"rarity");
+  const allVotes=mode==="exact"?exact.rows:rarity;
   const votes=allVotes.slice(0,topN);
   const found=glDenseRarePairsV1(tr.features,bank,idx,votes,maxBucket,192);
+  const baselinePairs=body.pair_mode==="baseline"?
+    glCollectPairsSelectivePackedFast(tr.features,bank.refs,idx,128):null;
+  const verifyPairs=baselinePairs?
+    found.selected.map(i=>baselinePairs[i]):found.per;
   const refs=found.selected.map(i=>bank.refs[i]);
   // Only the selected references are geometrically estimated.
-  const rows=glRankRefs24(found.per,refs,{x:0,y:0});
+  const rows=glRankRefs24(verifyPairs,refs,{x:0,y:0});
   const accepted=rows.filter(r=>{const t=r.transform;
     return !!t&&((t.inlier_count>=6&&t.mean_hamming<=18&&t.mean_residual<=2.5)
       ||(t.inlier_count>=4&&t.mean_hamming<=4&&t.mean_residual<=1));});
   const shortlist=votes.map((v,rank)=>({rank:rank+1,name:basename(bank.refs[v.i].asset_path),
     asset_path:bank.refs[v.i].asset_path,score:v.score,votes:v.votes,hits:v.hits,
-    raw_pairs:found.per[rank].length}));
+    raw_pairs:verifyPairs[rank].length}));
   const result={
     schema_version:1,proof_version:"dense-rare-shortlist-v1",input_key:inputKey,
     shard_index:si,bank_version:version,descriptor_scale:ds,target_feature_count:tr.features.length,
@@ -87,9 +125,13 @@ async function glDenseRareShardV1(env, body) {
     rank_sgw:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))+1 || null,
     rank_hands:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("HandsOfTime"))+1 || null,
     fresh_extraction:body.fresh===true,full_ranking_count:allVotes.length,
+    ranking_mode:mode,pair_mode:body.pair_mode==="baseline"?"baseline":"rarity",
     candidate_reference_count:rows.length,geometry_executed_count:rows.length,
     accepted_count:accepted.length,accepted,top:rows.slice(0,24),shortlist,
-    diagnostics:found.stats
+    diagnostics:{...found.stats,exact:exact.diagnostics},
+    exact_rank_sgw:exact.rows.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))+1||null,
+    exact_hits_sgw:exact.rows.find(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))||null,
+    exact_top:exact.rows.slice(0,12).map(v=>({...v,name:basename(bank.refs[v.i].asset_path)}))
   };
   const tag=Math.round(ds*100);
   const out=String(body.output_key||("debug/global-local-full-dense-v4-rare-shortlist/d"+tag+"-s"+si+".json"));
