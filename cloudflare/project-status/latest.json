@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24T17:46:54.442Z",
+  "updated_at": "2026-10-24T18:42:17.809Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,11 +110,10 @@
     }
   },
   "next_steps": [
-    "Investigate descriptor patch-scale mismatch using native-resolution multiscale feature probes",
-    "Evaluate reference-art compatibility and local keypoint coverage for unseen cards",
-    "Improve retrieval recall under unchanged geometric trust gates",
-    "Do not promote to production until recall improves without accepting HUD/Hands",
-    "Keep branch, R2, and GitHub preservation synchronized"
+    "Complete authenticated R2 screenshot upload and validate using the original chat attachment (not assistant vision)",
+    "Run the actual proof matcher on screenshot cd3fa35a... when its binary exists in R2",
+    "Only report programmatically verified item identities",
+    "Continue multiscale retrieval improvements because 11-card benchmark remains 1/11"
   ],
   "preservation": {
     "status": "complete",
@@ -127,13 +126,14 @@
     "github_cloudflare_root": "cloudflare/",
     "note": "GitHub is now the canonical code/config backup; R2 remains the live binary/corpus store.",
     "latest_development_checkpoint_r2": "debug/project-status/2026-10-24-development-v7.json",
-    "latest_development_checkpoint_github": "cloudflare/project-status/2026-10-24-development-v7.json"
+    "latest_development_checkpoint_github": "cloudflare/project-status/2026-10-24-development-v7.json",
+    "latest_screenshot_intake_r2": "debug/project-status/2026-10-24-new-screenshot-intake.json"
   },
   "development_latest": {
     "checkpoint_r2": "debug/project-status/2026-10-24-development-v7.json",
     "checkpoint_github": "cloudflare/project-status/2026-10-24-development-v7.json",
     "github_experiment_branch": "experiment/dense-rarity-20261023",
-    "proof_worker_latest_uploaded_deployment_id": "5da114469c444171880c60e4c1a4b759",
+    "proof_worker_latest_uploaded_deployment_id": "aa7335eec1a94cf7b36bdffb959ba9e5",
     "production_deployment_unchanged": true,
     "canonical_bank_version": 3,
     "canonical_indexed_references": 1483,
@@ -164,6 +164,30 @@
         0
       ]
     },
-    "status": "Implemented and tested experimentally. Not promoted: recall remains 1/11."
+    "status": "Implemented and tested experimentally. Not promoted: recall remains 1/11.",
+    "new_screenshot": {
+      "sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+      "dimensions": [
+        2048,
+        1338
+      ],
+      "size_bytes": 5624903,
+      "file_received_in_chat": true,
+      "stored_in_r2": false,
+      "recognition_run": false,
+      "verified_objects": null,
+      "intake_status": "blocked_at_chat_to_cloudflare_binary transfer",
+      "checkpoint_r2": "debug/project-status/2026-10-24-new-screenshot-intake.json",
+      "checkpoint_github": "cloudflare/project-status/2026-10-24-new-screenshot-intake.json"
+    },
+    "upload_endpoint": {
+      "path": "/api/experimental/screenshots",
+      "server_side": true,
+      "authenticated": true,
+      "configured": false,
+      "reason": "screenshot-upload auth secret not yet bound to Worker",
+      "queue_binding": "bazaar-fullgeo-v1-20261014",
+      "production_unchanged": true
+    }
   }
 }
