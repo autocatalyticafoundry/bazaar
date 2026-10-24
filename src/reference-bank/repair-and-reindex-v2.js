@@ -75,7 +75,8 @@ async function glAssembleBankV2(env){
 }
 async function glBuildPackedIndexV2(env,body){
   const si=Math.max(0,Math.min(7,Number(body.shard_index)||0));
-  const bank=await lgLoadBank(env,GL_REPAIR_V2_PREFIX+"shards/shard-"+String(si).padStart(2,"0")+".json");
+  const version=Number(body.bank_version)===3?3:2;
+  const bank=await lgLoadBank(env,"debug/whole-screen-local-feature-bank-v"+version+"/shards/shard-"+String(si).padStart(2,"0")+".json");
   const refs=bank.refs,offs=[0,2,4,6,8,10,12,14],counts=new Uint32Array(8*65536);
   if(!refs.length||refs.length>192)throw new Error("invalid v2 shard size");
   let featureCount=0;
@@ -101,18 +102,19 @@ async function glBuildPackedIndexV2(env,body){
   hdr[0]=0x42495831;hdr[1]=refs.length;hdr[2]=codes.length;hdr[3]=heads.length;
   new Uint32Array(buf,16,heads.length).set(heads);
   new Uint32Array(buf,16+heads.byteLength,codes.length).set(codes);
-  const key=GL_INDEX_V2_PREFIX+"shard-"+String(si).padStart(2,"0")+".bin";
+  const key="debug/global-local-packed-index-v"+version+"/shard-"+String(si).padStart(2,"0")+".bin";
   await env.BENCHMARK_R2.put(key,buf,{
     httpMetadata:{contentType:"application/octet-stream"},
     customMetadata:{artifact:"global-local-packed-index-v2",reference_count:String(refs.length),
       feature_count:String(featureCount),index_entries:String(total)}});
-  return {key,shard_index:si,reference_count:refs.length,feature_count:featureCount,index_entries:total,bytes:buf.byteLength};
+  return {key,shard_index:si,bank_version:version,reference_count:refs.length,feature_count:featureCount,index_entries:total,bytes:buf.byteLength};
 }
 const glPackedV2Cache=new Map();
-async function glLoadPackedIndexV2(env,si){
-  if(glPackedV2Cache.has(si))return glPackedV2Cache.get(si);
+async function glLoadPackedIndexV2(env,si,version=2){
+  const cacheKey=version+"-"+si;
+  if(glPackedV2Cache.has(cacheKey))return glPackedV2Cache.get(cacheKey);
   const promise=(async()=>{
-    const key=GL_INDEX_V2_PREFIX+"shard-"+String(si).padStart(2,"0")+".bin";
+    const key="debug/global-local-packed-index-v"+version+"/shard-"+String(si).padStart(2,"0")+".bin";
     const obj=await env.BENCHMARK_R2.get(key);
     if(!obj)throw new Error("missing packed index v2 "+si);
     const buf=await new Response(obj.body).arrayBuffer(),hdr=new Uint32Array(buf,0,4);
@@ -120,6 +122,6 @@ async function glLoadPackedIndexV2(env,si){
     const heads=new Uint32Array(buf,16,hdr[3]),codes=new Uint32Array(buf,16+hdr[3]*4,hdr[2]);
     return {reference_count:hdr[1],heads,codes,offs:[0,2,4,6,8,10,12,14]};
   })();
-  glPackedV2Cache.set(si,promise);
-  return promise.catch(e=>{glPackedV2Cache.delete(si);throw e;});
+  glPackedV2Cache.set(cacheKey,promise);
+  return promise.catch(e=>{glPackedV2Cache.delete(cacheKey);throw e;});
 }
