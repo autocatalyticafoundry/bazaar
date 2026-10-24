@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24T18:42:17.809Z",
+  "updated_at": "2026-10-24T20:05:41.278Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,10 +110,10 @@
     }
   },
   "next_steps": [
-    "Complete authenticated R2 screenshot upload and validate using the original chat attachment (not assistant vision)",
-    "Run the actual proof matcher on screenshot cd3fa35a... when its binary exists in R2",
-    "Only report programmatically verified item identities",
-    "Continue multiscale retrieval improvements because 11-card benchmark remains 1/11"
+    "Test full native-resolution multiscale descriptors for small card sizes and verify new matches geometrically",
+    "Improve first-stage proposal/routing coverage rather than reporting unverified shortlist names",
+    "Test 8-shard aggregation at multiple scales and dedupe overlapping discoveries",
+    "Preserve all checks for original 11-card benchmark and do not modify production without a demonstrated gain"
   ],
   "preservation": {
     "status": "complete",
@@ -173,12 +173,43 @@
       ],
       "size_bytes": 5624903,
       "file_received_in_chat": true,
-      "stored_in_r2": false,
-      "recognition_run": false,
-      "verified_objects": null,
-      "intake_status": "blocked_at_chat_to_cloudflare_binary transfer",
-      "checkpoint_r2": "debug/project-status/2026-10-24-new-screenshot-intake.json",
-      "checkpoint_github": "cloudflare/project-status/2026-10-24-new-screenshot-intake.json"
+      "stored_in_r2": true,
+      "recognition_run": true,
+      "recognition_pass": "d100",
+      "bank_version": 3,
+      "shards_completed": 8,
+      "shards_total": 8,
+      "catalogue_count": 1483,
+      "geometry_checked": 192,
+      "verified_objects": [
+        {
+          "name": "Regal Blade",
+          "canonical_art": "corpus/images/providers/bazaarplanner/items/RegalBlade.avif",
+          "bbox": [
+            712.2662441144043,
+            386.8691927606044,
+            283.71755345342126,
+            283.71755345342126
+          ],
+          "inliers": 24
+        },
+        {
+          "name": "Golf Clubs",
+          "canonical_art": "corpus/images/providers/bazaarplanner/items/GolfClubs.avif",
+          "bbox": [
+            1171.460401069831,
+            713.2657525607036,
+            283.72403966316665,
+            283.72403966316676
+          ],
+          "inliers": 18
+        }
+      ],
+      "verified_count": 2,
+      "rejected_geometry_candidates": 190,
+      "full_aggregation_r2": "debug/experimental-screenshot-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/aggregated.json",
+      "persisted_github": "cloudflare/project-status/2026-10-24-new-screenshot-verified.json",
+      "new_multiscale_pass": "d055 submitted; outputs not yet verified"
     },
     "upload_endpoint": {
       "path": "/api/experimental/screenshots",
