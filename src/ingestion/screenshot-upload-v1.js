@@ -59,10 +59,10 @@ async function bzScreenshotUploadV1(request,env){
     queued_count=shardJobs.length;
   }
   if(env.REGION_QUEUE){
-    await env.REGION_QUEUE.send({kind:"region_localize_v1",input_key:key,dispatch:true,
-      output_key:bzRegionBaseV1(sha)+"error-localization.json"});
+    await env.REGION_QUEUE.send({kind:"fullcatalog_start_v2",input_key:key,
+      output_key:bzFullConvBaseV1(key)+"error-start.json"});
     queued_count++;
-    recognition_status="region_localization_and_matching_queued";
+    recognition_status="full_catalogue_localization_and_matching_queued";
   }
   const response={schema_version:1,ok:true,input_key:key,sha256:sha,
     width,height,bytes:ab.byteLength,previously_present:!!prior,
@@ -115,6 +115,10 @@ async function bzExperimentalScreenshotStatusV1(request,env,sha){
       aggregate=saved?JSON.parse(await new Response(saved.body).text()):aggregate;
     }
   }
+  const fullcatalog=await bzFullcatalogStatusV2(env,"perception/inputs/"+sha+".png");
+  const fullcatalogKey=bzFullConvBaseV1("perception/inputs/"+sha+".png")+"result.json";
+  const fullcatalogObject=await env.BENCHMARK_R2.get(fullcatalogKey);
+  const fullcatalogResult=fullcatalogObject?JSON.parse(await new Response(fullcatalogObject.body).text()):null;
   const regionKey=bzRegionBaseV1(sha)+"result.json";
   const regionObject=await env.BENCHMARK_R2.get(regionKey);
   const regionResult=regionObject?JSON.parse(await new Response(regionObject.body).text()):null;
@@ -123,8 +127,11 @@ async function bzExperimentalScreenshotStatusV1(request,env,sha){
     region_count:regionResult?.region_count||0,
     verified_region_count:regionResult?.verified_region_count||0,
     region_result:regionResult,
+    fullcatalog_status:fullcatalog,fullcatalog_ready:!!fullcatalogResult,
+    fullcatalog_result:fullcatalogResult,
+    identity_probabilities_calibrated:false,
     input_key:"perception/inputs/"+sha+".png",all_complete:allComplete,
     complete_shards:shardKeys.length,status,
     aggregate_ready:!!aggregate,aggregate}),{
-      status:allComplete?200:202,headers:bzResultHeadersV1()});
+      status:(allComplete||fullcatalog.complete)?200:202,headers:bzResultHeadersV1()});
 }
