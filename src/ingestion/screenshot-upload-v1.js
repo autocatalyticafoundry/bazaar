@@ -46,9 +46,72 @@ async function bzScreenshotUploadV1(request,env){
       artifact:"experimental-native-screenshot",sha256:sha,
       width:String(width),height:String(height),bytes:String(ab.byteLength)
     }});
+  let recognition_status="stored_no_queue",queued_count=0;
+  if(env.SCREENSHOT_QUEUE){
+    const shardJobs=Array.from({length:8},(_,si)=>({
+      body:{kind:"global_full_dense_rare_shortlist",
+        bank_version:3,shard_index:si,input_key:key,scale:1,
+        shortlist:24,pool:64,ranking:"hough",pair_mode:"rarity",
+        max_bucket:48,output_key:bzExperimentShardKeyV1(sha,si)}
+    }));
+    await env.SCREENSHOT_QUEUE.sendBatch(shardJobs);
+    recognition_status="queued";
+    queued_count=shardJobs.length;
+  }
   const response={schema_version:1,ok:true,input_key:key,sha256:sha,
     width,height,bytes:ab.byteLength,previously_present:!!prior,
-    recognition_status:"not_submitted",runtime:"Cloudflare server-side"};
+    recognition_status,queued_count,runtime:"Cloudflare server-side"};
   return new Response(JSON.stringify(response),{
     status:201,headers:{"content-type":"application/json","cache-control":"no-store"}});
+}
+
+function bzExperimentShardKeyV1(sha,si){
+  return "debug/experimental-screenshot-v1/"+sha+"/shard-"+String(si).padStart(2,"0")+".json";
+}
+function bzResultHeadersV1(){return {"content-type":"application/json","cache-control":"no-store"};}
+async function bzExperimentalScreenshotStatusV1(request,env,sha){
+  if(!env.BAZAAR_SCREENSHOT_UPLOAD_TOKEN)return new Response(JSON.stringify({error:"upload_not_configured"}),{
+    status:503,headers:bzResultHeadersV1()});
+  const actual=new TextEncoder().encode(request.headers.get("authorization")||""),
+    expected=new TextEncoder().encode("Bearer "+env.BAZAAR_SCREENSHOT_UPLOAD_TOKEN);
+  let diff=actual.length^expected.length;
+  for(let i=0;i<Math.max(actual.length,expected.length);i++)
+    diff|=(actual[i]||0)^(expected[i]||0);
+  if(diff!==0)return new Response(JSON.stringify({error:"unauthorized"}),{
+    status:401,headers:bzResultHeadersV1()});
+  if(!/^[a-f0-9]{64}$/.test(sha))return new Response(JSON.stringify({error:"invalid_sha"}),{
+    status:400,headers:bzResultHeadersV1()});
+  const source=await env.BENCHMARK_R2.head("perception/inputs/"+sha+".png");
+  if(!source)return new Response(JSON.stringify({error:"screenshot_not_found"}),{
+    status:404,headers:bzResultHeadersV1()});
+  const status=[],shardKeys=[];
+  for(let si=0;si<8;si++){
+    const key=bzExperimentShardKeyV1(sha,si),obj=await env.BENCHMARK_R2.get(key);
+    if(!obj){status.push({shard_index:si,status:"pending"});continue;}
+    const v=JSON.parse(await new Response(obj.body).text());
+    if(v.error)status.push({shard_index:si,status:"failed",error:v.error});
+    else if(v.bank_version===3&&v.shard_index===si&&v.input_key==="perception/inputs/"+sha+".png"){
+      status.push({shard_index:si,status:"completed",accepted_count:v.accepted_count});
+      shardKeys.push(key);
+    }else status.push({shard_index:si,status:"invalid_result"});
+  }
+  const allComplete=status.every(x=>x.status==="completed"),
+    aggregateKey="debug/experimental-screenshot-v1/"+sha+"/aggregated.json";
+  let aggregate=null;
+  if(allComplete){
+    const existing=await env.BENCHMARK_R2.get(aggregateKey);
+    if(existing)aggregate=JSON.parse(await new Response(existing.body).text());
+    else if(request.method==="POST"){
+      aggregate=await glAggregateScreenV1(env,{
+        shard_keys:shardKeys,output_key:aggregateKey
+      });
+      const saved=await env.BENCHMARK_R2.get(aggregateKey);
+      aggregate=saved?JSON.parse(await new Response(saved.body).text()):aggregate;
+    }
+  }
+  return new Response(JSON.stringify({schema_version:1,sha256:sha,
+    input_key:"perception/inputs/"+sha+".png",all_complete:allComplete,
+    complete_shards:shardKeys.length,status,
+    aggregate_ready:!!aggregate,aggregate}),{
+      status:allComplete?200:202,headers:bzResultHeadersV1()});
 }
