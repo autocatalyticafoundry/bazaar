@@ -61,8 +61,10 @@ async function glDenseRareShardV1(env, body) {
     await (async()=>{const loaded=await loadProofInputs(env,inputKey),im=loaded.image;
       return {width:im.width,height:im.height,descriptor_scale:ds,
         features:lgExtractSpatialFastGrid(im.rgba,im.width,im.height,16,12,32,2,ds)};})();
-  const bank=await lgLoadBank(env,"debug/whole-screen-local-feature-bank-v1/shards/shard-"+String(si).padStart(2,"0")+".json");
-  const idx=await glLoadPackedIndex(env,si);
+  const version=Number(body.bank_version)===2?2:1;
+  const bankKey="debug/whole-screen-local-feature-bank-v"+version+"/shards/shard-"+String(si).padStart(2,"0")+".json";
+  const bank=await lgLoadBank(env,bankKey);
+  const idx=version===2?await glLoadPackedIndexV2(env,si):await glLoadPackedIndex(env,si);
   if(idx.reference_count!==bank.refs.length) throw new Error("packed index/bank reference mismatch for shard "+si);
   const topN=Math.max(8,Math.min(40,Number(body.shortlist)||24));
   const maxBucket=Math.max(8,Math.min(96,Number(body.max_bucket)||48));
@@ -80,7 +82,7 @@ async function glDenseRareShardV1(env, body) {
     raw_pairs:found.per[rank].length}));
   const result={
     schema_version:1,proof_version:"dense-rare-shortlist-v1",input_key:inputKey,
-    shard_index:si,descriptor_scale:ds,target_feature_count:tr.features.length,
+    shard_index:si,bank_version:version,descriptor_scale:ds,target_feature_count:tr.features.length,
     reference_count:bank.refs.length,shortlist_count:shortlist.length,
     rank_sgw:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))+1 || null,
     rank_hands:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("HandsOfTime"))+1 || null,
