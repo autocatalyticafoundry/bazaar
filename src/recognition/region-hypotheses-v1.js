@@ -100,7 +100,7 @@ function bzRegionsFromPixelsV1(im){
     }
     // A single rectangle from HUD decoration is not considered an item row.
     if(regions.length<3)continue;
-    bands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3))});
+    bands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,count:c.count,mass:c.mass,y0:c.y0,y1:c.y1})),candidate_spans:centers.slice(1).map((c,i)=>({left:centers[i].x,right:c.x,width:c.x-centers[i].x}))});
     proposals.push(...regions);
   }
   proposals.sort((a,b)=>a.bbox.y-b.bbox.y||a.bbox.x-b.bbox.x);
