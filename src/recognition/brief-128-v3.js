@@ -76,11 +76,23 @@ async function glV3AssembleShard(env,body) {
   const old=JSON.parse(await new Response(obj.body).text());
   const rows=[];
   for(let start=0;start<old.rows.length;start+=12) {
+    const targetCount=Math.min(12,old.rows.length-start);
     const key=glV3PartKey(si,start),o=await env.BENCHMARK_R2.get(key);
-    if(!o)throw new Error("missing descriptor v3 batch "+key);
-    const batch=JSON.parse(await new Response(o.body).text());
-    if(batch.errors.length||batch.built!==batch.attempted)throw new Error("incomplete batch "+key);
-    rows.push(...batch.rows);
+    const batch=o?JSON.parse(await new Response(o.body).text()):null;
+    if(batch&&!batch.errors?.length&&batch.built===targetCount&&batch.attempted===targetCount){
+      rows.push(...batch.rows);continue;
+    }
+    // Fallback supports bounded four-reference repairs when a 12-reference
+    // extraction fails under the free Worker CPU budget.
+    for(let sub=start;sub<start+targetCount;sub+=4){
+      const subkey=glV3PartKey(si,sub),subobj=await env.BENCHMARK_R2.get(subkey);
+      if(!subobj)throw new Error("missing v3 subbatch "+subkey);
+      const part=JSON.parse(await new Response(subobj.body).text());
+      const count=Math.min(4,start+targetCount-sub);
+      if(part.errors?.length||part.built!==count||part.attempted!==count)
+        throw new Error("incomplete v3 subbatch "+subkey);
+      rows.push(...part.rows);
+    }
   }
   if(rows.length!==old.rows.length)throw new Error("v3 shard count mismatch");
   for(let i=0;i<rows.length;i++)if(rows[i].asset_path!==old.rows[i].asset_path||
