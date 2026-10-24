@@ -107,3 +107,20 @@ async function bzFullcatalogStatusV2(env,inputKey){
     note:"Similarity scores and top guesses are not calibrated probabilities or independently verified identities.",
     result_key:base+"result.json"};
 }
+
+
+async function bzFullcatalogStatusSnapshotV2(env,body){
+  const inputKey=String(body.input_key||""),
+    sha=bzRegionImageShaV1(inputKey),
+    out=String(body.output_key||
+      bzFullConvBaseV1(inputKey)+"status-snapshot.json");
+  if(!out.startsWith("debug/")||!out.endsWith(".json"))
+    throw new Error("invalid output path");
+  const status=await bzFullcatalogStatusV2(env,inputKey);
+  const doc={schema_version:2,workflow:"fullcatalog_region_first_v2",
+    sha256:sha,generated_at:new Date().toISOString(),...status};
+  await env.BENCHMARK_R2.put(out,JSON.stringify(doc),{
+    httpMetadata:{contentType:"application/json"}});
+  return {key:out,region_count:doc.region_count,
+    ranked_count:doc.ranked_count,aggregate_ready:doc.aggregate_ready};
+}
