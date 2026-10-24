@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24T21:20:15.666Z",
+  "updated_at": "2026-10-24T21:27:32.922Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,10 +110,10 @@
     }
   },
   "next_steps": [
-    "Determine correct identities of six narrow cards or acquire independent annotated sample so gains can be measured",
-    "Build full-catalogue coarse convolution retrieval so true candidate is not limited to the earlier weak BRIEF shortlist",
-    "Test affine geometry with independent x/y scale and crop-aware reference projections, preserving false-positive controls",
-    "Use control benchmark with 11 known visible cards; production unchanged until measurable gain"
+    "Collect true identities for six narrow card regions and score new recognition accuracy",
+    "Extend pipeline to crop-aware geometric verification of newly proposed narrow-card identities",
+    "Evaluate full-catalogue convolution retrieval on unseen benchmark screenshots and track false positives",
+    "Maintain R2 proof and main production unchanged until independent accuracy gains confirmed"
   ],
   "preservation": {
     "status": "complete",
@@ -308,6 +308,29 @@
       "calibrated_probabilities": false,
       "production_changed": false,
       "benchmark_conclusion": "Working implementation; no empirically demonstrated gain for six narrow cards because gold identities not supplied; new result is diagnostic-only."
+    },
+    "fullcatalog_convolution_pde": {
+      "status": "deployed_and_tested_complete_10_regions",
+      "screenshot_sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+      "experimental_worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+      "deployment_id": "1c5c1795cd6d4d33ad7a10ab85cd634a",
+      "source_branch": "experiment/dense-rarity-20261023",
+      "module": "src/recognition/fullcatalog-convolution-v1.js",
+      "earlier_module": "src/recognition/convolution-affine-pde-v1.js",
+      "full_color_catalogue_retrieval_count": 1483,
+      "regions": 10,
+      "coarse_image_comparisons": 14830,
+      "gaussian_pde_comparisons": 532,
+      "known_correct_retained_top1": 4,
+      "known_correct_total": 4,
+      "previously_wrong_top1_names_retained": 0,
+      "unconfirmed_narrow_count": 6,
+      "confidence_calibrated": false,
+      "github_proof": "cloudflare/project-status/2026-10-24-fullcatalog-convolution-pde-v1.json",
+      "r2_proof": "debug/project-status/2026-10-24-fullcatalog-convolution-pde-v1.json",
+      "r2_run": "debug/region-fullcatalog-convolution-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/result.json",
+      "production_changed": false,
+      "important_limits": "Unverified new narrow IDs. Search uses full catalogue low-res color filter, then 532 detailed convolution+PDE comparisons; not calibrated posterior."
     }
   }
 }
