@@ -990,6 +990,133 @@ async function glFastRange(env,ti,start,count){ti=Math.max(0,Math.min(23,Number(
 async function glFastTile(env,ti){const r=await glFastRange(env,ti,0,8),out="debug/global-local-v14/t"+String(r.tile_index).padStart(2,"0")+".json";await env.BENCHMARK_R2.put(out,JSON.stringify({...r,schema_version:1,proof_version:"global-local-v14-fast-full-tile"}),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"global-local-v14-fast-full-tile",tile_index:String(r.tile_index),accepted_count:String(r.accepted_count),accepted:JSON.stringify(r.accepted.slice(0,16).map(x=>({name:basename(x.asset_path),inliers:x.transform.inlier_count,h:x.transform.mean_hamming,res:x.transform.mean_residual,bbox:x.bbox,shard:x.shard_index})))}});return r;}
 
 
+
+// Repair previously failed normalized references into a versioned bank/index.
+// All writes stay under v2 prefixes; v1 packed geometry baseline is untouched.
+const GL_REPAIR_V2_PREFIX="debug/whole-screen-local-feature-bank-v2/";
+const GL_INDEX_V2_PREFIX="debug/global-local-packed-index-v2/";
+function glRepairBatchKeyV2(start){return GL_REPAIR_V2_PREFIX+"repair-"+String(start).padStart(2,"0")+".json";}
+async function glRepairBatchV2(env,body){
+  const start=Math.max(0,Math.min(25,Number(body.start)||0));
+  const count=Math.max(1,Math.min(4,Number(body.count)||4));
+  const baseline=await env.BENCHMARK_R2.get("debug/whole-screen-local-feature-bank-v1/bank.json");
+  if(!baseline)throw new Error("v1 reference bank missing");
+  const v1=JSON.parse(await new Response(baseline.body).text()),failures=v1.failures||[];
+  if(v1.failure_count!==26||failures.length!==26)throw new Error("unexpected repair manifest");
+  const rows=[],errors=[];
+  for(const fail of failures.slice(start,start+count)){
+    const sha=String(fail.error||"").match(/\b[a-f0-9]{64}\b/)?.[0];
+    if(!sha){errors.push({asset_path:fail.asset_path,error:"SHA unavailable"});continue;}
+    try {
+      const ref=await lgReference(env,sha);
+      rows.push({asset_path:fail.asset_path,source_sha256:sha,width:ref.width,
+        height:ref.height,features:ref.features.map(f=>[f.x,f.y,lgDescToB64(f.descriptor)])});
+    }catch(e){errors.push({asset_path:fail.asset_path,error:String(e)});}
+  }
+  const key=glRepairBatchKeyV2(start);
+  const report={schema_version:1,repair_version:"v2",start,count,rows,
+    built:rows.length,errors,failed:errors.length};
+  await env.BENCHMARK_R2.put(key,JSON.stringify(report),{
+    httpMetadata:{contentType:"application/json"},
+    customMetadata:{artifact:"bank-repair-v2",built:String(rows.length),failed:String(errors.length)}});
+  return {key,built:rows.length,errors};
+}
+async function glAssembleBankV2(env){
+  const base="debug/whole-screen-local-feature-bank-v1/bank.json";
+  const o=await env.BENCHMARK_R2.get(base);
+  if(!o)throw new Error("baseline bank unavailable");
+  const v1=JSON.parse(await new Response(o.body).text());
+  const all=[...v1.rows],seen=new Set(all.map(r=>r.asset_path));
+  for(let start=0;start<26;start+=4){
+    const key=glRepairBatchKeyV2(start),r=await env.BENCHMARK_R2.get(key);
+    if(!r)throw new Error("missing repair part "+key);
+    const p=JSON.parse(await new Response(r.body).text());
+    if(p.failed||!p.rows?.length)throw new Error("failed repair part "+key);
+    for(const row of p.rows){if(seen.has(row.asset_path))throw new Error("duplicate "+row.asset_path);
+      seen.add(row.asset_path);all.push(row);}
+  }
+  const manifest=await lgItemSnapshotRows(env);
+  const expected=new Map(manifest.map((r,i)=>[r.asset_path,{sha:r.source_sha256,index:i}]));
+  if(expected.size!==1483||all.length!==1483)throw new Error("reference count mismatch "+expected.size+"/"+all.length);
+  for(const row of all) {
+    const known=expected.get(row.asset_path);
+    if(!known||known.sha!==row.source_sha256)throw new Error("catalogue identity/hash mismatch "+row.asset_path);
+    if(!row.features?.length||row.features.length>256)throw new Error("invalid features "+row.asset_path);
+  }
+  all.sort((a,b)=>expected.get(a.asset_path).index-expected.get(b.asset_path).index);
+  const writes=[];
+  // Shards are individually read by Workers. No RANSAC thresholds or v1 source changes.
+  for(let si=0;si<8;si++){
+    const rows=all.slice(si*192,(si+1)*192),key=GL_REPAIR_V2_PREFIX+"shards/shard-"+String(si).padStart(2,"0")+".json";
+    if(!rows.length)throw new Error("empty shard");
+    await env.BENCHMARK_R2.put(key,JSON.stringify({
+      schema_version:1,bank_version:"whole-screen-local-feature-bank-v2",shard_index:si,
+      reference_count:rows.length,start_reference:si*192,rows
+    }),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"whole-screen-local-feature-bank-v2",reference_count:String(rows.length),shard:String(si)}});
+    writes.push({key,reference_count:rows.length});
+  }
+  const result={schema_version:1,bank_version:"whole-screen-local-feature-bank-v2",
+    baseline_count:v1.reference_count,repaired_count:26,reference_count:all.length,
+    failure_count:0,catalogue_count:expected.size,shards:writes,
+    source_bank_key:base,rows:all};
+  const key=GL_REPAIR_V2_PREFIX+"bank.json";
+  await env.BENCHMARK_R2.put(key,JSON.stringify(result),{
+    httpMetadata:{contentType:"application/json"},
+    customMetadata:{artifact:"whole-screen-local-feature-bank-v2",reference_count:String(all.length),failure_count:"0"}});
+  return {key,reference_count:all.length,repaired_count:26,shards:writes};
+}
+async function glBuildPackedIndexV2(env,body){
+  const si=Math.max(0,Math.min(7,Number(body.shard_index)||0));
+  const bank=await lgLoadBank(env,GL_REPAIR_V2_PREFIX+"shards/shard-"+String(si).padStart(2,"0")+".json");
+  const refs=bank.refs,offs=[0,2,4,6,8,10,12,14],counts=new Uint32Array(8*65536);
+  if(!refs.length||refs.length>192)throw new Error("invalid v2 shard size");
+  let featureCount=0;
+  for(let ri=0;ri<refs.length;ri++)for(let fi=0;fi<refs[ri].features.length;fi++){
+    if(fi>=256)throw new Error("feature ID overflow");
+    featureCount++;const d=refs[ri].features[fi].descriptor;
+    for(let ci=0;ci<8;ci++)counts[ci*65536+(d[offs[ci]]<<8)+d[offs[ci]+1]]++;
+  }
+  const heads=new Uint32Array(8*65537);
+  let total=0;
+  for(let ci=0;ci<8;ci++){const hb=ci*65537,cb=ci*65536;heads[hb]=total;
+    for(let v=0;v<65536;v++){total+=counts[cb+v];heads[hb+v+1]=total;}}
+  const codes=new Uint32Array(total),cursor=new Uint32Array(8*65536);
+  for(let ci=0;ci<8;ci++){const hb=ci*65537,cb=ci*65536;
+    for(let v=0;v<65536;v++)cursor[cb+v]=heads[hb+v];}
+  for(let ri=0;ri<refs.length;ri++)for(let fi=0;fi<refs[ri].features.length;fi++){
+    const d=refs[ri].features[fi].descriptor,code=ri*256+fi;
+    for(let ci=0;ci<8;ci++){const k=ci*65536+(d[offs[ci]]<<8)+d[offs[ci]+1];
+      codes[cursor[k]++]=code;}
+  }
+  if(total!==featureCount*8)throw new Error("packed code count mismatch");
+  const buf=new ArrayBuffer(16+heads.byteLength+codes.byteLength),hdr=new Uint32Array(buf,0,4);
+  hdr[0]=0x42495831;hdr[1]=refs.length;hdr[2]=codes.length;hdr[3]=heads.length;
+  new Uint32Array(buf,16,heads.length).set(heads);
+  new Uint32Array(buf,16+heads.byteLength,codes.length).set(codes);
+  const key=GL_INDEX_V2_PREFIX+"shard-"+String(si).padStart(2,"0")+".bin";
+  await env.BENCHMARK_R2.put(key,buf,{
+    httpMetadata:{contentType:"application/octet-stream"},
+    customMetadata:{artifact:"global-local-packed-index-v2",reference_count:String(refs.length),
+      feature_count:String(featureCount),index_entries:String(total)}});
+  return {key,shard_index:si,reference_count:refs.length,feature_count:featureCount,index_entries:total,bytes:buf.byteLength};
+}
+const glPackedV2Cache=new Map();
+async function glLoadPackedIndexV2(env,si){
+  if(glPackedV2Cache.has(si))return glPackedV2Cache.get(si);
+  const promise=(async()=>{
+    const key=GL_INDEX_V2_PREFIX+"shard-"+String(si).padStart(2,"0")+".bin";
+    const obj=await env.BENCHMARK_R2.get(key);
+    if(!obj)throw new Error("missing packed index v2 "+si);
+    const buf=await new Response(obj.body).arrayBuffer(),hdr=new Uint32Array(buf,0,4);
+    if(hdr[0]!==0x42495831||hdr[3]!==8*65537)throw new Error("bad packed v2 index "+si);
+    const heads=new Uint32Array(buf,16,hdr[3]),codes=new Uint32Array(buf,16+hdr[3]*4,hdr[2]);
+    return {reference_count:hdr[1],heads,codes,offs:[0,2,4,6,8,10,12,14]};
+  })();
+  glPackedV2Cache.set(si,promise);
+  return promise.catch(e=>{glPackedV2Cache.delete(si);throw e;});
+}
+
+
 // Dense native-resolution, packed-index retrieval experiment.
 // Uses one vote per screenshot feature per canonical reference, weighted by
 // inverse square root of packed head-table bucket occupancy.
@@ -1052,8 +1179,10 @@ async function glDenseRareShardV1(env, body) {
     await (async()=>{const loaded=await loadProofInputs(env,inputKey),im=loaded.image;
       return {width:im.width,height:im.height,descriptor_scale:ds,
         features:lgExtractSpatialFastGrid(im.rgba,im.width,im.height,16,12,32,2,ds)};})();
-  const bank=await lgLoadBank(env,"debug/whole-screen-local-feature-bank-v1/shards/shard-"+String(si).padStart(2,"0")+".json");
-  const idx=await glLoadPackedIndex(env,si);
+  const version=Number(body.bank_version)===2?2:1;
+  const bankKey="debug/whole-screen-local-feature-bank-v"+version+"/shards/shard-"+String(si).padStart(2,"0")+".json";
+  const bank=await lgLoadBank(env,bankKey);
+  const idx=version===2?await glLoadPackedIndexV2(env,si):await glLoadPackedIndex(env,si);
   if(idx.reference_count!==bank.refs.length) throw new Error("packed index/bank reference mismatch for shard "+si);
   const topN=Math.max(8,Math.min(40,Number(body.shortlist)||24));
   const maxBucket=Math.max(8,Math.min(96,Number(body.max_bucket)||48));
@@ -1071,7 +1200,7 @@ async function glDenseRareShardV1(env, body) {
     raw_pairs:found.per[rank].length}));
   const result={
     schema_version:1,proof_version:"dense-rare-shortlist-v1",input_key:inputKey,
-    shard_index:si,descriptor_scale:ds,target_feature_count:tr.features.length,
+    shard_index:si,bank_version:version,descriptor_scale:ds,target_feature_count:tr.features.length,
     reference_count:bank.refs.length,shortlist_count:shortlist.length,
     rank_sgw:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))+1 || null,
     rank_hands:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("HandsOfTime"))+1 || null,
@@ -1102,7 +1231,7 @@ export default {
     for(const message of batch.messages){
       const body=message.body||{};
       try{
-        if(body.kind==="vx_load"){await vxLoadBatch(env,body.start,body.count);} else if(body.kind==="rank_box"){await brRankBoxJob(env,body.box_index);} else if(body.kind==="build_box_variant_target"){await brBuildVariantTarget(env,body.box_index,body.variant_index);} else if(body.kind==="match_box_variant_part12_cached"){await brMatchCachedPart12(env,body.box_index,body.shard_index,body.variant_index,body.part_index);} else if(body.kind==="match_box_variant_part_cached"){await brMatchCachedPart(env,body.box_index,body.shard_index,body.variant_index,body.part_index);} else if(body.kind==="confirm_named_reference"){await brDirectNamedConfirm(env,body.box_index,body.shard_index,body.variant_index,body.name);} else if(body.kind==="struct_vector_load"){await svLoadBatch(env,body.start,body.count);} else if(body.kind==="train_truth_stats_batch"){await trainTruthStatsBatch(env,body.start,body.count);} else if(body.kind==="train_truth_stats_aggregate"){await trainTruthStatsAggregate(env);} else if(body.kind==="train_truth_stats"){await trainTruthStats(env);} else if(body.kind==="gated_struct_query"){await gateStructQueryRegion(env,body.region_id);} else if(body.kind==="gated_struct_window_direct"){await gateStructWindowDirect(env,body.region_id,body.window,body.tag);} else if(body.kind==="gated_refine_geometry"){await gateRefineGeometry(env,body.region_id,body.window,body.name,body.source_sha256,body.struct_score,body.tag);} else if(body.kind==="gated_refine_struct"){await gateRefineStructWindow(env,body.region_id,body.width_factor,body.height_factor,body.anchor_x,body.anchor_y);} else if(body.kind==="gated_geometry_direct"){await gateGeometryDirect(env,body.region_id,body.variant_index,body.name,body.source_sha256,body.struct_score);} else if(body.kind==="gated_struct_verify_one"){await gateVerifyOne(env,body.region_id,body.variant_index,body.name);} else if(body.kind==="struct_dense_one"){await svDenseOneSample(env,body.box_index,body.variant_index,body.name);} else if(body.kind==="struct_verify_one"){await svVerifyOneSample(env,body.box_index,body.variant_index,body.name);} else if(body.kind==="struct_verify_box"){await svVerifyBoxSample(env,body.box_index,body.limit);} else if(body.kind==="struct_vector_query_sample"){await svQueryVariantSample(env,body.box_index,body.variant_index);} else if(body.kind==="struct_vector_query"){await svQueryVariant(env,body.box_index,body.variant_index);} else if(body.kind==="vector_crop16_variant"){await vxCrop16VariantJob(env,body.box_index,body.variant_index);} else if(body.kind==="rank_box_fingerprint"){await brRankBoxJob(env,body.box_index);} else if(body.kind==="match_box_variant_packed"){await brMatchCachedPacked(env,body.box_index,body.shard_index,body.variant_index);} else if(body.kind==="match_box_variant_cached"){await brMatchCachedVariant(env,body.box_index,body.shard_index,body.variant_index);} else if(body.kind==="direct_box_variant"){await brDirectBoxShardVariant(env,body.box_index,body.shard_index,body.variant_index);} else if(body.kind==="direct_box_shard"){await brDirectBoxShard(env,body.box_index,body.shard_index);} else if(body.kind==="global_fast_half_shard"){await glRunFastHalfShardJob(env,body);} else if(body.kind==="global_fast_shard"){await glRunFastShardJob(env,body);} else if(body.kind==="global_fast_tile"){await glFastTile(env,body.tile_index);} else if(body.kind==="global_full_img_geo_shard"){await glRunFullImageGeoShard(env,body);} else if(body.kind==="global_full_dense2_part48"){await glRunFullDense2Part48(env,body);} else if(body.kind==="global_full_dense_build"){await glBuildFullDense2(env,body);} else if(body.kind==="global_full_dense2_half"){await glRunFullDense2Half(env,body);} else if(body.kind==="global_full_dense_half"){await glRunFullDenseHalf(env,body);} else if(body.kind==="global_full_geo_exactfull"){await glRunFullExactThenFull(env,body);} else if(body.kind==="global_full_geo_vote"){await glRunFullGeoVote(env,body);} else if(body.kind==="global_full_geo_shard_fast4"){await glRunFullGeoShardFast4(env,body);} else if(body.kind==="global_full_geo_part24"){await glRunFullPart24Scale(env,body);} else if(body.kind==="global_packed_bank_build"){await glBuildPackedBankArtifact(env,body.shard_index);} else if(body.kind==="global_full_geo_binaryrare_quarter"){await glRunFullBinaryRareQuarter(env,body);} else if(body.kind==="global_full_geo_binaryrare_half"){await glRunFullBinaryRareHalf(env,body);} else if(body.kind==="global_full_geo_binaryrare"){await glRunFullBinaryRare(env,body);} else if(body.kind==="global_packed_index_build"){await glBuildPackedIndexArtifact(env,body.shard_index);} else if(body.kind==="global_full_image_packedfast"){await glRunFullImagePackedFast(env,body);} else if(body.kind==="global_full_dense_rare_shortlist"){await glDenseRareShardV1(env,body);} else if(body.kind==="global_full_dense_packedfast"){await glRunFullDensePackedFast(env,body);} else if(body.kind==="global_full_geo_packedrare"){await glRunFullPackedRare(env,body);} else if(body.kind==="global_full_rare_packed"){await glRunFullRarePacked(env,body);} else if(body.kind==="global_full_geo_packedfast"){await glRunFullPackedFast(env,body);} else if(body.kind==="global_full_pairs_build_packed"){await glMaterializeFullPairsPacked(env,body.shard_index,body.scale);} else if(body.kind==="global_full_pairs_verify_packed"){await glVerifyFullPairsPacked(env,body.shard_index,body.scale);} else if(body.kind==="global_full_pairs_build"){await glRunMaterializeFullPairs(env,body);} else if(body.kind==="global_full_pairs_verify"){await glRunVerifyFullPairs(env,body);} else if(body.kind==="global_full_geo_fastcandidate"){await glRunFullFastCandidate(env,body);} else if(body.kind==="global_full_geo_allgeo"){await glRunFullShardAllGeo(env,body);} else if(body.kind==="global_full_geo_shard"){await glRunFullGeoShard(env,body);} else if(body.kind==="global_tile_24"){await glRunOne24(env,body);} else if(body.kind==="global_tile_48"){await glRunOne48(env,body);} else if(body.kind==="global_tile_96"){await glRunOne96(env,body);} else if(body.kind==="global_tile_one_shard"){await glRunOneShard(env,body);} else if(body.kind==="global_target_v2"){await glEnsureTargetV2(env,body);} else if(body.kind==="global_tile_shard_pair"){await glRunTileShardPair(env,body);} else if(body.kind==="global_tile_allshards"){await glRunTileAllShards(env,body);} else if(body.kind==="control_v2"){await lgControlV2(env,body);} else if(body.kind==="local_feature_bank_find"){await lgFindBankReference(env,body);} else if(body.kind==="local_feature_bank_aggregate_hybrid"){await lgAggregateBankHybrid(env,body);} else if(body.kind==="local_feature_bank_manifest"){await lgBankManifest(env,body);} else if(body.kind==="local_feature_bank_batch"){await lgBuildBankBatch(env,body);} else if(body.kind==="local_feature_bank_aggregate"){await lgAggregateBank(env,body);} else if(body.kind==="local_feature_bank_scan_tile"){await lgScanBankTile(env,body);} else if(body.kind==="local_geometry_tile"){await localGeometryTile(env,body);} else if(body.kind==="ref_info"){await inspectReferenceInfo(env,body);} else if(body.kind==="inspect_clusters"){await inspectClusterProof(env,body);} else if(body.kind==="reduce_chunk"){await reduceChunkForClusters(env,body);} else if(body.kind==="aggregate_reduced"){await aggregateReducedClusters(env,body);} else if(body.kind==="scan_chunk_tile"){await runChunkTile(env,body);} else if(body.kind==="merge_chunk_tiles"){await mergeChunkTiles(env,body);} else if(body.kind==="nearby_candidates"){await nearbyCandidatesJob(env,body);} else if(body.kind==="verify_one_ref"){await verifyOneReferenceJob(env,body);} else if(body.kind==="verify_discovered"){await verifyDiscoveredBox(env,body);} else if(body.kind==="evaluate_chunk"){await evaluateOneChunk(env,body);} else if(body.kind==="evaluate_existing"){await evaluateExistingChunks(env,body);} else if(body.kind==="diagnostic_chunk"){await runDiagnosticChunk(env,body);} else if(body.kind==="diagnostic"){if(body.mode==="r1"){const r=await glFullShardRarePacked(env,body.shard_index,body.scale||1),out=String(body.output_key||("debug/r1-"+String(body.shard_index)+".json"));await env.BENCHMARK_R2.put(out,JSON.stringify(r),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"r1",shard_index:String(body.shard_index),accepted_count:String(r.accepted_count||0),accepted:JSON.stringify((r.accepted||[]).slice(0,16).map(x=>({name:basename(x.asset_path),inliers:x.transform?.inlier_count??0,h:x.transform?.mean_hamming??null,res:x.transform?.mean_residual??null,bbox:x.bbox}))),vote_top:JSON.stringify(r.vote_top||[])}});}else{await env.BENCHMARK_R2.put(String(body.output_key||"debug/proof-diagnostic.json"),JSON.stringify({stage:"handler",body_type:typeof message.body,generated_at:new Date().toISOString()}),{httpMetadata:{contentType:"application/json"}});}} else if(body.kind==="scan_chunk"){const r=await runChunk(env,body);console.log("SCAN_CHUNK_COMPLETE",JSON.stringify({hf:r.hf_index,ar:r.ar_index,windows:r.searched_window_count}));}
+        if(body.kind==="vx_load"){await vxLoadBatch(env,body.start,body.count);} else if(body.kind==="rank_box"){await brRankBoxJob(env,body.box_index);} else if(body.kind==="build_box_variant_target"){await brBuildVariantTarget(env,body.box_index,body.variant_index);} else if(body.kind==="match_box_variant_part12_cached"){await brMatchCachedPart12(env,body.box_index,body.shard_index,body.variant_index,body.part_index);} else if(body.kind==="match_box_variant_part_cached"){await brMatchCachedPart(env,body.box_index,body.shard_index,body.variant_index,body.part_index);} else if(body.kind==="confirm_named_reference"){await brDirectNamedConfirm(env,body.box_index,body.shard_index,body.variant_index,body.name);} else if(body.kind==="struct_vector_load"){await svLoadBatch(env,body.start,body.count);} else if(body.kind==="train_truth_stats_batch"){await trainTruthStatsBatch(env,body.start,body.count);} else if(body.kind==="train_truth_stats_aggregate"){await trainTruthStatsAggregate(env);} else if(body.kind==="train_truth_stats"){await trainTruthStats(env);} else if(body.kind==="gated_struct_query"){await gateStructQueryRegion(env,body.region_id);} else if(body.kind==="gated_struct_window_direct"){await gateStructWindowDirect(env,body.region_id,body.window,body.tag);} else if(body.kind==="gated_refine_geometry"){await gateRefineGeometry(env,body.region_id,body.window,body.name,body.source_sha256,body.struct_score,body.tag);} else if(body.kind==="gated_refine_struct"){await gateRefineStructWindow(env,body.region_id,body.width_factor,body.height_factor,body.anchor_x,body.anchor_y);} else if(body.kind==="gated_geometry_direct"){await gateGeometryDirect(env,body.region_id,body.variant_index,body.name,body.source_sha256,body.struct_score);} else if(body.kind==="gated_struct_verify_one"){await gateVerifyOne(env,body.region_id,body.variant_index,body.name);} else if(body.kind==="struct_dense_one"){await svDenseOneSample(env,body.box_index,body.variant_index,body.name);} else if(body.kind==="struct_verify_one"){await svVerifyOneSample(env,body.box_index,body.variant_index,body.name);} else if(body.kind==="struct_verify_box"){await svVerifyBoxSample(env,body.box_index,body.limit);} else if(body.kind==="struct_vector_query_sample"){await svQueryVariantSample(env,body.box_index,body.variant_index);} else if(body.kind==="struct_vector_query"){await svQueryVariant(env,body.box_index,body.variant_index);} else if(body.kind==="vector_crop16_variant"){await vxCrop16VariantJob(env,body.box_index,body.variant_index);} else if(body.kind==="rank_box_fingerprint"){await brRankBoxJob(env,body.box_index);} else if(body.kind==="match_box_variant_packed"){await brMatchCachedPacked(env,body.box_index,body.shard_index,body.variant_index);} else if(body.kind==="match_box_variant_cached"){await brMatchCachedVariant(env,body.box_index,body.shard_index,body.variant_index);} else if(body.kind==="direct_box_variant"){await brDirectBoxShardVariant(env,body.box_index,body.shard_index,body.variant_index);} else if(body.kind==="direct_box_shard"){await brDirectBoxShard(env,body.box_index,body.shard_index);} else if(body.kind==="global_fast_half_shard"){await glRunFastHalfShardJob(env,body);} else if(body.kind==="global_fast_shard"){await glRunFastShardJob(env,body);} else if(body.kind==="global_fast_tile"){await glFastTile(env,body.tile_index);} else if(body.kind==="global_full_img_geo_shard"){await glRunFullImageGeoShard(env,body);} else if(body.kind==="global_full_dense2_part48"){await glRunFullDense2Part48(env,body);} else if(body.kind==="global_full_dense_build"){await glBuildFullDense2(env,body);} else if(body.kind==="global_full_dense2_half"){await glRunFullDense2Half(env,body);} else if(body.kind==="global_full_dense_half"){await glRunFullDenseHalf(env,body);} else if(body.kind==="global_full_geo_exactfull"){await glRunFullExactThenFull(env,body);} else if(body.kind==="global_full_geo_vote"){await glRunFullGeoVote(env,body);} else if(body.kind==="global_full_geo_shard_fast4"){await glRunFullGeoShardFast4(env,body);} else if(body.kind==="global_full_geo_part24"){await glRunFullPart24Scale(env,body);} else if(body.kind==="global_packed_bank_build"){await glBuildPackedBankArtifact(env,body.shard_index);} else if(body.kind==="global_full_geo_binaryrare_quarter"){await glRunFullBinaryRareQuarter(env,body);} else if(body.kind==="global_full_geo_binaryrare_half"){await glRunFullBinaryRareHalf(env,body);} else if(body.kind==="global_full_geo_binaryrare"){await glRunFullBinaryRare(env,body);} else if(body.kind==="global_packed_index_build"){await glBuildPackedIndexArtifact(env,body.shard_index);} else if(body.kind==="global_full_image_packedfast"){await glRunFullImagePackedFast(env,body);} else if(body.kind==="global_repair_bank_v2_batch"){await glRepairBatchV2(env,body);} else if(body.kind==="global_assemble_bank_v2"){await glAssembleBankV2(env);} else if(body.kind==="global_build_packed_index_v2"){await glBuildPackedIndexV2(env,body);} else if(body.kind==="global_full_dense_rare_shortlist"){await glDenseRareShardV1(env,body);} else if(body.kind==="global_full_dense_packedfast"){await glRunFullDensePackedFast(env,body);} else if(body.kind==="global_full_geo_packedrare"){await glRunFullPackedRare(env,body);} else if(body.kind==="global_full_rare_packed"){await glRunFullRarePacked(env,body);} else if(body.kind==="global_full_geo_packedfast"){await glRunFullPackedFast(env,body);} else if(body.kind==="global_full_pairs_build_packed"){await glMaterializeFullPairsPacked(env,body.shard_index,body.scale);} else if(body.kind==="global_full_pairs_verify_packed"){await glVerifyFullPairsPacked(env,body.shard_index,body.scale);} else if(body.kind==="global_full_pairs_build"){await glRunMaterializeFullPairs(env,body);} else if(body.kind==="global_full_pairs_verify"){await glRunVerifyFullPairs(env,body);} else if(body.kind==="global_full_geo_fastcandidate"){await glRunFullFastCandidate(env,body);} else if(body.kind==="global_full_geo_allgeo"){await glRunFullShardAllGeo(env,body);} else if(body.kind==="global_full_geo_shard"){await glRunFullGeoShard(env,body);} else if(body.kind==="global_tile_24"){await glRunOne24(env,body);} else if(body.kind==="global_tile_48"){await glRunOne48(env,body);} else if(body.kind==="global_tile_96"){await glRunOne96(env,body);} else if(body.kind==="global_tile_one_shard"){await glRunOneShard(env,body);} else if(body.kind==="global_target_v2"){await glEnsureTargetV2(env,body);} else if(body.kind==="global_tile_shard_pair"){await glRunTileShardPair(env,body);} else if(body.kind==="global_tile_allshards"){await glRunTileAllShards(env,body);} else if(body.kind==="control_v2"){await lgControlV2(env,body);} else if(body.kind==="local_feature_bank_find"){await lgFindBankReference(env,body);} else if(body.kind==="local_feature_bank_aggregate_hybrid"){await lgAggregateBankHybrid(env,body);} else if(body.kind==="local_feature_bank_manifest"){await lgBankManifest(env,body);} else if(body.kind==="local_feature_bank_batch"){await lgBuildBankBatch(env,body);} else if(body.kind==="local_feature_bank_aggregate"){await lgAggregateBank(env,body);} else if(body.kind==="local_feature_bank_scan_tile"){await lgScanBankTile(env,body);} else if(body.kind==="local_geometry_tile"){await localGeometryTile(env,body);} else if(body.kind==="ref_info"){await inspectReferenceInfo(env,body);} else if(body.kind==="inspect_clusters"){await inspectClusterProof(env,body);} else if(body.kind==="reduce_chunk"){await reduceChunkForClusters(env,body);} else if(body.kind==="aggregate_reduced"){await aggregateReducedClusters(env,body);} else if(body.kind==="scan_chunk_tile"){await runChunkTile(env,body);} else if(body.kind==="merge_chunk_tiles"){await mergeChunkTiles(env,body);} else if(body.kind==="nearby_candidates"){await nearbyCandidatesJob(env,body);} else if(body.kind==="verify_one_ref"){await verifyOneReferenceJob(env,body);} else if(body.kind==="verify_discovered"){await verifyDiscoveredBox(env,body);} else if(body.kind==="evaluate_chunk"){await evaluateOneChunk(env,body);} else if(body.kind==="evaluate_existing"){await evaluateExistingChunks(env,body);} else if(body.kind==="diagnostic_chunk"){await runDiagnosticChunk(env,body);} else if(body.kind==="diagnostic"){if(body.mode==="r1"){const r=await glFullShardRarePacked(env,body.shard_index,body.scale||1),out=String(body.output_key||("debug/r1-"+String(body.shard_index)+".json"));await env.BENCHMARK_R2.put(out,JSON.stringify(r),{httpMetadata:{contentType:"application/json"},customMetadata:{artifact:"r1",shard_index:String(body.shard_index),accepted_count:String(r.accepted_count||0),accepted:JSON.stringify((r.accepted||[]).slice(0,16).map(x=>({name:basename(x.asset_path),inliers:x.transform?.inlier_count??0,h:x.transform?.mean_hamming??null,res:x.transform?.mean_residual??null,bbox:x.bbox}))),vote_top:JSON.stringify(r.vote_top||[])}});}else{await env.BENCHMARK_R2.put(String(body.output_key||"debug/proof-diagnostic.json"),JSON.stringify({stage:"handler",body_type:typeof message.body,generated_at:new Date().toISOString()}),{httpMetadata:{contentType:"application/json"}});}} else if(body.kind==="scan_chunk"){const r=await runChunk(env,body);console.log("SCAN_CHUNK_COMPLETE",JSON.stringify({hf:r.hf_index,ar:r.ar_index,windows:r.searched_window_count}));}
         else if(body.kind==="aggregate"){const r=await runAggregate(env,body);console.log("AGGREGATE_COMPLETE",JSON.stringify({windows:r.searched_window_count,detections:r.detection_count}));}
         else throw new Error("unknown proof job kind");
       }catch(e){
