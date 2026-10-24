@@ -144,7 +144,9 @@ async function glDenseRareShardV1(env, body) {
   const houghMode=mode==="hough";
   const allVotes=mode==="exact"?exact.rows:rarity;
   const poolN=houghMode?Math.max(topN,Math.min(bank.refs.length,Number(body.pool)||64)):topN;
-  const preliminary=allVotes.slice(0,poolN);
+  const poolStart=houghMode?Math.max(0,Math.floor(Number(body.pool_start)||0)):0;
+  const preliminary=allVotes.slice(poolStart,poolStart+poolN);
+  if(!preliminary.length)throw new Error("empty rarity pool slice "+poolStart);
   const foundPool=glDenseRarePairsV1(tr.features,bank,idx,preliminary,maxBucket,192);
   const votes=houghMode?glHoughShortlistV1(foundPool.per,preliminary,bank.refs,topN):preliminary;
   const positions=new Map(preliminary.map((v,i)=>[v.i,i]));
@@ -156,7 +158,7 @@ async function glDenseRareShardV1(env, body) {
     found.selected.map(i=>baselinePairs[i]):found.per;
   const refs=found.selected.map(i=>bank.refs[i]);
   // Only the selected references are geometrically estimated.
-  const rows=glRankRefs24(verifyPairs,refs,{x:0,y:0});
+  const rows=body.diagnostic_only===true?[]:glRankRefs24(verifyPairs,refs,{x:0,y:0});
   const accepted=rows.filter(r=>{const t=r.transform;
     return !!t&&((t.inlier_count>=6&&t.mean_hamming<=18&&t.mean_residual<=2.5)
       ||(t.inlier_count>=4&&t.mean_hamming<=4&&t.mean_residual<=1));});
@@ -171,7 +173,8 @@ async function glDenseRareShardV1(env, body) {
     rank_sgw:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("StainedGlassWindow"))+1 || null,
     rank_hands:allVotes.findIndex(v=>basename(bank.refs[v.i].asset_path).includes("HandsOfTime"))+1 || null,
     fresh_extraction:body.fresh===true,full_ranking_count:allVotes.length,
-    ranking_mode:mode,pool_count:poolN,pair_mode:body.pair_mode==="baseline"?"baseline":"rarity",
+    ranking_mode:mode,pool_count:poolN,pool_start:poolStart,diagnostic_only:body.diagnostic_only===true,
+    pair_mode:body.pair_mode==="baseline"?"baseline":"rarity",
     candidate_reference_count:rows.length,geometry_executed_count:rows.length,
     accepted_count:accepted.length,accepted,top:rows.slice(0,24),shortlist,
     diagnostics:{...found.stats,exact:exact.diagnostics},
