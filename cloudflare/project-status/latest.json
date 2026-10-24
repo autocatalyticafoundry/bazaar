@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24T21:36:17.904Z",
+  "updated_at": "2026-10-24T21:51:55.833Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,11 +110,11 @@
     }
   },
   "next_steps": [
-    "Use the ten human-confirmed identities as a fixed regression fixture for every matcher revision; do not leak the fixture into retrieval",
-    "Run independent full-catalogue per-region evaluation on the earlier 11-card screenshot, including known Stained Glass Window and missed localization",
-    "Measure accuracy and score margins on additional user-labelled screenshots before calibrating probabilities or promoting to production",
-    "Improve region recall for screenshots with overlapping cards, and integrate currently separate candidate ranking with verified geometry",
-    "Preserve existing production deployment and free/server-side constraints"
+    "Recover 11th item in older screenshot with general localization (current region recall 10/11); don't accept weak isolated fallback candidates",
+    "Obtain independent truth labels for nine other earlier screenshot proposals before claiming broader recognition gains",
+    "Integrate full-catalogue recognition with canonical gameplay metadata and instance-level state",
+    "Keep free server-side experimental workflow and verified top-1 gold evaluator; test new scenes before production",
+    "Validate screenshot upload authorization setup before describing direct API ingestion as live"
   ],
   "preservation": {
     "status": "complete",
@@ -383,6 +383,33 @@
       "other_cards_gold_unavailable": true,
       "gold_card_total_11": true,
       "region_proposals_10": true
+    },
+    "development_v8": {
+      "checkpoint_github": "cloudflare/project-status/2026-10-24-development-v8.json",
+      "checkpoint_r2": "debug/project-status/2026-10-24-development-v8.json",
+      "branch": "experiment/dense-rarity-20261023",
+      "deployed_proof_worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+      "deployment_id": "ce6737d0c00e48c79ae32bf3d4dfd0bf",
+      "automatic_screenshot_flow": "fullcatalog_start_v2",
+      "idempotent_workflow_verified": true,
+      "result_status_snapshots_verified_on_two_screenshots": true,
+      "human_verified_gold_evaluator": {
+        "correct_top1": 10,
+        "correct_top3": 10,
+        "total": 10
+      },
+      "independent_11_card_benchmark": {
+        "regions_found": 10,
+        "total_gold": 11,
+        "confirmed_identity": "StainedGlassWindow",
+        "identity_count_verified": 1,
+        "unverified_top_guesses": 9
+      },
+      "isolated_fallback": {
+        "speculative_regions": 3,
+        "accepted_objects": 0
+      },
+      "production_unchanged": true
     }
   }
 }
