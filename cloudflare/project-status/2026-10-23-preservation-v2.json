@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-23T22:14:00-04:00",
+  "project": "Bazaar",
+  "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
+  "constraints": {
+    "server_side_only": true,
+    "free_only": true,
+    "assistant_vision_not_runtime": true,
+    "production_promotion_disabled": true
+  },
+  "benchmark": {
+    "sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+    "width": 2048,
+    "height": 1409,
+    "input_key": "perception/inputs/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393.png",
+    "playable_card_count": 11,
+    "confirmed_identity": "Stained Glass Window",
+    "confirmed_false_positive": "Hands of Time",
+    "hands_is_card_in_screenshot": false,
+    "time_region_is_hud": true
+  },
+  "reference_bank": {
+    "catalogue_count": 1483,
+    "indexed_count": 1457,
+    "missing_count": 26,
+    "bank_key": "debug/whole-screen-local-feature-bank-v1/bank.json",
+    "shard_prefix": "debug/whole-screen-local-feature-bank-v1/shards/"
+  },
+  "current_architecture": {
+    "primary": "full-frame native-resolution features -> packed canonical descriptor index -> candidate shortlist -> geometric verification -> screenshot-level dedupe",
+    "packed_index_prefix": "debug/global-local-packed-index-v1/",
+    "packed_result_prefix": "debug/global-local-fullgeo-v9-packedfast/",
+    "current_result": {
+      "accepted_unique_confirmed": [
+        "Stained Glass Window"
+      ],
+      "sgw": {
+        "inliers": 6,
+        "mean_hamming": 0,
+        "mean_residual_px": 0.6009599434510996,
+        "bbox": {
+          "x": 1004.6442956658444,
+          "y": 388.8469899438918,
+          "width": 302.22058385059506,
+          "height": 302.22058385059495
+        }
+      },
+      "hands_of_time_accepted": false
+    },
+    "deprecated_primary_paths": [
+      "29 anonymous region proposals",
+      "24 tile x 8 shard runtime",
+      "whole-image rescaling"
+    ]
+  },
+  "cloudflare": {
+    "production_worker": {
+      "name": "bazaar-clean-benchmark",
+      "deployment_id": "448be080-f7b0-47a0-8a4c-34dcc019d389",
+      "version_id": "9297970a-daf5-4a06-b5ba-61542222a169",
+      "created_on": "2026-10-07T21:32:32.408395Z"
+    },
+    "proof_worker": {
+      "name": "bazaar-whole-screen-fingerprint-proof-20261009",
+      "deployment_id": "b7fd1044-02e1-468a-ad7f-492d47881b06",
+      "version_id": "730d4ba4-bf2f-4fb1-b54b-af4d7d1aafa6",
+      "created_on": "2026-10-20T00:16:07.50678Z"
+    },
+    "preferred_queue": {
+      "name": "bazaar-fullgeo-v1-20261014",
+      "id": "9ad127b9abbf45a4af8a0bc44df14b66"
+    }
+  },
+  "github": {
+    "canonical_owner": "autocatalyticafoundry",
+    "canonical_repo": "autocatalyticafoundry/bazaar",
+    "status": "connected_write_enabled",
+    "visibility": "public",
+    "cloudflare_snapshot_commit": "f89ae079b3a1e003a37c94cf1a063ed3fd1b44c6",
+    "current_head_at_preservation": "13f9f71f0480aa40647dc3647dd3ec225ff57fc0",
+    "backup_date": "2026-10-23",
+    "backup_scope": {
+      "workers": 64,
+      "queues": 59,
+      "r2_buckets": 2,
+      "r2_objects": 18574,
+      "r2_bytes": 2320174453,
+      "r2_binary_bytes_duplicated_into_git": false,
+      "r2_inventory_fields": [
+        "key",
+        "size",
+        "etag",
+        "last_modified",
+        "storage_class",
+        "http_metadata",
+        "custom_metadata"
+      ],
+      "secrets_policy": "Secret values and binding values excluded/redacted.",
+      "hardcoded_credential_redactions": 1
+    },
+    "legacy_repositories_to_ignore": [
+      "allaboutstudios/bazaar",
+      "heavymediumtool/bazaar"
+    ]
+  },
+  "next_steps": [
+    "Evaluate denser native-resolution full-frame extractor against packed index",
+    "Add rarity/high-frequency bucket suppression using packed bucket lengths",
+    "Cheaply rank candidates before RANSAC",
+    "Repair 26 missing normalized references and rebuild bank/index",
+    "Build screenshot-level detection aggregator and dedupe",
+    "Preserve SGW recovery and Hands/HUD rejection regressions",
+    "Only integrate into production after recall improves without false positives"
+  ],
+  "preservation": {
+    "status": "complete",
+    "preserved_at": "2026-10-23T22:14:00-04:00",
+    "authoritative_machine_status_r2": "debug/project-status/latest.json",
+    "authoritative_handoff_r2": "debug/project-status/2026-10-23-handoff.md",
+    "proof_worker_source_snapshot_r2": "debug/project-status/2026-10-23-proof-worker-content-v2.multipart",
+    "github_status_path": "cloudflare/project-status/latest.json",
+    "github_handoff_path": "cloudflare/project-status/2026-10-23-handoff.md",
+    "github_cloudflare_root": "cloudflare/",
+    "note": "GitHub is now the canonical code/config backup; R2 remains the live binary/corpus store."
+  }
+}
