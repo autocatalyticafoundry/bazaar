@@ -53,7 +53,7 @@ function bzRegionsFromPixelsV1(im){
     if(chosen.length>=10)break;
     if(chosen.every(p=>Math.abs(p.y-peak.y)>=minPeakDistance))chosen.push(peak);
   }
-  const proposals=[],bands=[],rejectedBands=[];
+  const proposals=[],bands=[],rejectedBands=[],bandCandidates=[];
   for(const peak of chosen.sort((a,b)=>a.y-b.y)){
     const yBand=peak.y,near=Math.max(14,Math.round(h*.024));
     const s0=lineSegments.filter(t=>Math.abs(t.y0-yBand)<=near);
@@ -78,13 +78,19 @@ function bzRegionsFromPixelsV1(im){
     const minSpan=Math.max(65,Math.round(w*.049)),maxOrdinary=Math.round(w*.205);
     const ordinaryWidths=centers.slice(1).map((c,i)=>c.x-centers[i].x)
       .filter(v=>v>=minSpan&&v<=maxOrdinary);
-    const unitWidth=bzMedianV1(ordinaryWidths.filter(v=>v<=Math.round(w*.11)))||
-      bzMedianV1(ordinaryWidths);
+    // Infer pitch from the median usable frame width. The previous narrow-only
+    // pitch estimate missed a legitimate multi-slot frame on sparse rows.
+    const unitWidth=bzMedianV1(ordinaryWidths);
     for(let k=0;k<centers.length-1;k++){
       const a=centers[k],b=centers[k+1],span=b.x-a.x;
       const wide=span>maxOrdinary;
+      // A medium-wide span that agrees with the row pitch can be an ordinary
+      // playable frame. Truly anomalous wide gaps stay diagnostic only.
+      const coherentWide=wide&&!!unitWidth&&span<=Math.round(w*.27)&&
+        span/unitWidth<=1.85;
       if(span<minSpan||span>Math.round(w*.33))continue;
-      if(wide&&(!unitWidth||span/unitWidth<2.35||span/unitWidth>4.1))continue;
+      if(wide&&!coherentWide&&
+        (!unitWidth||span/unitWidth<2.35||span/unitWidth>4.1))continue;
       // The frame boundary contains ornaments; take the artwork interior.
       const inX=Math.max(3,Math.round(w*.0034)),inY=Math.max(3,Math.round(h*.006));
       const box={x:Math.max(0,a.x+inX),y:Math.max(0,yBand+inY),
@@ -105,15 +111,45 @@ function bzRegionsFromPixelsV1(im){
       const region={bbox:box,proposal_score:Number((deviation+2*edgeContrast).toFixed(3)),
         border_evidence:{left_x:a.x,right_x:b.x,row_y:yBand,segment_height:medianL},
         texture_stddev:Number(deviation.toFixed(3))};
-      if(wide)wideSpans.push({...region,
+      if(wide&&!coherentWide)wideSpans.push({...region,
         source:"wide_cadence_frame_span",inferred_unit_width:unitWidth,
         span_in_units:Number((span/unitWidth).toFixed(3))});
       else regions.push(region);
     }
-    // A single rectangle from HUD decoration is not considered an item row.
-    if(regions.length<3){rejectedBands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,y0:c.y0,y1:c.y1,count:c.count})),candidates:regions.map(p=>p.bbox),wide_spans:wideSpans});continue;}
-    bands.push({y:yBand,proposal_count:regions.length,edge_votes:Number(peak.v.toFixed(3)),frame_edges:centers.map(c=>({x:c.x,count:c.count,mass:c.mass,y0:c.y0,y1:c.y1})),candidate_spans:centers.slice(1).map((c,i)=>({left:centers[i].x,right:c.x,width:c.x-centers[i].x})),wide_spans:wideSpans});
-    proposals.push(...regions);
+    // Keep ALL candidate bands until we have compared them to the dominant
+    // repeated frame geometry. This avoids mistaking short HUD decorations for
+    // cards and admits coherent two-card rows instead of discarding them.
+    bandCandidates.push({y:yBand,medianL,edge_votes:Number(peak.v.toFixed(3)),
+      regions,wide_spans:wideSpans,
+      frame_edges:centers.map(c=>({x:c.x,count:c.count,mass:c.mass,
+        y0:c.y0,y1:c.y1})),
+      candidate_spans:centers.slice(1).map((c,i)=>({
+        left:centers[i].x,right:c.x,width:c.x-centers[i].x}))});
+  }
+  const anchor=[...bandCandidates].filter(b=>b.regions.length>=2)
+    .sort((a,b)=>b.regions.length-a.regions.length||
+      b.edge_votes-a.edge_votes)[0]||null;
+  for(const b of bandCandidates){
+    const ratio=anchor?b.medianL/anchor.medianL:0;
+    const sameFrameFamily=anchor&&ratio>=.87&&ratio<=1.15;
+    const enoughEdgeSupport=anchor&&b.edge_votes>=
+      Math.max(7,anchor.edge_votes*.25);
+    const accepted=!!(b.regions.length>=2&&sameFrameFamily&&
+      enoughEdgeSupport);
+    if(!accepted){
+      rejectedBands.push({y:b.y,proposal_count:b.regions.length,
+        edge_votes:b.edge_votes,frame_edges:b.frame_edges,
+        candidates:b.regions.map(p=>p.bbox),wide_spans:b.wide_spans,
+        rejection_reason:b.regions.length<2?"insufficient_frame_repetition":
+          !sameFrameFamily?"frame_height_mismatch":"weak_row_edge_support",
+        anchor_height:anchor?.medianL||null,frame_height:b.medianL});
+      continue;
+    }
+    bands.push({y:b.y,proposal_count:b.regions.length,
+      edge_votes:b.edge_votes,frame_edges:b.frame_edges,
+      candidate_spans:b.candidate_spans,wide_spans:b.wide_spans,
+      frame_height:b.medianL,anchor_height:anchor.medianL});
+    proposals.push(...b.regions);
   }
   proposals.sort((a,b)=>a.bbox.y-b.bbox.y||a.bbox.x-b.bbox.x);
   const unique=[];
@@ -128,7 +164,7 @@ function bzRegionsFromPixelsV1(im){
   }
   return {regions:unique.slice(0,36),bands,rejected_bands:rejectedBands,
     diagnostics:{vertical_segments:lineSegments.length,band_candidates:chosen.length,
-      accepted_row_bands:bands.length,wide_span_probes:bands.reduce((n,b)=>n+(b.wide_spans?.length||0),0),method:"native-boundary-repetition-v1-plus-cadence-diagnostics"}};
+      accepted_row_bands:bands.length,wide_span_probes:bands.reduce((n,b)=>n+(b.wide_spans?.length||0),0),anchor_band_y:anchor?.y??null,anchor_frame_height:anchor?.medianL??null,method:"frame-family-consistency-v2"}};
 }
 async function bzLocalizeRegionsV1(env,body){
   const inputKey=String(body.input_key||""),
@@ -137,7 +173,7 @@ async function bzLocalizeRegionsV1(env,body){
   if(!obj)throw new Error("region screenshot absent");
   const png=await decodePng(await new Response(obj.body).arrayBuffer());
   const result=bzRegionsFromPixelsV1(png);
-  const artifact={schema_version:1,detector_version:"boundary-repetition-v1",
+  const artifact={schema_version:1,detector_version:"frame-family-consistency-v2",
     input_key:inputKey,sha256:sha,width:png.width,height:png.height,
     ...result,generated_at:new Date().toISOString()};
   await env.BENCHMARK_R2.put(base+"regions.json",JSON.stringify(artifact),{
