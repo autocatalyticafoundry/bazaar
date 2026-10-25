@@ -3091,10 +3091,10 @@ async function bzMultiscaleRegionV1(env,body){
   const input=await loadProofInputs(env,inputKey);
   const typed=await bzTypedItemReferenceSetV1(env,input.refs);
   const types=new Map(typed.eligible.map(x=>[x.asset_path,x]));
-  const catalogObj=await env.BENCHMARK_R2.get("catalogue/visual-corpus-identity-rgba32-v1.json");
+  const catalogObj=await env.BENCHMARK_R2.get("catalogue/item-native-rgba32-v1.json");
   if(!catalogObj)throw new Error("missing_independent_rgba32_corpus");
   const catalog=JSON.parse(await new Response(catalogObj.body).text());
-  if(catalog.grid_size!==32||catalog.rows.length<2000)
+  if(catalog.grid_size!==32||catalog.kind!=="typed_item_native_rgba32_corpus_v1"||catalog.rows.length<1000)
     throw new Error("unexpected_32px_catalogue");
   const desc=new Map(catalog.rows.map(x=>[x.asset_path,x]));
   const selected=new Map();
@@ -3142,7 +3142,7 @@ async function bzMultiscaleRegionV1(env,body){
     schema_version:1,version:"multiscale-rgba32-ablation-v1",
     input_key:inputKey,region_id:id,bbox:reg.bbox,entity_type_scope:"item_only_v1",
     labels_used_in_inference:false,candidate_source:"typed_coarse_top64_union_baseline_detail",
-    source_32:"catalogue/visual-corpus-identity-rgba32-v1.json",
+    source_32:"catalogue/item-native-rgba32-v1.json",
     candidate_count:selected.size,compared:rank.length,excluded,
     scoring_modes:modes,ranking:sorted,
     component_details:rank.map(x=>({asset:x.canonical_visual_asset,components32:x.components32,
