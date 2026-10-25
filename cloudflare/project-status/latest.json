@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-24T22:58:06.227Z",
+  "updated_at": "2026-10-25T01:05:24.416Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,11 +110,11 @@
     }
   },
   "next_steps": [
-    "Obtain human truth for the tenth previously unverified and newly discovered wide card (the Igloo hypothesis) plus remaining nine original regions.",
-    "Independently verify wide-region geometry and avoid HUD/decorative false positives across unseen screenshots.",
-    "Calibrate score reliability or use crop-aware geometric verification to separate trust from hypothesis.",
-    "Integrate canonical gameplay metadata and visible instance state.",
-    "Verify authenticated upload/status API and free-tier cost budget before production promotion."
+    "Acquire independent per-card gold labels for new 11-card scene; measure top1/top3 rather than treating similarities as correctness.",
+    "Implement and benchmark discriminative variant verification for close color/pattern siblings (Piggles), without sacrificing the existing 10/10 gold result.",
+    "Test isolated-card cases and more layouts, including crowds of decorative UI panels and non-row card grids.",
+    "Integrate canonical gameplay metadata and visible instance-state extraction after trusted identity resolution.",
+    "Maintain auth and free-tier discipline; no production promotion until independent accuracy and upload auth validated."
   ],
   "preservation": {
     "status": "complete",
@@ -126,8 +126,8 @@
     "github_handoff_path": "cloudflare/project-status/2026-10-23-handoff.md",
     "github_cloudflare_root": "cloudflare/",
     "note": "GitHub is now the canonical code/config backup; R2 remains the live binary/corpus store.",
-    "latest_development_checkpoint_r2": "debug/project-status/2026-10-24-development-v9.json",
-    "latest_development_checkpoint_github": "cloudflare/project-status/2026-10-24-development-v9.json",
+    "latest_development_checkpoint_r2": "debug/project-status/2026-10-25-development-v10.json",
+    "latest_development_checkpoint_github": "cloudflare/project-status/2026-10-25-development-v10.json",
     "latest_screenshot_intake_r2": "debug/project-status/2026-10-24-new-screenshot-intake.json"
   },
   "development_latest": {
@@ -422,6 +422,20 @@
       "independent_wide_top_hypothesis": "Igloo",
       "hypothesis_score": 0.846541,
       "wide_identity_human_verified": false,
+      "production_unchanged": true
+    },
+    "development_v10": {
+      "checkpoint_github": "cloudflare/project-status/2026-10-25-development-v10.json",
+      "checkpoint_r2": "debug/project-status/2026-10-25-development-v10.json",
+      "experimental_version_id": "64dd5eafa87043e2b722f4e698ae69f8",
+      "new_screenshot_primary_playable_rows": [
+        3,
+        8
+      ],
+      "new_screenshot_interface_false_primary": 0,
+      "new_screenshot_ranked_region_count": 11,
+      "new_screenshot_ground_truth_identities": false,
+      "confirmed_10_card_regression": "10/10",
       "production_unchanged": true
     }
   }
