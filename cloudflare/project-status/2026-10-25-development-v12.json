@@ -1,21 +1,21 @@
 {
   "schema_version": 1,
   "kind": "development_v12_multiscale_32px_diagnostic",
-  "generated_at": "2026-10-25T01:49:51.527Z",
+  "generated_at": "2026-10-25T01:55:56.242Z",
   "goal": "reliable programmatic item identification from arbitrary Bazaar screenshots",
   "experiment": {
     "worker": "bazaar-whole-screen-fingerprint-proof-20261009",
     "branch": "experiment/dense-rarity-20261023",
-    "version": "986ff8fd523a4107a27f159f8a52abcd",
+    "version": "9ded79c45c4b4e05974d2582ed73577e",
     "production_unchanged": true,
     "main_recognizer_unchanged": true
   },
   "implementation": {
     "source": "src/recognition/multiscale-diagnostic-v1.js",
-    "commit": "e83582b3eb0e25127ca59e706e2ebe7fc9454bb5",
-    "worker_source_commit": "8ef2fe30fe5067d5ee2a6d4e3aecedecc1c3510c",
+    "commit": "014587bea4e80487623e5fcbd75d70bc971dba05",
+    "worker_source_commit": "2c663aca216cfbda594acb92c3cac71ccc6561da",
     "job": "multiscale_region_v1",
-    "source_32": "catalogue/visual-corpus-identity-rgba32-v1.json",
+    "source_32": "catalogue/item-native-rgba32-v1.json",
     "candidates": "Typed item-only union of coarse top64 and existing 16x16 shortlist",
     "independent_gold_not_used_in_inference": true,
     "modes": [
@@ -24,7 +24,11 @@
       "40%16/60%32",
       "32_no_PDE",
       "32_PDE_only"
-    ]
+    ],
+    "typed_native_32_count": 1052,
+    "compact_ref_bytes": 5983246,
+    "original_full_ref_bytes": 15154676,
+    "compatible_scores": "No descriptor pixels modified; only irrelevant non-item references removed."
   },
   "benchmark_gold": {
     "sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
@@ -35,7 +39,15 @@
     "multiscale_regions_completed_last_verified": 9,
     "multiscale_top1_correct_completed": 9,
     "pending_one_region": true,
-    "no_complete_multiscale_gold_accuracy_claim": true
+    "no_complete_multiscale_gold_accuracy_claim": true,
+    "posthoc_report_r2": "debug/region-multiscale-diagnostic-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-eval-preliminary.json",
+    "scoring_top1_correct_completed": {
+      "res16": 9,
+      "res32": 9,
+      "fusion": 9,
+      "no_pde32": 9,
+      "pde_only32": 9
+    }
   },
   "new_scene": {
     "sha256": "ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546",
@@ -73,9 +85,19 @@
     "Primary 16x16 inference must remain unchanged until complete tests and broader gold examples."
   ],
   "next_actions": [
+    "Instrument slow/pending diagnostic queue jobs and finish 10/10 human gold ablation; do not promote score until complete.",
     "Complete missing multiscale queue jobs with error telemetry.",
     "Evaluate all scoring modes on complete human-confirmed gold and newer scene.",
     "Design stronger retrieval/representation experiment with unseen labelled screenshots.",
     "Do not add enchantment logic or promote experiment to production."
-  ]
+  ],
+  "execution": {
+    "queue_id": "8d3a1e478c4c4eb186b8ae8ad0f4e7a9",
+    "experimental_consumer_max_concurrency": 2,
+    "previous_max_concurrency": 5,
+    "rationale": "Reduce shared 32px catalogue parsing contention; experimental queue only",
+    "unfinished_jobs_reported": true,
+    "unknown_pending_cause": true,
+    "no_unsupported_success_claim": true
+  }
 }
