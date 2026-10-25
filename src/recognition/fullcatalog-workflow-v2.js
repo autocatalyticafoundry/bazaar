@@ -44,7 +44,9 @@ async function bzFullcatalogStartV2(env,body){
     const out=base+id+".json",o=await env.BENCHMARK_R2.get(out);
     if(o){
       const v=JSON.parse(await new Response(o.body).text());
-      if(v.input_key===inputKey&&v.region_id===id&&v.compared>0&&bzSameRegionBoxV2(v.bbox,region.bbox)){
+      if(v.input_key===inputKey&&v.region_id===id&&v.compared>0&&
+        v.entity_type_scope==="item_only_v1"&&
+        bzSameRegionBoxV2(v.bbox,region.bbox)){
         finished.push(id);continue;
       }
     }
@@ -76,6 +78,7 @@ async function bzFullcatalogStartV2(env,body){
   }
   const info={schema_version:2,workflow:"fullcatalog_region_first_v2",
     input_key:inputKey,sha256:sha,localization_action,
+    required_entity_type_scope:"item_only_v1",
     region_count:l.regions.length,wide_span_diagnostic_count:wideSpanCount,
     supplemental_action,supplemental_error,wide_card_acceptances:0,
     queued_count:pending.length,
@@ -97,7 +100,9 @@ async function bzFullcatalogStatusV2(env,inputKey){
     const id=r.region_id,out=await env.BENCHMARK_R2.get(base+id+".json");
     if(out){
       const a=JSON.parse(await new Response(out.body).text());
-      if(a.input_key===inputKey&&a.compared>0&&bzSameRegionBoxV2(a.bbox,r.bbox)){
+      if(a.input_key===inputKey&&a.compared>0&&
+        a.entity_type_scope==="item_only_v1"&&
+        bzSameRegionBoxV2(a.bbox,r.bbox)){
         regions.push({region_id:id,bbox:r.bbox,status:"ranked",
           candidate_count:a.compared,
           top1_to_top2_score_margin:a.top.length>1?
@@ -105,6 +110,7 @@ async function bzFullcatalogStatusV2(env,inputKey){
           score_margin_is_probability:false,
           top:a.top.slice(0,6).map((x,i)=>({
             rank:i+1,canonical_visual_asset:x.canonical_visual_asset,
+            canonical_entity_id:x.canonical_entity_id,entity_type:"item",
             similarity_score:x.score,verification:"unverified_by_this_stage"
           }))});
         continue;
@@ -119,7 +125,8 @@ async function bzFullcatalogStatusV2(env,inputKey){
   const complete=regions.length>0&&regions.every(r=>r.status==="ranked"),
     ready=await env.BENCHMARK_R2.get(base+"result.json");
   const previous=ready?JSON.parse(await new Response(ready.body).text()):null;
-  const result=previous?.region_count===loc.regions.length&&
+  const result=previous?.entity_type_scope==="item_only_v1"&&
+    previous?.region_count===loc.regions.length&&
     loc.regions.every((r,i)=>bzSameRegionBoxV2(previous.regions?.[i]?.bbox,r.bbox))?
     previous:null;
   const wideCandidates=[];
