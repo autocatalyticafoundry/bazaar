@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "kind": "development_v11_typed_item_semantics_and_color_variants",
+  "generated_at": "2026-10-25T01:23:23.158Z",
+  "goal": "pixels -> detected card regions -> typed canonical playable items -> gameplay semantics and visible instance state",
+  "constraints": {
+    "server_side_only": true,
+    "free_compatible": true,
+    "no_assistant_vision_at_runtime": true,
+    "production_unchanged": true
+  },
+  "experimental_worker": {
+    "name": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "version_id": "7e6d888a-6e80-4757-b4f0-856d391e795a",
+    "branch": "experiment/dense-rarity-20261023"
+  },
+  "typed_reference_source": {
+    "origin": "D1 bazaar-clean-benchmark corpus_objects.category='items' candidate_entity_ids_json",
+    "r2": "catalogue/canonical-entity-types-v1.json",
+    "entire_asset_dir": {
+      "total": 1533,
+      "typed_items": 1078,
+      "typed_skills": 413,
+      "unresolved": 42
+    },
+    "active_reference_bank": {
+      "total": 1483,
+      "eligible_items": 1052,
+      "excluded_skills": 390,
+      "quarantined_unresolved": 41
+    },
+    "full_catalogue_reference_count_preserved": 1483,
+    "rule": "All playable-item retrieval excludes canonical skill entities and unresolved visual_object entries; original colour/PDE features unchanged",
+    "impact": "Shield Bash (bazaar:skill:shield-bash) cannot win item ranking; no special blacklist; canonical ids supplied for item top candidates"
+  },
+  "new_screenshot": {
+    "sha256": "ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546",
+    "lower_left_old": {
+      "asset": "ShieldBash.avif",
+      "semantic_type": "skill",
+      "score": 0.640834
+    },
+    "lower_left_new": {
+      "asset": "AtlasStone.avif",
+      "canonical_id": "bazaar:item:atlas-stone",
+      "semantic_type": "item",
+      "score": 0.752781,
+      "identity_human_verified": false
+    },
+    "matching": {
+      "playable_regions": 11,
+      "typed_ranked_regions": 11,
+      "failed": 0
+    },
+    "orange_yellow_conflicts": [
+      {
+        "region_id": "region-08",
+        "orange_similarity": 0.830488,
+        "yellow_similarity": 0.829899,
+        "margin": 0.000589
+      },
+      {
+        "region_id": "region-11",
+        "orange_similarity": 0.843117,
+        "yellow_similarity": 0.834312,
+        "margin": 0.008805
+      }
+    ],
+    "region_10_also_flagged_by_generic_color_ambiguity": true,
+    "instance_enchantment_detected": false,
+    "status_r2": "debug/typed-item-v1/ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546/status-v2.json",
+    "user_correction_r2": "debug/ground-truth-feedback-v1/ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546/corrections.json",
+    "user_correction_github": "eval/feedback/ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546-user-corrections-v1.json",
+    "user_correction_semantics": {
+      "rejected": "Shield Bash is a skill and invalid item identity; actual leftmost card unconfirmed",
+      "orange_looks_like_yellow": "Orange-Piggles guesses correspond to Fiery-enchanted Premium Yellow Piggles; ambiguous per-region assignment pending explicit coordinates"
+    }
+  },
+  "regression": {
+    "gold_sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+    "fully_human_confirmed_card_count": 10,
+    "top1_correct": 10,
+    "top3_correct": 10,
+    "gold_result_r2": "debug/typed-item-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-evaluation.json"
+  },
+  "restrictions": [
+    "Human correction fixture stored separately and never consumed by inference",
+    "Color-family closeness explicitly marked ambiguous; never infer Fiery from score gap",
+    "An item-looking filename does not establish game object type; typed metadata required",
+    "Only measured on three stored screenshots; unseen reliability is not calibrated"
+  ],
+  "next_actions": [
+    "Build independent per-item enchantment recognition (e.g. Fiery visual overlays) without changing canonical base identity",
+    "Validate structured card metadata and typed entity enrichment",
+    "Obtain direct human gold mapping of the two Fiery Yellow Piggles regions and unconfirmed leftmost item",
+    "Test new screenshot after enchantment model; retain 10/10 regression and avoid false matches across skills",
+    "Preserve free-only server-side experimental deployment; production gated on broader validation"
+  ]
+}
