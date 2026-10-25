@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "kind": "development_v10_frame_family_localization_and_cache_integrity",
+  "generated_at": "2026-10-25T01:05:24.416Z",
+  "goal": "arbitrary Bazaar screenshot -> programmatically localized playable cards -> independently verified canonical entities -> metadata + instance state",
+  "runtime": "Cloudflare Worker free-compatible server-side only",
+  "assistant_vision_in_runtime": false,
+  "experiment": {
+    "branch": "experiment/dense-rarity-20261023",
+    "worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "deployed_version": "64dd5eafa87043e2b722f4e698ae69f8",
+    "production_unchanged": true,
+    "latest_worker_source_commit": "4d632d7ec401a6a9a20c466ea235cf4fb06ec3ac",
+    "updated_files": [
+      "src/recognition/region-hypotheses-v1.js",
+      "src/recognition/fullcatalog-workflow-v2.js",
+      "src/recognition/fullcatalog-convolution-v1.js",
+      "cloudflare/workers/bazaar-whole-screen-fingerprint-proof-20261009/content-v2.multipart"
+    ],
+    "changes": [
+      "Two-pass native-resolution band analysis chooses the most-supported card-frame family and validates other rows by comparable frame height and edge support.",
+      "Admits coherent card-row regions from two-card rows; no longer discards them solely for region count under three.",
+      "Coherent medium-wide frames can be primary proposals when consistent with the local row median pitch; anomalous wide gaps remain diagnostic.",
+      "HUD/portrait rows with inconsistent frame lengths or weak edge support are rejected from primary recognition.",
+      "Convolution region-cache reuse, aggregation and status reject score artifacts whose bbox differs from current localization geometry.",
+      "Status displays exact top1/top2 uncalibrated similarity margin, without labelling scores probabilities or identities verified."
+    ]
+  },
+  "newly_uploaded_screenshot": {
+    "sha256": "ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546",
+    "width": 2048,
+    "height": 1262,
+    "bytes": 5616181,
+    "screenshot_r2": "perception/inputs/ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546.png",
+    "transfer_sha256_verified": true,
+    "before": {
+      "primary_regions": 11,
+      "playable_row_regions": 8,
+      "bottom_interface_false_proposals": 3,
+      "upper_row_primary_regions": 0,
+      "upper_row_fallback_diagnostic_proposals": 2
+    },
+    "after": {
+      "primary_regions": 11,
+      "top_row_regions": 3,
+      "lower_row_regions": 8,
+      "bottom_interface_primary_proposals": 0,
+      "score_artifacts_bbox_current": 11,
+      "completed_rankings": 11
+    },
+    "top1_hypotheses": [
+      {
+        "region_id": "region-01",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/LuxuryTents.avif",
+        "similarity": 0.80467,
+        "top1_top2_score_margin": 0.167312,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-02",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Coincure.avif",
+        "similarity": 0.811869,
+        "top1_top2_score_margin": 0.133268,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-03",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Bootstraps.avif",
+        "similarity": 0.762554,
+        "top1_top2_score_margin": 0.096122,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-04",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ShieldBash.avif",
+        "similarity": 0.640834,
+        "top1_top2_score_margin": 0.022771,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-05",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/IceLuge.avif",
+        "similarity": 0.715818,
+        "top1_top2_score_margin": 0.1305,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-06",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/PremiumGreenPiggles.avif",
+        "similarity": 0.812399,
+        "top1_top2_score_margin": 0.037914,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-07",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/Abacus.avif",
+        "similarity": 0.748837,
+        "top1_top2_score_margin": 0.097217,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-08",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/PremiumOrangePiggles.avif",
+        "similarity": 0.830488,
+        "top1_top2_score_margin": 0.000589,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-09",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/ModelShip.avif",
+        "similarity": 0.867071,
+        "top1_top2_score_margin": 0.152421,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-10",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/PremiumYellowPiggles.avif",
+        "similarity": 0.793289,
+        "top1_top2_score_margin": 0.00707,
+        "identity_verified": false
+      },
+      {
+        "region_id": "region-11",
+        "canonical_visual_asset": "corpus/images/providers/bazaarplanner/items/PremiumOrangePiggles.avif",
+        "similarity": 0.843117,
+        "top1_top2_score_margin": 0.008805,
+        "identity_verified": false
+      }
+    ],
+    "observation": "11 expected playable-card shapes based on external visual review of this screenshot, NOT formal user-labelled ground truth or an inference-stage signal",
+    "metadata_resolution": "not yet connected",
+    "status_r2": "debug/region-family-v2/ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546/status.json",
+    "diagnostic_r2": "debug/region-fullcatalog-convolution-v1/ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546/unseen-run-report.json",
+    "comparison_notes": "No person supplied per-card gold identities on this screenshot; do not state 11/11 identity accuracy."
+  },
+  "control_screenshot": {
+    "sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+    "regions_before": 10,
+    "regions_after": 10,
+    "human_gold_evaluated": 10,
+    "correct_top1": 10,
+    "correct_top3": 10,
+    "missing_gold_regions": 0,
+    "gold_result_r2": "debug/region-family-v2/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-regression.json",
+    "status_r2": "debug/region-family-v2/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/status.json"
+  },
+  "old_screenshot": {
+    "sha256": "5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393",
+    "primary_regions": 10,
+    "wide_supplemental_unverified": 1,
+    "preexisting_known_card": "Stained Glass Window",
+    "status_r2": "debug/region-family-v2/5a4e9b43b05b2fd6f998cf2725ac450c1dd483f58134d0dec4b4713622bfd393/status.json",
+    "identity_gold_incomplete": true
+  },
+  "limits": [
+    "The change has been regression-tested on three stored screenshots; arbitrary-screen generalization is not proven.",
+    "The original correct 10/10 screenshot may share art distribution with test, so further unseen gold is essential.",
+    "The latest 11 top identities are ranking hypotheses, not independently verified objects.",
+    "Visually similar Premium Piggles variants have score margins as low as 0.000589, requiring discriminative color and geometric validation.",
+    "A single isolated item with no repeated card frame may still fail localization."
+  ],
+  "next_steps": [
+    "Acquire independent per-card gold labels for new 11-card scene; measure top1/top3 rather than treating similarities as correctness.",
+    "Implement and benchmark discriminative variant verification for close color/pattern siblings (Piggles), without sacrificing the existing 10/10 gold result.",
+    "Test isolated-card cases and more layouts, including crowds of decorative UI panels and non-row card grids.",
+    "Integrate canonical gameplay metadata and visible instance-state extraction after trusted identity resolution.",
+    "Maintain auth and free-tier discipline; no production promotion until independent accuracy and upload auth validated."
+  ]
+}
