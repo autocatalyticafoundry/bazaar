@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25T01:23:23.158Z",
+  "updated_at": "2026-10-25T01:49:51.527Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,11 +110,10 @@
     }
   },
   "next_steps": [
-    "Build independent per-item enchantment recognition (e.g. Fiery visual overlays) without changing canonical base identity",
-    "Validate structured card metadata and typed entity enrichment",
-    "Obtain direct human gold mapping of the two Fiery Yellow Piggles regions and unconfirmed leftmost item",
-    "Test new screenshot after enchantment model; retain 10/10 regression and avoid false matches across skills",
-    "Preserve free-only server-side experimental deployment; production gated on broader validation"
+    "Complete missing multiscale queue jobs with error telemetry.",
+    "Evaluate all scoring modes on complete human-confirmed gold and newer scene.",
+    "Design stronger retrieval/representation experiment with unseen labelled screenshots.",
+    "Do not add enchantment logic or promote experiment to production."
   ],
   "preservation": {
     "status": "complete",
@@ -127,7 +126,7 @@
     "github_cloudflare_root": "cloudflare/",
     "note": "GitHub is now the canonical code/config backup; R2 remains the live binary/corpus store.",
     "latest_development_checkpoint_r2": "debug/project-status/2026-10-25-development-v11.json",
-    "latest_development_checkpoint_github": "cloudflare/project-status/2026-10-25-development-v11.json",
+    "latest_development_checkpoint_github": "cloudflare/project-status/2026-10-25-development-v12.json",
     "latest_screenshot_intake_r2": "debug/project-status/2026-10-24-new-screenshot-intake.json"
   },
   "development_latest": {
@@ -448,6 +447,18 @@
       "instance_enchantment_detected": false,
       "piggles_color_family_ambiguity_flagged": true,
       "confirmed_gold_regression": "10/10",
+      "production_unchanged": true
+    },
+    "development_v12": {
+      "checkpoint_github": "cloudflare/project-status/2026-10-25-development-v12.json",
+      "experimental_version_id": "986ff8fd523a4107a27f159f8a52abcd",
+      "primary_matcher_unchanged": true,
+      "gold_32_completed": 9,
+      "gold_32_total": 10,
+      "bright_variant_yellow_top1_32": [
+        "region-08",
+        "region-11"
+      ],
       "production_unchanged": true
     }
   }
