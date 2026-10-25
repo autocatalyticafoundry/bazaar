@@ -5,6 +5,28 @@
 function bzSameRegionBoxV2(a,b){
   return !!a&&!!b&&["x","y","width","height"].every(k=>a[k]===b[k]);
 }
+const BZ_CANONICAL_TYPES_V1="catalogue/canonical-entity-types-v1.json";
+async function bzTypedItemReferenceSetV1(env,refs){
+  const object=await env.BENCHMARK_R2.get(BZ_CANONICAL_TYPES_V1);
+  if(!object)throw new Error("canonical_entity_type_index_missing");
+  const manifest=JSON.parse(await new Response(object.body).text());
+  if(manifest.schema_version!==1||manifest.kind!=="canonical_entity_type_asset_map_v1"||
+    !Array.isArray(manifest.records))throw new Error("bad_entity_type_manifest");
+  const byPath=new Map(manifest.records.map(r=>[r.asset_path,r]));
+  const eligible=[],counts={item:0,skill:0,unresolved:0,absent:0};
+  for(const ref of refs){
+    const row=byPath.get(ref.asset_path);
+    if(!row){counts.absent++;continue;}
+    if(row.entity_type==="item"&&typeof row.canonical_entity_id==="string"&&
+       row.canonical_entity_id.startsWith("bazaar:item:")){
+      eligible.push({...ref,canonical_entity_id:row.canonical_entity_id});
+      counts.item++;
+    }else if(row.entity_type==="skill")counts.skill++;
+    else counts.unresolved++;
+  }
+  if(eligible.length<900)throw new Error("typed_item_reference_count_below_expected");
+  return {eligible,counts,manifest_key:BZ_CANONICAL_TYPES_V1};
+}
 function bzFullConvBaseV1(inputKey){
   return "debug/region-fullcatalog-convolution-v1/"+bzRegionImageShaV1(inputKey)+"/";
 }
@@ -32,10 +54,14 @@ async function bzFullConvRegionV1(env,body){
   if(!r)throw new Error("invalid region id");
   const loaded=await loadProofInputs(env,inputKey),refs=loaded.refs;
   if(refs.length<1300)throw new Error("unexpectedly incomplete catalogue");
+  const typed=await bzTypedItemReferenceSetV1(env,refs);
+  // Scene localized as playable items: never rank skill-only art as an item.
+  // Unknown canonical types remain quarantined from accepted item identities.
+  const eligibleRefs=typed.eligible;
   // Stage A: inexpensive 4x4 color comparison across all 1483 references.
   const target4=bzAffineGridV1(loaded.image,r.bbox,4,4,"target"),
     coarse=[];
-  for(const ref of refs){
+  for(const ref of eligibleRefs){
     if(!ref.rgb4||ref.rgb4.length!==48)continue;
     coarse.push({ref,score:bzFullConvColorDistanceV1(target4,ref.rgb4)});
   }
@@ -48,7 +74,7 @@ async function bzFullConvRegionV1(env,body){
     const rows=JSON.parse(await new Response(old.body).text())
       .regions.find(x=>x.region_id===id&&bzSameRegionBoxV2(x.bbox,r.bbox))?.top_candidates||[];
     for(const row of rows){
-      const ref=refs.find(x=>x.asset_path===row.canonical_visual_asset);
+      const ref=eligibleRefs.find(x=>x.asset_path===row.canonical_visual_asset);
       if(ref&&!selected.some(q=>q.ref.asset_path===ref.asset_path))selected.push({
         ref,score:null,source:"earlier_region_shortlist"
       });
@@ -80,6 +106,7 @@ async function bzFullConvRegionV1(env,body){
       };
     }
     ranking.push({canonical_visual_asset:ref.asset_path,
+      canonical_entity_id:ref.canonical_entity_id,entity_type:"item",
       source_sha256:ref.source_sha256,
       score:Number(best.score.toFixed(6)),mode:best.mode,shift:best.shift,
       coarse_color_score:entry.score===null?null:Number(entry.score.toFixed(5)),
@@ -88,9 +115,13 @@ async function bzFullConvRegionV1(env,body){
       pde_hog:Number(best.pde_hog.toFixed(5))});
   }
   ranking.sort((a,b)=>b.score-a.score||a.canonical_visual_asset.localeCompare(b.canonical_visual_asset));
-  const result={schema_version:2,version:"region-fullcatalog-convolution-prefilter-v2",
+  const result={schema_version:3,version:"region-fullcatalog-convolution-prefilter-v3",
     input_key:inputKey,region_id:id,bbox:r.bbox,
-    reference_count:refs.length,coarse_count:coarse.length,
+    entity_type_scope:"item_only_v1",
+    type_manifest_key:typed.manifest_key,
+    filtered_reference_counts:typed.counts,
+    reference_count:refs.length,eligible_item_reference_count:eligibleRefs.length,
+    coarse_count:coarse.length,
     compared:ranking.length,errors,top:ranking.slice(0,48),
     coarse_top:coarse.slice(0,64).map(q=>[q.ref.asset_path,Number(q.score.toFixed(6))]),
     score_semantics:"4x4 full-corpus color sweep, then 16x16 Gaussian/PDE comparison; not probabilities",
@@ -102,7 +133,8 @@ async function bzFullConvRegionV1(env,body){
     const stored=await env.BENCHMARK_R2.get(base+x.region_id+".json");
     if(!stored){complete=false;break;}
     const record=JSON.parse(await new Response(stored.body).text());
-    if(record.input_key!==inputKey||!bzSameRegionBoxV2(record.bbox,x.bbox)){
+    if(record.input_key!==inputKey||record.entity_type_scope!=="item_only_v1"||
+      !bzSameRegionBoxV2(record.bbox,x.bbox)){
       complete=false;break;
     }
   }
@@ -119,13 +151,15 @@ async function bzFullConvAggregateV1(env,body){
     const o=await env.BENCHMARK_R2.get(base+r.region_id+".json");
     if(!o)throw new Error("missing convolution full-catalogue output "+r.region_id);
     const row=JSON.parse(await new Response(o.body).text());
-    if(row.input_key!==inputKey||!bzSameRegionBoxV2(row.bbox,r.bbox))
+    if(row.input_key!==inputKey||row.entity_type_scope!=="item_only_v1"||
+      !bzSameRegionBoxV2(row.bbox,r.bbox))
       throw new Error("stale_convolution_region_geometry "+r.region_id);
     regions.push({region_id:r.region_id,bbox:r.bbox,compared:row.compared,
       ranked_top:row.top.slice(0,24),full_score_artifact:base+r.region_id+".json",
       errors:row.errors});
   }
-  const result={schema_version:1,version:"region-fullcatalog-convolution-v1",
+  const result={schema_version:2,version:"region-fullcatalog-convolution-typed-item-v2",
+    entity_type_scope:"item_only_v1",type_manifest_key:BZ_CANONICAL_TYPES_V1,
     input_key:inputKey,regions,region_count:regions.length,
     total_comparisons:regions.reduce((n,r)=>n+r.compared,0),
     candidate_universe:loc.regions.length?1483:null,
