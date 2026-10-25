@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25T01:05:24.416Z",
+  "updated_at": "2026-10-25T01:23:23.158Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,11 +110,11 @@
     }
   },
   "next_steps": [
-    "Acquire independent per-card gold labels for new 11-card scene; measure top1/top3 rather than treating similarities as correctness.",
-    "Implement and benchmark discriminative variant verification for close color/pattern siblings (Piggles), without sacrificing the existing 10/10 gold result.",
-    "Test isolated-card cases and more layouts, including crowds of decorative UI panels and non-row card grids.",
-    "Integrate canonical gameplay metadata and visible instance-state extraction after trusted identity resolution.",
-    "Maintain auth and free-tier discipline; no production promotion until independent accuracy and upload auth validated."
+    "Build independent per-item enchantment recognition (e.g. Fiery visual overlays) without changing canonical base identity",
+    "Validate structured card metadata and typed entity enrichment",
+    "Obtain direct human gold mapping of the two Fiery Yellow Piggles regions and unconfirmed leftmost item",
+    "Test new screenshot after enchantment model; retain 10/10 regression and avoid false matches across skills",
+    "Preserve free-only server-side experimental deployment; production gated on broader validation"
   ],
   "preservation": {
     "status": "complete",
@@ -126,8 +126,8 @@
     "github_handoff_path": "cloudflare/project-status/2026-10-23-handoff.md",
     "github_cloudflare_root": "cloudflare/",
     "note": "GitHub is now the canonical code/config backup; R2 remains the live binary/corpus store.",
-    "latest_development_checkpoint_r2": "debug/project-status/2026-10-25-development-v10.json",
-    "latest_development_checkpoint_github": "cloudflare/project-status/2026-10-25-development-v10.json",
+    "latest_development_checkpoint_r2": "debug/project-status/2026-10-25-development-v11.json",
+    "latest_development_checkpoint_github": "cloudflare/project-status/2026-10-25-development-v11.json",
     "latest_screenshot_intake_r2": "debug/project-status/2026-10-24-new-screenshot-intake.json"
   },
   "development_latest": {
@@ -436,6 +436,18 @@
       "new_screenshot_ranked_region_count": 11,
       "new_screenshot_ground_truth_identities": false,
       "confirmed_10_card_regression": "10/10",
+      "production_unchanged": true
+    },
+    "development_v11": {
+      "checkpoint_github": "cloudflare/project-status/2026-10-25-development-v11.json",
+      "checkpoint_r2": "debug/project-status/2026-10-25-development-v11.json",
+      "deployed_experimental_worker_version": "7e6d888a-6e80-4757-b4f0-856d391e795a",
+      "canonical_skill_exclusion_count": 390,
+      "active_playable_item_refs": 1052,
+      "latest_scene_new_leftmost_top1": "Atlas Stone",
+      "instance_enchantment_detected": false,
+      "piggles_color_family_ambiguity_flagged": true,
+      "confirmed_gold_regression": "10/10",
       "production_unchanged": true
     }
   }
