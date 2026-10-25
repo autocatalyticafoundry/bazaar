@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25T01:49:51.527Z",
+  "updated_at": "2026-10-25T01:55:56.242Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -451,7 +451,7 @@
     },
     "development_v12": {
       "checkpoint_github": "cloudflare/project-status/2026-10-25-development-v12.json",
-      "experimental_version_id": "986ff8fd523a4107a27f159f8a52abcd",
+      "experimental_version_id": "9ded79c45c4b4e05974d2582ed73577e",
       "primary_matcher_unchanged": true,
       "gold_32_completed": 9,
       "gold_32_total": 10,
@@ -459,7 +459,12 @@
         "region-08",
         "region-11"
       ],
-      "production_unchanged": true
+      "production_unchanged": true,
+      "compact_typed_native32_reference_count": 1052,
+      "compact_typed_native32_bytes": 5983246,
+      "preliminary_gold_evaluation": "9/9 correct across 5 modes, 1 of 10 pending",
+      "gold_partial_report_r2": "debug/region-multiscale-diagnostic-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-eval-preliminary.json",
+      "queue_experiment_max_concurrency": 2
     }
   }
 }
