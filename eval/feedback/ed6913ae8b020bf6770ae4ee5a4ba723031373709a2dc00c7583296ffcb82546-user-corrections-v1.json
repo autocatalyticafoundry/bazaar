@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "kind": "user-feedback-partial-identity-gold-v1",
+  "screenshot_sha256": "ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546",
+  "source": "User feedback in Bazaar project conversation, October 24, 2026",
+  "source_image_filename": "Screenshot 2026-10-24 at 8.26.53 PM.png",
+  "independent_of_inference": true,
+  "eligible_to_influence_matching": false,
+  "notes": [
+    {
+      "region_id": "region-04",
+      "bbox": {
+        "x": 332,
+        "y": 679,
+        "width": 288,
+        "height": 254
+      },
+      "correction": "Shield Bash is incorrect and is a skill, not a playable item",
+      "rejected_canonical_entity_id": "bazaar:skill:shield-bash",
+      "true_item_entity_id": null,
+      "verification": "human_rejected_top1_only",
+      "important": "Atlas Stone is subsequently top1 under typed ranker but user has not independently confirmed it."
+    },
+    {
+      "scope": "all lower-row top1 predictions labelled Premium Orange Piggles",
+      "region_ids_matching_this_description": [
+        "region-08",
+        "region-11"
+      ],
+      "correction": "Orange Piggles top1 is not the correct entity. These are described as Fiery Yellow Piggles (Premium Yellow Piggles, Fiery enchantment) whose artwork appears orange.",
+      "corrected_base_entity_id": "bazaar:item:premium-yellow-piggles",
+      "corrected_instance_enchantment": "fiery",
+      "corrected_full_label": "Fiery Premium Yellow Piggles",
+      "verification": "human_explained_group_correction",
+      "region_assignment_note": "The user's correction was given for the orange Piggles group, without individual bounding boxes. Record the two matching predictions as correction targets, but do not count independently human-labelled per-region gold until explicit mapping is established.",
+      "no_inference_label_leakage": true
+    }
+  ],
+  "policy": "Not loaded by any matcher; post-inference evaluation only."
+}
