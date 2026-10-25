@@ -44,7 +44,7 @@ async function bzFullcatalogStartV2(env,body){
     const out=base+id+".json",o=await env.BENCHMARK_R2.get(out);
     if(o){
       const v=JSON.parse(await new Response(o.body).text());
-      if(v.input_key===inputKey&&v.region_id===id&&v.compared>0){
+      if(v.input_key===inputKey&&v.region_id===id&&v.compared>0&&bzSameRegionBoxV2(v.bbox,region.bbox)){
         finished.push(id);continue;
       }
     }
@@ -97,7 +97,7 @@ async function bzFullcatalogStatusV2(env,inputKey){
     const id=r.region_id,out=await env.BENCHMARK_R2.get(base+id+".json");
     if(out){
       const a=JSON.parse(await new Response(out.body).text());
-      if(a.input_key===inputKey&&a.compared>0){
+      if(a.input_key===inputKey&&a.compared>0&&bzSameRegionBoxV2(a.bbox,r.bbox)){
         regions.push({region_id:id,bbox:r.bbox,status:"ranked",
           candidate_count:a.compared,
           top:a.top.slice(0,6).map((x,i)=>({
@@ -115,7 +115,10 @@ async function bzFullcatalogStatusV2(env,inputKey){
   }
   const complete=regions.length>0&&regions.every(r=>r.status==="ranked"),
     ready=await env.BENCHMARK_R2.get(base+"result.json");
-  const result=ready?JSON.parse(await new Response(ready.body).text()):null;
+  const previous=ready?JSON.parse(await new Response(ready.body).text()):null;
+  const result=previous?.region_count===loc.regions.length&&
+    loc.regions.every((r,i)=>bzSameRegionBoxV2(previous.regions?.[i]?.bbox,r.bbox))?
+    previous:null;
   const wideCandidates=[];
   const suppBase=bzFallbackBaseV1(inputKey),
     supplemental=await env.BENCHMARK_R2.get(suppBase+"regions.json");
