@@ -100,6 +100,9 @@ async function bzFullcatalogStatusV2(env,inputKey){
       if(a.input_key===inputKey&&a.compared>0&&bzSameRegionBoxV2(a.bbox,r.bbox)){
         regions.push({region_id:id,bbox:r.bbox,status:"ranked",
           candidate_count:a.compared,
+          top1_to_top2_score_margin:a.top.length>1?
+            Number((a.top[0].score-a.top[1].score).toFixed(6)):null,
+          score_margin_is_probability:false,
           top:a.top.slice(0,6).map((x,i)=>({
             rank:i+1,canonical_visual_asset:x.canonical_visual_asset,
             similarity_score:x.score,verification:"unverified_by_this_stage"
