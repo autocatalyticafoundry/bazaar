@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25T01:55:56.242Z",
+  "updated_at": "2026-10-25T01:59:45.042Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,10 +110,11 @@
     }
   },
   "next_steps": [
-    "Complete missing multiscale queue jobs with error telemetry.",
-    "Evaluate all scoring modes on complete human-confirmed gold and newer scene.",
-    "Design stronger retrieval/representation experiment with unseen labelled screenshots.",
-    "Do not add enchantment logic or promote experiment to production."
+    "Retain 32x32 as experimental candidate; do not promote it to production or claim arbitrary-screen accuracy from two scenes.",
+    "Integrate general 32x32 matching as an opt-in server-side recognition variant, with independent scoring and failure telemetry.",
+    "Collect new blind human-labelled screenshots and measure candidate retrieval, top1, top3, false positives and throughput.",
+    "Perform additional ablation with harder negative pairs; PDE terms not yet proven to improve prediction.",
+    "Continue server-only, Cloudflare free-compatible execution; no enchantment modelling at this stage."
   ],
   "preservation": {
     "status": "complete",
@@ -453,7 +454,7 @@
       "checkpoint_github": "cloudflare/project-status/2026-10-25-development-v12.json",
       "experimental_version_id": "9ded79c45c4b4e05974d2582ed73577e",
       "primary_matcher_unchanged": true,
-      "gold_32_completed": 9,
+      "gold_32_completed": 10,
       "gold_32_total": 10,
       "bright_variant_yellow_top1_32": [
         "region-08",
@@ -464,7 +465,18 @@
       "compact_typed_native32_bytes": 5983246,
       "preliminary_gold_evaluation": "9/9 correct across 5 modes, 1 of 10 pending",
       "gold_partial_report_r2": "debug/region-multiscale-diagnostic-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-eval-preliminary.json",
-      "queue_experiment_max_concurrency": 2
+      "queue_experiment_max_concurrency": 2,
+      "all_five_gold_ablation_modes_top1": "10/10",
+      "all_five_gold_ablation_modes_top3": "10/10",
+      "new_scene_32_completed": 11,
+      "new_scene_total": 11,
+      "new_scene_16_to_32_top1_changes": [
+        "region-08",
+        "region-11"
+      ],
+      "gold_eval_r2": "debug/region-multiscale-diagnostic-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-eval.json",
+      "new_scene_compare_r2": "debug/region-multiscale-diagnostic-v1/ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546/all-regions-comparison.json",
+      "experiment_worker_version": "9ded79c45c4b4e05974d2582ed73577e"
     }
   }
 }
