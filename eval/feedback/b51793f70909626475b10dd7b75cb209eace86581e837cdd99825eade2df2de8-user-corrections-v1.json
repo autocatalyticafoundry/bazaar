@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "kind": "user_feedback_blind_screenshot_partial_gold",
+  "screenshot_sha256": "b51793f70909626475b10dd7b75cb209eace86581e837cdd99825eade2df2de8",
+  "source": "User confirmation after 2026-10-25 Cloudflare end-to-end blind run",
+  "observation": "All correct EXCEPT Lower 2 - it is an enchanted Fiery Knuckles (I can't remember the Knuckles actual name - if it is actualy knuckles). I think the enchantment confused it (which is fine for now).",
+  "gold_label_origin": "direct user feedback on presented 16x16 and 32x32 ranked outputs",
+  "expected_playable_identity_regions": 9,
+  "confirmed_matches": 8,
+  "rejected_unresolved": 1,
+  "labels": [
+    {
+      "region_id": "region-01",
+      "position": "upper-1",
+      "canonical_entity_id": "bazaar:item:premium-piggles",
+      "status": "confirmed"
+    },
+    {
+      "region_id": "region-02",
+      "position": "upper-2",
+      "canonical_entity_id": "bazaar:item:gavel",
+      "status": "confirmed"
+    },
+    {
+      "region_id": "region-03",
+      "position": "upper-3",
+      "canonical_entity_id": "bazaar:item:wrist-warrior",
+      "status": "confirmed"
+    },
+    {
+      "region_id": "fallback-04",
+      "position": "lower-1",
+      "canonical_entity_id": "bazaar:item:billboard",
+      "status": "confirmed",
+      "source": "wide_cadence_frame_span"
+    },
+    {
+      "region_id": "region-04",
+      "position": "lower-2",
+      "canonical_entity_id": null,
+      "status": "rejected_base_identity_unresolved",
+      "rejected_16x16": "bazaar:item:pantry",
+      "rejected_32x32": "bazaar:item:silencer",
+      "user_description": "Fiery Knuckles (exact base item name uncertain)",
+      "candidate_base_entity_id_unverified": "bazaar:item:brass-knuckles",
+      "candidate_enchantment_user_reported": "fiery",
+      "note": "Do not promote guessed Brass Knuckles to human-confirmed identity; do not train matcher on this feedback."
+    },
+    {
+      "region_id": "region-05",
+      "position": "lower-3",
+      "canonical_entity_id": "bazaar:item:display-case",
+      "status": "confirmed"
+    },
+    {
+      "region_id": "region-06",
+      "position": "lower-4",
+      "canonical_entity_id": "bazaar:item:abacus",
+      "status": "confirmed"
+    },
+    {
+      "region_id": "region-07",
+      "position": "lower-5",
+      "canonical_entity_id": "bazaar:item:coincure",
+      "status": "confirmed"
+    },
+    {
+      "region_id": "region-08",
+      "position": "lower-6",
+      "canonical_entity_id": "bazaar:item:succulents",
+      "status": "confirmed"
+    }
+  ],
+  "metadata_lookup": {
+    "matching_catalogue_asset": "corpus/images/providers/bazaarplanner/items/BrassKnuckles.avif",
+    "candidate_entity_id": "bazaar:item:brass-knuckles",
+    "status": "plausible_name_only_not_human_verified",
+    "existing_enchantment_asset": "corpus/images/providers/bazaarplanner/enchants/Fiery.webp",
+    "existing_knuckle_overlay_asset": "corpus/images/providers/bazaarplanner/enchants/EdgeOverlay-BrassKnuckles.webp",
+    "retrieval_observation": "Brass Knuckles absent from recorded baseline top64 and multiscale candidate pool for region-04, but its identity is not confirmed as ground truth"
+  },
+  "data_separation": {
+    "inference_may_read": false,
+    "evaluation_only": true,
+    "no_user_feedback_loaded_in_matcher": true,
+    "no_enchantment_model_added": true
+  },
+  "verified_visual_geometry": "programmatic bboxes not user pixel-verified"
+}
