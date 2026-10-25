@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "kind": "development_v12_multiscale_32px_diagnostic",
+  "generated_at": "2026-10-25T01:49:51.527Z",
+  "goal": "reliable programmatic item identification from arbitrary Bazaar screenshots",
+  "experiment": {
+    "worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+    "branch": "experiment/dense-rarity-20261023",
+    "version": "986ff8fd523a4107a27f159f8a52abcd",
+    "production_unchanged": true,
+    "main_recognizer_unchanged": true
+  },
+  "implementation": {
+    "source": "src/recognition/multiscale-diagnostic-v1.js",
+    "commit": "e83582b3eb0e25127ca59e706e2ebe7fc9454bb5",
+    "worker_source_commit": "8ef2fe30fe5067d5ee2a6d4e3aecedecc1c3510c",
+    "job": "multiscale_region_v1",
+    "source_32": "catalogue/visual-corpus-identity-rgba32-v1.json",
+    "candidates": "Typed item-only union of coarse top64 and existing 16x16 shortlist",
+    "independent_gold_not_used_in_inference": true,
+    "modes": [
+      "16x16",
+      "32x32",
+      "40%16/60%32",
+      "32_no_PDE",
+      "32_PDE_only"
+    ]
+  },
+  "benchmark_gold": {
+    "sha256": "cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a",
+    "labels": 10,
+    "coarse_top1_correct": 9,
+    "coarse_top5_contains_truth": 10,
+    "coarse_top48_contains_truth": 10,
+    "multiscale_regions_completed_last_verified": 9,
+    "multiscale_top1_correct_completed": 9,
+    "pending_one_region": true,
+    "no_complete_multiscale_gold_accuracy_claim": true
+  },
+  "new_scene": {
+    "sha256": "ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546",
+    "total_regions": 11,
+    "completed_multiscale_last_verified": 8,
+    "confirmed_false_original_shield_bash_is_skill": true,
+    "yellow_piggles_positions": [
+      {
+        "region": "region-08",
+        "res16_top1": "premium-orange-piggles",
+        "res32_top1": "premium-yellow-piggles",
+        "res32_scores": {
+          "yellow": 0.887211,
+          "orange": 0.880754
+        },
+        "fusion_top1": "premium-yellow-piggles"
+      },
+      {
+        "region": "region-11",
+        "res16_top1": "premium-orange-piggles",
+        "res32_top1": "premium-yellow-piggles",
+        "res32_scores": {
+          "yellow": 0.896046,
+          "orange": 0.891433
+        },
+        "fusion_top1": "premium-orange-piggles"
+      }
+    ],
+    "note": "Consistent with user's group correction; exact per-region labels and enchantment-state validation not supplied."
+  },
+  "interpretation": [
+    "No top48 retrieval loss observed on ten-card gold screenshot.",
+    "32x32 improves both challenging Piggles base-identity guesses in new scene without special-case logic.",
+    "No-PDE 32x32 also chooses Yellow in both; PDE-specific value not proven.",
+    "Primary 16x16 inference must remain unchanged until complete tests and broader gold examples."
+  ],
+  "next_actions": [
+    "Complete missing multiscale queue jobs with error telemetry.",
+    "Evaluate all scoring modes on complete human-confirmed gold and newer scene.",
+    "Design stronger retrieval/representation experiment with unseen labelled screenshots.",
+    "Do not add enchantment logic or promote experiment to production."
+  ]
+}
