@@ -2,6 +2,9 @@
 // Full-catalogue convolution/PDE discovery using pre-existing 16x16 RGB artwork.
 // No neural model, no source-image downloads for first pass, and no ground truth labels.
 // This tests whether weak binary shortlist retrieval was losing true candidates.
+function bzSameRegionBoxV2(a,b){
+  return !!a&&!!b&&["x","y","width","height"].every(k=>a[k]===b[k]);
+}
 function bzFullConvBaseV1(inputKey){
   return "debug/region-fullcatalog-convolution-v1/"+bzRegionImageShaV1(inputKey)+"/";
 }
@@ -43,7 +46,7 @@ async function bzFullConvRegionV1(env,body){
   const old=await env.BENCHMARK_R2.get(bzRegionBaseV1(sha)+"result.json");
   if(old){
     const rows=JSON.parse(await new Response(old.body).text())
-      .regions.find(x=>x.region_id===id)?.top_candidates||[];
+      .regions.find(x=>x.region_id===id&&bzSameRegionBoxV2(x.bbox,r.bbox))?.top_candidates||[];
     for(const row of rows){
       const ref=refs.find(x=>x.asset_path===row.canonical_visual_asset);
       if(ref&&!selected.some(q=>q.ref.asset_path===ref.asset_path))selected.push({
@@ -95,8 +98,13 @@ async function bzFullConvRegionV1(env,body){
   await env.BENCHMARK_R2.put(base+id+".json",JSON.stringify(result),{
     httpMetadata:{contentType:"application/json"}});
   let complete=true;
-  for(const x of loc.regions)if(!await env.BENCHMARK_R2.head(base+x.region_id+".json")){
-    complete=false;break;
+  for(const x of loc.regions){
+    const stored=await env.BENCHMARK_R2.get(base+x.region_id+".json");
+    if(!stored){complete=false;break;}
+    const record=JSON.parse(await new Response(stored.body).text());
+    if(record.input_key!==inputKey||!bzSameRegionBoxV2(record.bbox,x.bbox)){
+      complete=false;break;
+    }
   }
   if(complete)await (fallback?bzFallbackAggregateV1(env,{input_key:inputKey}):bzFullConvAggregateV1(env,{input_key:inputKey}));
   return {region_id:id,coarse_count:coarse.length,compared:ranking.length,top:ranking.slice(0,5)};
@@ -111,6 +119,8 @@ async function bzFullConvAggregateV1(env,body){
     const o=await env.BENCHMARK_R2.get(base+r.region_id+".json");
     if(!o)throw new Error("missing convolution full-catalogue output "+r.region_id);
     const row=JSON.parse(await new Response(o.body).text());
+    if(row.input_key!==inputKey||!bzSameRegionBoxV2(row.bbox,r.bbox))
+      throw new Error("stale_convolution_region_geometry "+r.region_id);
     regions.push({region_id:r.region_id,bbox:r.bbox,compared:row.compared,
       ranked_top:row.top.slice(0,24),full_score_artifact:base+r.region_id+".json",
       errors:row.errors});
