@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "kind": "development_v12_multiscale_32px_diagnostic",
-  "generated_at": "2026-10-25T01:55:56.242Z",
+  "generated_at": "2026-10-25T01:59:45.042Z",
   "goal": "reliable programmatic item identification from arbitrary Bazaar screenshots",
   "experiment": {
     "worker": "bazaar-whole-screen-fingerprint-proof-20261009",
@@ -36,23 +36,24 @@
     "coarse_top1_correct": 9,
     "coarse_top5_contains_truth": 10,
     "coarse_top48_contains_truth": 10,
-    "multiscale_regions_completed_last_verified": 9,
-    "multiscale_top1_correct_completed": 9,
-    "pending_one_region": true,
-    "no_complete_multiscale_gold_accuracy_claim": true,
-    "posthoc_report_r2": "debug/region-multiscale-diagnostic-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-eval-preliminary.json",
+    "multiscale_regions_completed_last_verified": 10,
+    "multiscale_top1_correct_completed": 10,
+    "pending_one_region": false,
+    "no_complete_multiscale_gold_accuracy_claim": false,
+    "posthoc_report_r2": "debug/region-multiscale-diagnostic-v1/cd3fa35a00ba9d021c75575d4a8642584284051e479324c2853b51134d88a09a/gold-eval.json",
     "scoring_top1_correct_completed": {
-      "res16": 9,
-      "res32": 9,
-      "fusion": 9,
-      "no_pde32": 9,
-      "pde_only32": 9
-    }
+      "res16": 10,
+      "res32": 10,
+      "fusion": 10,
+      "no_pde32": 10,
+      "pde_only32": 10
+    },
+    "top3_correct_all_modes": 10
   },
   "new_scene": {
     "sha256": "ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546",
     "total_regions": 11,
-    "completed_multiscale_last_verified": 8,
+    "completed_multiscale_last_verified": 11,
     "confirmed_false_original_shield_bash_is_skill": true,
     "yellow_piggles_positions": [
       {
@@ -76,28 +77,39 @@
         "fusion_top1": "premium-orange-piggles"
       }
     ],
-    "note": "Consistent with user's group correction; exact per-region labels and enchantment-state validation not supplied."
+    "note": "Consistent with user's group correction; exact per-region labels and enchantment-state validation not supplied.",
+    "final_comparison_r2": "debug/region-multiscale-diagnostic-v1/ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546/all-regions-comparison.json",
+    "top1_identical_in_16px_and_32px_count": 9,
+    "top1_changed_to_yellow_piggles_count": 2,
+    "changes_specific_to_regions": [
+      "region-08",
+      "region-11"
+    ],
+    "no_full_independent_gold_accuracy_claim": true
   },
   "interpretation": [
     "No top48 retrieval loss observed on ten-card gold screenshot.",
     "32x32 improves both challenging Piggles base-identity guesses in new scene without special-case logic.",
     "No-PDE 32x32 also chooses Yellow in both; PDE-specific value not proven.",
-    "Primary 16x16 inference must remain unchanged until complete tests and broader gold examples."
+    "Primary 16x16 inference must remain unchanged until complete tests and broader gold examples.",
+    "Full 32x32 benchmark 10/10 top1 and top3 on one confirmed image; 11/11 second screenshot processed, top1 changed only for two Piggles candidates, both toward the user-described yellow base artwork."
   ],
   "next_actions": [
-    "Instrument slow/pending diagnostic queue jobs and finish 10/10 human gold ablation; do not promote score until complete.",
-    "Complete missing multiscale queue jobs with error telemetry.",
-    "Evaluate all scoring modes on complete human-confirmed gold and newer scene.",
-    "Design stronger retrieval/representation experiment with unseen labelled screenshots.",
-    "Do not add enchantment logic or promote experiment to production."
+    "Retain 32x32 as experimental candidate; do not promote it to production or claim arbitrary-screen accuracy from two scenes.",
+    "Integrate general 32x32 matching as an opt-in server-side recognition variant, with independent scoring and failure telemetry.",
+    "Collect new blind human-labelled screenshots and measure candidate retrieval, top1, top3, false positives and throughput.",
+    "Perform additional ablation with harder negative pairs; PDE terms not yet proven to improve prediction.",
+    "Continue server-only, Cloudflare free-compatible execution; no enchantment modelling at this stage."
   ],
   "execution": {
     "queue_id": "8d3a1e478c4c4eb186b8ae8ad0f4e7a9",
     "experimental_consumer_max_concurrency": 2,
     "previous_max_concurrency": 5,
     "rationale": "Reduce shared 32px catalogue parsing contention; experimental queue only",
-    "unfinished_jobs_reported": true,
+    "unfinished_jobs_reported": false,
     "unknown_pending_cause": true,
-    "no_unsupported_success_claim": true
+    "no_unsupported_success_claim": true,
+    "queue_diagnostic_complete": true,
+    "note": "The 32px reruns now completed for 10 gold and 11 newer regions after compact typed-corpus deployment; queue still had 1 unrelated/backlogged message on final check."
   }
 }
