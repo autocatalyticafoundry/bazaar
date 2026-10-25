@@ -1,0 +1,871 @@
+{
+  "schema_version": 1,
+  "kind": "blind_screenshot_cloudflare_16vs32_pipeline_results",
+  "generated_at": "2026-10-25T03:34:40.098Z",
+  "sha256": "b51793f70909626475b10dd7b75cb209eace86581e837cdd99825eade2df2de8",
+  "source_screenshot_input": "perception/inputs/b51793f70909626475b10dd7b75cb209eace86581e837cdd99825eade2df2de8.png",
+  "transfer_verified": true,
+  "transfer_bytes": 6067233,
+  "image_dimensions": {
+    "width": 2048,
+    "height": 1420
+  },
+  "source_pipeline": "experimental Cloudflare Worker bazaar-whole-screen-fingerprint-proof-20261009",
+  "human_ground_truth_supplied": false,
+  "assistant_visual_identification_used": false,
+  "localization": {
+    "primary_count": 8,
+    "primary_bands": [
+      {
+        "y": 421,
+        "n": 3
+      },
+      {
+        "y": 768,
+        "n": 5
+      }
+    ],
+    "rejected": [
+      {
+        "y": 100,
+        "reason": "insufficient_frame_repetition",
+        "n": 1
+      },
+      {
+        "y": 1112,
+        "reason": "weak_row_edge_support",
+        "n": 2
+      }
+    ],
+    "supplemental_wide_count": 1
+  },
+  "primary_card_candidates": [
+    {
+      "region_id": "region-01",
+      "bbox": {
+        "x": 941,
+        "y": 430,
+        "width": 149,
+        "height": 293
+      },
+      "base_ranked_top3": [
+        {
+          "entity": "bazaar:item:premium-piggles",
+          "score": 0.781987
+        },
+        {
+          "entity": "bazaar:item:premium-yellow-piggles",
+          "score": 0.68345
+        },
+        {
+          "entity": "bazaar:item:clockwork-blades",
+          "score": 0.679154
+        }
+      ],
+      "multiscale": {
+        "res16": [
+          {
+            "entity": "bazaar:item:premium-piggles",
+            "score": 0.781987
+          },
+          {
+            "entity": "bazaar:item:premium-yellow-piggles",
+            "score": 0.68345
+          },
+          {
+            "entity": "bazaar:item:clockwork-blades",
+            "score": 0.679154
+          }
+        ],
+        "res32": [
+          {
+            "entity": "bazaar:item:premium-piggles",
+            "score": 0.870044
+          },
+          {
+            "entity": "bazaar:item:piggles",
+            "score": 0.749513
+          },
+          {
+            "entity": "bazaar:item:book-of-secrets",
+            "score": 0.707292
+          }
+        ],
+        "fusion": [
+          {
+            "entity": "bazaar:item:premium-piggles",
+            "score": 0.834821
+          },
+          {
+            "entity": "bazaar:item:piggles",
+            "score": 0.708246
+          },
+          {
+            "entity": "bazaar:item:alembic",
+            "score": 0.690281
+          }
+        ],
+        "no_pde32": [
+          {
+            "entity": "bazaar:item:premium-piggles",
+            "score": 0.881688
+          },
+          {
+            "entity": "bazaar:item:piggles",
+            "score": 0.769501
+          },
+          {
+            "entity": "bazaar:item:alembic",
+            "score": 0.71418
+          }
+        ],
+        "pde_only32": [
+          {
+            "entity": "bazaar:item:premium-piggles",
+            "score": 0.836905
+          },
+          {
+            "entity": "bazaar:item:book-of-secrets",
+            "score": 0.732874
+          },
+          {
+            "entity": "bazaar:item:power-drill",
+            "score": 0.706697
+          }
+        ]
+      },
+      "compared_16": 48,
+      "compared_multiscale": 64,
+      "top1_disagreement": false
+    },
+    {
+      "region_id": "region-02",
+      "bbox": {
+        "x": 1104,
+        "y": 430,
+        "width": 138,
+        "height": 293
+      },
+      "base_ranked_top3": [
+        {
+          "entity": "bazaar:item:gavel",
+          "score": 0.794658
+        },
+        {
+          "entity": "bazaar:item:meat-tenderizer",
+          "score": 0.680655
+        },
+        {
+          "entity": "bazaar:item:jabalian-dagger",
+          "score": 0.679931
+        }
+      ],
+      "multiscale": {
+        "res16": [
+          {
+            "entity": "bazaar:item:gavel",
+            "score": 0.794658
+          },
+          {
+            "entity": "bazaar:item:meat-tenderizer",
+            "score": 0.680655
+          },
+          {
+            "entity": "bazaar:item:jabalian-dagger",
+            "score": 0.679931
+          }
+        ],
+        "res32": [
+          {
+            "entity": "bazaar:item:gavel",
+            "score": 0.886194
+          },
+          {
+            "entity": "bazaar:item:gyro-gunsight",
+            "score": 0.731148
+          },
+          {
+            "entity": "bazaar:item:hunting-rifle",
+            "score": 0.725138
+          }
+        ],
+        "fusion": [
+          {
+            "entity": "bazaar:item:gavel",
+            "score": 0.84958
+          },
+          {
+            "entity": "bazaar:item:gyro-gunsight",
+            "score": 0.707629
+          },
+          {
+            "entity": "bazaar:item:nanobot",
+            "score": 0.700191
+          }
+        ],
+        "no_pde32": [
+          {
+            "entity": "bazaar:item:gavel",
+            "score": 0.892824
+          },
+          {
+            "entity": "bazaar:item:hunting-rifle",
+            "score": 0.732392
+          },
+          {
+            "entity": "bazaar:item:gyro-gunsight",
+            "score": 0.729005
+          }
+        ],
+        "pde_only32": [
+          {
+            "entity": "bazaar:item:gavel",
+            "score": 0.867324
+          },
+          {
+            "entity": "bazaar:item:dragon-whelp",
+            "score": 0.750688
+          },
+          {
+            "entity": "bazaar:item:briefcase",
+            "score": 0.737996
+          }
+        ]
+      },
+      "compared_16": 48,
+      "compared_multiscale": 64,
+      "top1_disagreement": false
+    },
+    {
+      "region_id": "region-03",
+      "bbox": {
+        "x": 1256,
+        "y": 430,
+        "width": 146,
+        "height": 293
+      },
+      "base_ranked_top3": [
+        {
+          "entity": "bazaar:item:wrist-warrior",
+          "score": 0.754934
+        },
+        {
+          "entity": "bazaar:item:musket",
+          "score": 0.636063
+        },
+        {
+          "entity": "bazaar:item:cybersecurity",
+          "score": 0.610101
+        }
+      ],
+      "multiscale": {
+        "res16": [
+          {
+            "entity": "bazaar:item:wrist-warrior",
+            "score": 0.754934
+          },
+          {
+            "entity": "bazaar:item:musket",
+            "score": 0.636063
+          },
+          {
+            "entity": "bazaar:item:cybersecurity",
+            "score": 0.610101
+          }
+        ],
+        "res32": [
+          {
+            "entity": "bazaar:item:wrist-warrior",
+            "score": 0.798342
+          },
+          {
+            "entity": "bazaar:item:mech-moles",
+            "score": 0.673611
+          },
+          {
+            "entity": "bazaar:item:fishing-rod",
+            "score": 0.671273
+          }
+        ],
+        "fusion": [
+          {
+            "entity": "bazaar:item:wrist-warrior",
+            "score": 0.780979
+          },
+          {
+            "entity": "bazaar:item:mech-moles",
+            "score": 0.645332
+          },
+          {
+            "entity": "bazaar:item:fishing-rod",
+            "score": 0.639008
+          }
+        ],
+        "no_pde32": [
+          {
+            "entity": "bazaar:item:wrist-warrior",
+            "score": 0.800029
+          },
+          {
+            "entity": "bazaar:item:fishing-rod",
+            "score": 0.684379
+          },
+          {
+            "entity": "bazaar:item:mech-moles",
+            "score": 0.683706
+          }
+        ],
+        "pde_only32": [
+          {
+            "entity": "bazaar:item:wrist-warrior",
+            "score": 0.793541
+          },
+          {
+            "entity": "bazaar:item:mech-moles",
+            "score": 0.64488
+          },
+          {
+            "entity": "bazaar:item:fishing-rod",
+            "score": 0.63397
+          }
+        ]
+      },
+      "compared_16": 48,
+      "compared_multiscale": 64,
+      "top1_disagreement": false
+    },
+    {
+      "region_id": "region-04",
+      "bbox": {
+        "x": 857,
+        "y": 777,
+        "width": 152,
+        "height": 289
+      },
+      "base_ranked_top3": [
+        {
+          "entity": "bazaar:item:pantry",
+          "score": 0.585603
+        },
+        {
+          "entity": "bazaar:item:cloud-tanker",
+          "score": 0.574357
+        },
+        {
+          "entity": "bazaar:item:bolas",
+          "score": 0.5736
+        }
+      ],
+      "multiscale": {
+        "res16": [
+          {
+            "entity": "bazaar:item:suppressor",
+            "score": 0.586582
+          },
+          {
+            "entity": "bazaar:item:pantry",
+            "score": 0.585603
+          },
+          {
+            "entity": "bazaar:item:silencer",
+            "score": 0.58314
+          }
+        ],
+        "res32": [
+          {
+            "entity": "bazaar:item:silencer",
+            "score": 0.63976
+          },
+          {
+            "entity": "bazaar:item:bolas",
+            "score": 0.634862
+          },
+          {
+            "entity": "bazaar:item:trail-mix",
+            "score": 0.634765
+          }
+        ],
+        "fusion": [
+          {
+            "entity": "bazaar:item:silencer",
+            "score": 0.617112
+          },
+          {
+            "entity": "bazaar:item:suppressor",
+            "score": 0.615329
+          },
+          {
+            "entity": "bazaar:item:bolas",
+            "score": 0.610357
+          }
+        ],
+        "no_pde32": [
+          {
+            "entity": "bazaar:item:bolas",
+            "score": 0.650049
+          },
+          {
+            "entity": "bazaar:item:dooley-s-scarf",
+            "score": 0.64274
+          },
+          {
+            "entity": "bazaar:item:trail-mix",
+            "score": 0.63982
+          }
+        ],
+        "pde_only32": [
+          {
+            "entity": "bazaar:item:silencer",
+            "score": 0.64277
+          },
+          {
+            "entity": "bazaar:item:suppressor",
+            "score": 0.637311
+          },
+          {
+            "entity": "bazaar:item:guardian-shell",
+            "score": 0.621895
+          }
+        ]
+      },
+      "compared_16": 48,
+      "compared_multiscale": 64,
+      "top1_disagreement": true
+    },
+    {
+      "region_id": "region-05",
+      "bbox": {
+        "x": 1023,
+        "y": 777,
+        "width": 303,
+        "height": 289
+      },
+      "base_ranked_top3": [
+        {
+          "entity": "bazaar:item:display-case",
+          "score": 0.772721
+        },
+        {
+          "entity": "bazaar:item:dj-circuit-breaker",
+          "score": 0.62165
+        },
+        {
+          "entity": "bazaar:item:dj-rob0t",
+          "score": 0.62165
+        }
+      ],
+      "multiscale": {
+        "res16": [
+          {
+            "entity": "bazaar:item:display-case",
+            "score": 0.772721
+          },
+          {
+            "entity": "bazaar:item:gavel",
+            "score": 0.640614
+          },
+          {
+            "entity": "bazaar:item:dj-circuit-breaker",
+            "score": 0.62165
+          }
+        ],
+        "res32": [
+          {
+            "entity": "bazaar:item:display-case",
+            "score": 0.899184
+          },
+          {
+            "entity": "bazaar:item:feast",
+            "score": 0.666253
+          },
+          {
+            "entity": "bazaar:item:burn-scar",
+            "score": 0.665595
+          }
+        ],
+        "fusion": [
+          {
+            "entity": "bazaar:item:display-case",
+            "score": 0.848599
+          },
+          {
+            "entity": "bazaar:item:feast",
+            "score": 0.648339
+          },
+          {
+            "entity": "bazaar:item:burn-scar",
+            "score": 0.641846
+          }
+        ],
+        "no_pde32": [
+          {
+            "entity": "bazaar:item:display-case",
+            "score": 0.896535
+          },
+          {
+            "entity": "bazaar:item:feast",
+            "score": 0.660312
+          },
+          {
+            "entity": "bazaar:item:spices",
+            "score": 0.658053
+          }
+        ],
+        "pde_only32": [
+          {
+            "entity": "bazaar:item:display-case",
+            "score": 0.906725
+          },
+          {
+            "entity": "bazaar:item:burn-scar",
+            "score": 0.692846
+          },
+          {
+            "entity": "bazaar:item:feast",
+            "score": 0.683162
+          }
+        ]
+      },
+      "compared_16": 48,
+      "compared_multiscale": 64,
+      "top1_disagreement": false
+    },
+    {
+      "region_id": "region-06",
+      "bbox": {
+        "x": 1340,
+        "y": 777,
+        "width": 148,
+        "height": 289
+      },
+      "base_ranked_top3": [
+        {
+          "entity": "bazaar:item:abacus",
+          "score": 0.708499
+        },
+        {
+          "entity": "bazaar:item:private-runabout",
+          "score": 0.632693
+        },
+        {
+          "entity": "bazaar:item:terry-dactyl",
+          "score": 0.628098
+        }
+      ],
+      "multiscale": {
+        "res16": [
+          {
+            "entity": "bazaar:item:abacus",
+            "score": 0.708499
+          },
+          {
+            "entity": "bazaar:item:private-runabout",
+            "score": 0.632693
+          },
+          {
+            "entity": "bazaar:item:terry-dactyl",
+            "score": 0.628098
+          }
+        ],
+        "res32": [
+          {
+            "entity": "bazaar:item:abacus",
+            "score": 0.803319
+          },
+          {
+            "entity": "bazaar:item:badblocker",
+            "score": 0.654729
+          },
+          {
+            "entity": "bazaar:item:nargile",
+            "score": 0.645253
+          }
+        ],
+        "fusion": [
+          {
+            "entity": "bazaar:item:abacus",
+            "score": 0.765391
+          },
+          {
+            "entity": "bazaar:item:private-runabout",
+            "score": 0.635397
+          },
+          {
+            "entity": "bazaar:item:badblocker",
+            "score": 0.630659
+          }
+        ],
+        "no_pde32": [
+          {
+            "entity": "bazaar:item:abacus",
+            "score": 0.807248
+          },
+          {
+            "entity": "bazaar:item:badblocker",
+            "score": 0.650707
+          },
+          {
+            "entity": "bazaar:item:nargile",
+            "score": 0.647325
+          }
+        ],
+        "pde_only32": [
+          {
+            "entity": "bazaar:item:abacus",
+            "score": 0.792135
+          },
+          {
+            "entity": "bazaar:item:trojan",
+            "score": 0.672371
+          },
+          {
+            "entity": "bazaar:item:magician-s-top-hat",
+            "score": 0.670059
+          }
+        ]
+      },
+      "compared_16": 48,
+      "compared_multiscale": 64,
+      "top1_disagreement": false
+    },
+    {
+      "region_id": "region-07",
+      "bbox": {
+        "x": 1502,
+        "y": 777,
+        "width": 309,
+        "height": 289
+      },
+      "base_ranked_top3": [
+        {
+          "entity": "bazaar:item:coincure",
+          "score": 0.843703
+        },
+        {
+          "entity": "bazaar:item:campfire",
+          "score": 0.710423
+        },
+        {
+          "entity": "bazaar:item:zoarcid",
+          "score": 0.677612
+        }
+      ],
+      "multiscale": {
+        "res16": [
+          {
+            "entity": "bazaar:item:coincure",
+            "score": 0.843703
+          },
+          {
+            "entity": "bazaar:item:campfire",
+            "score": 0.710423
+          },
+          {
+            "entity": "bazaar:item:double-whammy",
+            "score": 0.689459
+          }
+        ],
+        "res32": [
+          {
+            "entity": "bazaar:item:coincure",
+            "score": 0.91811
+          },
+          {
+            "entity": "bazaar:item:campfire",
+            "score": 0.698448
+          },
+          {
+            "entity": "bazaar:item:double-whammy",
+            "score": 0.695046
+          }
+        ],
+        "fusion": [
+          {
+            "entity": "bazaar:item:coincure",
+            "score": 0.888347
+          },
+          {
+            "entity": "bazaar:item:campfire",
+            "score": 0.703238
+          },
+          {
+            "entity": "bazaar:item:double-whammy",
+            "score": 0.692811
+          }
+        ],
+        "no_pde32": [
+          {
+            "entity": "bazaar:item:coincure",
+            "score": 0.911939
+          },
+          {
+            "entity": "bazaar:item:campfire",
+            "score": 0.692701
+          },
+          {
+            "entity": "bazaar:item:double-whammy",
+            "score": 0.688495
+          }
+        ],
+        "pde_only32": [
+          {
+            "entity": "bazaar:item:coincure",
+            "score": 0.935672
+          },
+          {
+            "entity": "bazaar:item:sunlight-spear",
+            "score": 0.727998
+          },
+          {
+            "entity": "bazaar:item:staff-of-the-moose",
+            "score": 0.725759
+          }
+        ]
+      },
+      "compared_16": 48,
+      "compared_multiscale": 64,
+      "top1_disagreement": false
+    },
+    {
+      "region_id": "region-08",
+      "bbox": {
+        "x": 1825,
+        "y": 777,
+        "width": 137,
+        "height": 289
+      },
+      "base_ranked_top3": [
+        {
+          "entity": "bazaar:item:succulents",
+          "score": 0.707021
+        },
+        {
+          "entity": "bazaar:item:dragon-steak",
+          "score": 0.616853
+        },
+        {
+          "entity": "bazaar:item:chunk-of-lead",
+          "score": 0.599829
+        }
+      ],
+      "multiscale": {
+        "res16": [
+          {
+            "entity": "bazaar:item:succulents",
+            "score": 0.707021
+          },
+          {
+            "entity": "bazaar:item:boomerang",
+            "score": 0.617064
+          },
+          {
+            "entity": "bazaar:item:dragon-steak",
+            "score": 0.616853
+          }
+        ],
+        "res32": [
+          {
+            "entity": "bazaar:item:succulents",
+            "score": 0.835207
+          },
+          {
+            "entity": "bazaar:item:chunk-of-lead",
+            "score": 0.68238
+          },
+          {
+            "entity": "bazaar:item:dragon-steak",
+            "score": 0.656319
+          }
+        ],
+        "fusion": [
+          {
+            "entity": "bazaar:item:succulents",
+            "score": 0.783932
+          },
+          {
+            "entity": "bazaar:item:chunk-of-lead",
+            "score": 0.649359
+          },
+          {
+            "entity": "bazaar:item:dragon-steak",
+            "score": 0.640533
+          }
+        ],
+        "no_pde32": [
+          {
+            "entity": "bazaar:item:succulents",
+            "score": 0.830647
+          },
+          {
+            "entity": "bazaar:item:chunk-of-lead",
+            "score": 0.669311
+          },
+          {
+            "entity": "bazaar:item:dragon-steak",
+            "score": 0.656346
+          }
+        ],
+        "pde_only32": [
+          {
+            "entity": "bazaar:item:succulents",
+            "score": 0.848185
+          },
+          {
+            "entity": "bazaar:item:chunk-of-lead",
+            "score": 0.719575
+          },
+          {
+            "entity": "bazaar:item:cryosphere",
+            "score": 0.692455
+          }
+        ]
+      },
+      "compared_16": 48,
+      "compared_multiscale": 64,
+      "top1_disagreement": false
+    }
+  ],
+  "supplemental_wide": [
+    {
+      "id": "fallback-04",
+      "bbox": {
+        "x": 383,
+        "y": 777,
+        "width": 460,
+        "height": 289
+      },
+      "accepted_primary": false,
+      "ranked_top3": [
+        {
+          "entity": "bazaar:item:billboard",
+          "score": 0.795493
+        },
+        {
+          "entity": "bazaar:item:closed-sign",
+          "score": 0.643661
+        },
+        {
+          "entity": "bazaar:item:hammlet",
+          "score": 0.621467
+        }
+      ]
+    }
+  ],
+  "primary_regions_ranked_16": 8,
+  "primary_regions_ranked_32": 8,
+  "top1_16_vs_32_changes": [
+    "region-04"
+  ],
+  "warning": "All identities remain unverified, and wide fallback is not accepted as a primary playable card.",
+  "input_trust": "PNG original SHA256 verified by server; no assistant vision in programmatic inference",
+  "provenance": {
+    "pipeline": "Cloudflare experimental Worker + R2 + queue, raw bytes verified",
+    "is_human_gold": false
+  },
+  "notes": [
+    "Primary localization emits eight candidates, 3 upper and 5 lower; wide Billboard candidate stays supplemental.",
+    "16x16 baseline top-1 changed to Silencer (32x32) in lower region-04; 32x32 no-PDE leader differs (Bolas).",
+    "Nine playable-looking regions only if supplemental wide candidate included; eight automatically recognized as primary.",
+    "Not independent per-card ground truth; no identity accuracy value assigned."
+  ]
+}
