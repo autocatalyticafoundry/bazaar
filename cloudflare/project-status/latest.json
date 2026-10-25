@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25T01:59:45.042Z",
+  "updated_at": "2026-10-25T03:36:07.008Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,11 +110,10 @@
     }
   },
   "next_steps": [
-    "Retain 32x32 as experimental candidate; do not promote it to production or claim arbitrary-screen accuracy from two scenes.",
-    "Integrate general 32x32 matching as an opt-in server-side recognition variant, with independent scoring and failure telemetry.",
-    "Collect new blind human-labelled screenshots and measure candidate retrieval, top1, top3, false positives and throughput.",
-    "Perform additional ablation with harder negative pairs; PDE terms not yet proven to improve prediction.",
-    "Continue server-only, Cloudflare free-compatible execution; no enchantment modelling at this stage."
+    "Compare the nine new blind-shot card hypotheses with independent user-corrected base item labels, preserving missing positions and rejected UI separately.",
+    "Repair generalized wide-frame acceptance into primary card localization without per-screenshot geometry rules.",
+    "Improve item discrimination for lower region-04: 16x16 Pantry, 32x32 Silencer, no-PDE32 Bolas all disagree.",
+    "Test additional blind screenshots after localization/visual matcher changes; keep production unchanged."
   ],
   "preservation": {
     "status": "complete",
@@ -478,5 +477,30 @@
       "new_scene_compare_r2": "debug/region-multiscale-diagnostic-v1/ed6913ae8b020bf6770ae4ee5a4ba723031373709a2dc00c7583296ffcb82546/all-regions-comparison.json",
       "experiment_worker_version": "9ded79c45c4b4e05974d2582ed73577e"
     }
+  },
+  "blind_screenshot_latest": {
+    "screenshot_sha256": "b51793f70909626475b10dd7b75cb209eace86581e837cdd99825eade2df2de8",
+    "input_r2": "perception/inputs/b51793f70909626475b10dd7b75cb209eace86581e837cdd99825eade2df2de8.png",
+    "source_verified": true,
+    "dimensions": {
+      "width": 2048,
+      "height": 1420
+    },
+    "bytes": 6067233,
+    "primary_regions": 8,
+    "wide_supplemental_regions": 1,
+    "primary_fullcatalog_16_complete": 8,
+    "primary_multiscale_32_complete": 8,
+    "primary_top1_changed_16_to_32": [
+      "region-04"
+    ],
+    "wide_candidate_top1": "bazaar:item:billboard",
+    "human_verified_identifications": 0,
+    "full_report_r2": "debug/region-multiscale-diagnostic-v1/b51793f70909626475b10dd7b75cb209eace86581e837cdd99825eade2df2de8/blind-16vs32-comparison.json",
+    "full_report_github": "cloudflare/project-status/2026-10-25-blind-screenshot-b51793f7.json",
+    "experimental_version": "9ded79c4-5c4b-4e05-974d-2582ed73577e",
+    "production_version_unchanged": "9297970a-daf5-4a06-b5ba-61542222a169",
+    "queue_backlog_after": 0,
+    "notes": "True Cloudflare worker execution completed; prior issue was connector transfer access; 8 primary candidates and 1 wide diagnostic candidate; identities unverified."
   }
 }
