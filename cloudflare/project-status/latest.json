@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-25T03:36:07.008Z",
+  "updated_at": "2026-10-25T16:31:49.064Z",
   "project": "Bazaar",
   "goal": "pixels -> localized/recognized game objects -> canonical identities -> structured game data + visible instance state",
   "constraints": {
@@ -110,10 +110,10 @@
     }
   },
   "next_steps": [
-    "Compare the nine new blind-shot card hypotheses with independent user-corrected base item labels, preserving missing positions and rejected UI separately.",
-    "Repair generalized wide-frame acceptance into primary card localization without per-screenshot geometry rules.",
-    "Improve item discrimination for lower region-04: 16x16 Pantry, 32x32 Silencer, no-PDE32 Bolas all disagree.",
-    "Test additional blind screenshots after localization/visual matcher changes; keep production unchanged."
+    "Keep item image recognition and top-K candidate retrieval as foundation, no enchantment-aware pipeline in current milestone.",
+    "Investigate whether the true canonical identity of lower-2, tentatively Brass Knuckles, was lost at coarse top64 stage (Brass Knuckles absent in stored list).",
+    "Build multi-feature coarse candidate retrieval resilient to altered colour and art, then verify on independent labelled screenshots.",
+    "Retain 10/10 gold regression and 8 confirmed identities on new blind screenshot; do not fit matcher directly to test labels."
   ],
   "preservation": {
     "status": "complete",
@@ -501,6 +501,21 @@
     "experimental_version": "9ded79c4-5c4b-4e05-974d-2582ed73577e",
     "production_version_unchanged": "9297970a-daf5-4a06-b5ba-61542222a169",
     "queue_backlog_after": 0,
-    "notes": "True Cloudflare worker execution completed; prior issue was connector transfer access; 8 primary candidates and 1 wide diagnostic candidate; identities unverified."
+    "notes": "True Cloudflare worker execution completed; prior issue was connector transfer access; 8 primary candidates and 1 wide diagnostic candidate; identities unverified.",
+    "user_review_completed": true,
+    "reviewed_item_regions": 9,
+    "independently_user_confirmed_identities": 8,
+    "rejected_identity_regions": [
+      "region-04"
+    ],
+    "rejected_region_position": "lower-2",
+    "rejected_region_suspected_item": "Fiery Brass Knuckles (base identity unconfirmed)",
+    "rejected_region_exact_canonical_id": null,
+    "potential_reference_absent_from_coarse_top64": true,
+    "candidate_exclusion_hypothesis_requires_exact_label_verification": true,
+    "user_gold_fixture_github": "eval/feedback/b51793f70909626475b10dd7b75cb209eace86581e837cdd99825eade2df2de8-user-corrections-v1.json",
+    "user_gold_fixture_r2": "debug/ground-truth-feedback-v1/b51793f70909626475b10dd7b75cb209eace86581e837cdd99825eade2df2de8/corrections.json",
+    "posthoc_eval_r2": "debug/region-multiscale-diagnostic-v1/b51793f70909626475b10dd7b75cb209eace86581e837cdd99825eade2df2de8/posthoc-user-feedback-eval.json",
+    "benchmark_conclusion": "Eight confirmed identities plus one unresolved/rejected lower-2 item. Do not infer enchantment at runtime or claim full 9/9 truth."
   }
 }
