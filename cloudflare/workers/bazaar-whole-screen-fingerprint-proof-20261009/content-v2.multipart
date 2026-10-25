@@ -2782,6 +2782,31 @@ async function bzFullcatalogStartV2(env,body){
     httpMetadata:{contentType:"application/json"}});
   return info;
 }
+// Colour-family conflict is only a reason to withhold certainty; it does not
+// tell us whether a visual modification is Fiery, Icy, or any other enchantment.
+function bzColorFamilyAmbiguityV1(top){
+  if(!Array.isArray(top)||top.length<2)return null;
+  const colors=new Set(["red","orange","yellow","green","blue","purple",
+    "pink","black","white","brown","golden","silver"]);
+  const parse=row=>{
+    const id=String(row.canonical_entity_id||"");
+    const match=/^bazaar:item:(.+)$/.exec(id);
+    if(!match)return null;
+    const parts=match[1].split("-");
+    const marked=parts.filter(p=>colors.has(p));
+    if(marked.length!==1)return null;
+    return {color:marked[0],family:parts.filter(p=>!colors.has(p)).join("-")};
+  };
+  const a=parse(top[0]),b=parse(top[1]);
+  const gap=top[0].score-top[1].score;
+  if(!a||!b||a.family!==b.family||a.color===b.color||
+    !Number.isFinite(gap)||gap>0.012)return null;
+  return {status:"color_variant_ambiguous",family:a.family,
+    candidates:[top[0].canonical_entity_id,top[1].canonical_entity_id],
+    similarity_margin:Number(gap.toFixed(6)),
+    enchantment:"not_determined",
+    note:"Possible visual modification; score gap is not an enchantment classifier."};
+}
 async function bzFullcatalogStatusV2(env,inputKey){
   const sha=bzRegionImageShaV1(inputKey),base=bzFullConvBaseV1(inputKey),
     localization=await env.BENCHMARK_R2.get(bzRegionBaseV1(sha)+"regions.json");
@@ -2799,6 +2824,8 @@ async function bzFullcatalogStatusV2(env,inputKey){
           top1_to_top2_score_margin:a.top.length>1?
             Number((a.top[0].score-a.top[1].score).toFixed(6)):null,
           score_margin_is_probability:false,
+          instance_state:{enchantment_status:"not_determined"},
+          visual_variant_ambiguity:bzColorFamilyAmbiguityV1(a.top),
           top:a.top.slice(0,6).map((x,i)=>({
             rank:i+1,canonical_visual_asset:x.canonical_visual_asset,
             canonical_entity_id:x.canonical_entity_id,entity_type:"item",
