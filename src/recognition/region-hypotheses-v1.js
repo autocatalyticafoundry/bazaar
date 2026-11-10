@@ -12,6 +12,24 @@ function bzMedianV1(values){
   const a=[...values].sort((x,y)=>x-y);
   return a.length?a[Math.floor(a.length/2)]:0;
 }
+// Recovery for a sparse, contiguous two-card row that has the same frame
+// family as a stronger row, but falls slightly below the global edge-vote
+// threshold. Do not admit two separated UI panes as a card row.
+function bzContiguousWeakRowV1(b,anchor,w){
+  if(!anchor||b.regions.length!==2||b.frame_edges.length<3)return false;
+  const frameRatio=b.medianL/anchor.medianL;
+  if(frameRatio<.87||frameRatio>1.15||
+      b.edge_votes<Math.max(5.5,anchor.edge_votes*.20))return false;
+  const [left,right]=[...b.regions].sort((a,b)=>a.bbox.x-b.bbox.x);
+  if(!left.border_evidence||!right.border_evidence)return false;
+  if(Math.abs(left.border_evidence.right_x-right.border_evidence.left_x)>
+      Math.max(4,Math.round(w*.002)))return false;
+  const gap=right.bbox.x-(left.bbox.x+left.bbox.width);
+  if(gap<0||gap>Math.max(24,Math.round(w*.012)))return false;
+  if(Math.max(left.bbox.width,right.bbox.width)/
+      Math.min(left.bbox.width,right.bbox.width)>1.35)return false;
+  return true;
+}
 function bzRegionsFromPixelsV1(im){
   const {width:w,height:h,rgba:data}=im;
   if(w<320||h<320||w*h>24000000)throw new Error("unsupported region localization dimensions");
@@ -134,8 +152,9 @@ function bzRegionsFromPixelsV1(im){
     const sameFrameFamily=anchor&&ratio>=.87&&ratio<=1.15;
     const enoughEdgeSupport=anchor&&b.edge_votes>=
       Math.max(7,anchor.edge_votes*.25);
+    const contiguousWeakRow=bzContiguousWeakRowV1(b,anchor,w);
     const accepted=!!(b.regions.length>=2&&sameFrameFamily&&
-      enoughEdgeSupport);
+      (enoughEdgeSupport||contiguousWeakRow));
     if(!accepted){
       rejectedBands.push({y:b.y,proposal_count:b.regions.length,
         edge_votes:b.edge_votes,frame_edges:b.frame_edges,
@@ -148,7 +167,9 @@ function bzRegionsFromPixelsV1(im){
     bands.push({y:b.y,proposal_count:b.regions.length,
       edge_votes:b.edge_votes,frame_edges:b.frame_edges,
       candidate_spans:b.candidate_spans,wide_spans:b.wide_spans,
-      frame_height:b.medianL,anchor_height:anchor.medianL});
+      frame_height:b.medianL,anchor_height:anchor.medianL,
+      recovery:contiguousWeakRow&&!enoughEdgeSupport?
+        "contiguous_weak_row_v1":null});
     proposals.push(...b.regions);
   }
   proposals.sort((a,b)=>a.bbox.y-b.bbox.y||a.bbox.x-b.bbox.x);
@@ -164,7 +185,9 @@ function bzRegionsFromPixelsV1(im){
   }
   return {regions:unique.slice(0,36),bands,rejected_bands:rejectedBands,
     diagnostics:{vertical_segments:lineSegments.length,band_candidates:chosen.length,
-      accepted_row_bands:bands.length,wide_span_probes:bands.reduce((n,b)=>n+(b.wide_spans?.length||0),0),anchor_band_y:anchor?.y??null,anchor_frame_height:anchor?.medianL??null,method:"frame-family-consistency-v2"}};
+      accepted_row_bands:bands.length,
+      recovered_weak_row_bands:bands.filter(b=>b.recovery).length,
+      wide_span_probes:bands.reduce((n,b)=>n+(b.wide_spans?.length||0),0),anchor_band_y:anchor?.y??null,anchor_frame_height:anchor?.medianL??null,method:"frame-family-consistency-v2-contiguous-recovery"}};
 }
 async function bzLocalizeRegionsV1(env,body){
   const inputKey=String(body.input_key||""),
