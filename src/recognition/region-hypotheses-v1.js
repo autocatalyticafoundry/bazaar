@@ -44,6 +44,43 @@ function bzContiguousWeakSubrowV2(b,anchor,w){
   return runs.length>0&&(!runs[1]||runs[0].length>runs[1].length)?
     runs[0]:[];
 }
+
+// Recover a missing ordinary-width frame when its actual left and right
+// borders surround one weak internal art edge. Both real borders must already
+// neighbor accepted card frames, so this does not synthesize isolated cards.
+function bzInterruptedFrameBridgesV1(b,admittedRegions,w,h){
+  if(!Array.isArray(admittedRegions)||admittedRegions.length<2)return [];
+  const centers=b.frame_edges||[],minSpan=Math.max(65,Math.round(w*.049)),
+    inX=Math.max(3,Math.round(w*.0034)),
+    inY=Math.max(3,Math.round(h*.006));
+  const found=[];
+  for(let i=0;i+2<centers.length;i++){
+    const a=centers[i],mid=centers[i+1],z=centers[i+2];
+    const leftWidth=mid.x-a.x,rightWidth=z.x-mid.x,total=z.x-a.x;
+    if(leftWidth>=minSpan||rightWidth>=minSpan||
+        total<minSpan||total>2*minSpan)continue;
+    const left=admittedRegions.find(r=>r.border_evidence?.right_x===a.x),
+      right=admittedRegions.find(r=>r.border_evidence?.left_x===z.x);
+    if(!left||!right||left===right)continue;
+    const neighborWidths=[
+      left.border_evidence.right_x-left.border_evidence.left_x,
+      right.border_evidence.right_x-right.border_evidence.left_x
+    ];
+    if(neighborWidths.some(v=>total/v<.72||total/v>1.35))continue;
+    if(a.count<2||z.count<2||
+        mid.mass>=Math.min(a.mass,z.mass)*.65)continue;
+    const bbox={x:a.x+inX,y:b.y+inY,
+      width:total-2*inX,
+      height:Math.min(h-b.y-inY,b.medianL-Math.round(h*.011))};
+    if(bbox.width<55||bbox.height<80)continue;
+    found.push({bbox,source:"interrupted_frame_bridge_v1",
+      border_evidence:{left_x:a.x,right_x:z.x,row_y:b.y,
+        segment_height:b.medianL},
+      split_edge_evidence:{inner_x:mid.x,inner_mass:mid.mass,
+        left_mass:a.mass,right_mass:z.mass}});
+  }
+  return found;
+}
 function bzRegionsFromPixelsV1(im){
   const {width:w,height:h,rgba:data}=im;
   if(w<320||h<320||w*h>24000000)throw new Error("unsupported region localization dimensions");
@@ -178,14 +215,37 @@ function bzRegionsFromPixelsV1(im){
         anchor_height:anchor?.medianL||null,frame_height:b.medianL});
       continue;
     }
-    bands.push({y:b.y,proposal_count:admittedRegions.length,
+    // An internal vertical artwork edge can divide one ordinary card frame
+    // into two undersized spans. Recover it only between already accepted
+    // neighboring frame boundaries and only when its artwork is textured.
+    const bridged=[];
+    for(const b0 of bzInterruptedFrameBridgesV1(b,admittedRegions,w,h)){
+      const box=b0.bbox;
+      const sx=Math.max(1,Math.floor(box.width/42)),
+        sy=Math.max(1,Math.floor(box.height/48));
+      let count=0,sum=0,sq=0,edge=0;
+      for(let y=box.y+3;y<box.y+box.height-3;y+=sy)
+        for(let x=box.x+3;x<box.x+box.width-3;x+=sx){
+          const p=y*w+x,g=gray[p];
+          sum+=g;sq+=g*g;edge+=Math.abs(g-gray[p-2]);count++;
+        }
+      if(!count)continue;
+      const deviation=Math.sqrt(Math.max(0,sq/count-(sum/count)**2)),
+        edgeContrast=edge/count;
+      if(deviation<24||edgeContrast<2)continue;
+      bridged.push({...b0,
+        proposal_score:Number((deviation+2*edgeContrast).toFixed(3)),
+        texture_stddev:Number(deviation.toFixed(3))});
+    }
+    bands.push({y:b.y,proposal_count:admittedRegions.length+bridged.length,
       edge_votes:b.edge_votes,frame_edges:b.frame_edges,
       candidate_spans:b.candidate_spans,wide_spans:b.wide_spans,
       frame_height:b.medianL,anchor_height:anchor.medianL,
       recovery:!enoughEdgeSupport?"contiguous_weak_subrow_v2":null,
       omitted_weak_regions:!enoughEdgeSupport?
-        b.regions.filter(p=>!admittedRegions.includes(p)).map(p=>p.bbox):[]});
-    proposals.push(...admittedRegions);
+        b.regions.filter(p=>!admittedRegions.includes(p)).map(p=>p.bbox):[],
+      interrupted_frame_bridges:bridged.map(p=>p.bbox)});
+    proposals.push(...admittedRegions,...bridged);
   }
   proposals.sort((a,b)=>a.bbox.y-b.bbox.y||a.bbox.x-b.bbox.x);
   const unique=[];
@@ -202,7 +262,8 @@ function bzRegionsFromPixelsV1(im){
     diagnostics:{vertical_segments:lineSegments.length,band_candidates:chosen.length,
       accepted_row_bands:bands.length,
       recovered_weak_row_bands:bands.filter(b=>b.recovery).length,
-      wide_span_probes:bands.reduce((n,b)=>n+(b.wide_spans?.length||0),0),anchor_band_y:anchor?.y??null,anchor_frame_height:anchor?.medianL??null,method:"frame-family-consistency-v2-contiguous-subrow-recovery"}};
+      recovered_split_frames:bands.reduce((n,b)=>n+b.interrupted_frame_bridges.length,0),
+      wide_span_probes:bands.reduce((n,b)=>n+(b.wide_spans?.length||0),0),anchor_band_y:anchor?.y??null,anchor_frame_height:anchor?.medianL??null,method:"frame-family-consistency-v3-contiguous-and-interrupted-frames"}};
 }
 async function bzLocalizeRegionsV1(env,body){
   const inputKey=String(body.input_key||""),
