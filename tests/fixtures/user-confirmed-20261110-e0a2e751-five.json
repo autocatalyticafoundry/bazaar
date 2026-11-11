@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "fixture_id": "user-confirmed-five-20261110-e0a2e751",
+  "screenshot_sha256": "e0a2e751c304e73942580a6b44ec8427b7c331133a6487dd4f2f640f2593b0d8",
+  "input_r2_key": "perception/inputs/e0a2e751c304e73942580a6b44ec8427b7c331133a6487dd4f2f640f2593b0d8.png",
+  "width": 2048,
+  "height": 1369,
+  "validation": {
+    "type": "user_confirmed_after_replay",
+    "statement": "Those are correct.",
+    "confirmed_count": 5,
+    "confirmed_date": "2026-11-11",
+    "identity_scope": "base_item_identities",
+    "visible_modifiers_not_annotated": true
+  },
+  "regions": [
+    {
+      "region_id": "region-01",
+      "row": "upper",
+      "index": 1,
+      "bbox": {
+        "x": 900,
+        "y": 410,
+        "width": 144,
+        "height": 284
+      },
+      "canonical_entity_id": "bazaar:item:bandages",
+      "source": "original_fullcatalog_localizer"
+    },
+    {
+      "region_id": "region-02",
+      "row": "upper",
+      "index": 2,
+      "bbox": {
+        "x": 1058,
+        "y": 410,
+        "width": 137,
+        "height": 284
+      },
+      "canonical_entity_id": "bazaar:item:piggles-protectors",
+      "source": "original_fullcatalog_localizer"
+    },
+    {
+      "region_id": "region-03",
+      "row": "upper",
+      "index": 3,
+      "bbox": {
+        "x": 1209,
+        "y": 410,
+        "width": 141,
+        "height": 284
+      },
+      "canonical_entity_id": "bazaar:item:steam-ladle",
+      "source": "original_fullcatalog_localizer"
+    },
+    {
+      "region_id": "region-04",
+      "row": "lower",
+      "index": 1,
+      "bbox": {
+        "x": 830,
+        "y": 754,
+        "width": 301,
+        "height": 279
+      },
+      "canonical_entity_id": "bazaar:item:money-furnace",
+      "source": "contiguous_subrow_diagnostic_replay_v2"
+    },
+    {
+      "region_id": "region-05",
+      "row": "lower",
+      "index": 2,
+      "bbox": {
+        "x": 1145,
+        "y": 754,
+        "width": 276,
+        "height": 279
+      },
+      "canonical_entity_id": "bazaar:item:atm",
+      "source": "contiguous_subrow_diagnostic_replay_v2"
+    }
+  ],
+  "notes": [
+    "Identities confirmed by user on following turn, not inferred from score.",
+    "The last two regions came from diagnostic replay; proposed new localizer code not yet deployed.",
+    "Scores are uncalibrated similarity and are intentionally not used as gold labels.",
+    "This is a new isolated fixture; existing frozen benchmarks remain unchanged."
+  ],
+  "diagnostic_evidence_key": "debug/localization-replay-v2/e0a2e751c304e73942580a6b44ec8427b7c331133a6487dd4f2f640f2593b0d8/replay-summary.json"
+}
