@@ -1,0 +1,989 @@
+{
+  "schema_version": 1,
+  "kind": "blind_screenshot_fullcatalog_convolution_16_32_complete",
+  "sha256": "817608fc249da72a6ee4bbde2ff54e28149f93f44942432c721bc8f90d7c2805",
+  "input_r2": "perception/inputs/817608fc249da72a6ee4bbde2ff54e28149f93f44942432c721bc8f90d7c2805.png",
+  "source_image": {
+    "bytes": 5430915,
+    "width": 2048,
+    "height": 1281,
+    "sha256_verified": true
+  },
+  "worker": "bazaar-whole-screen-fingerprint-proof-20261009",
+  "worker_version": "9ded79c4-5c4b-4e05-974d-2582ed73577e",
+  "queue": "bazaar-region-rank-v1-20261024",
+  "recognition": {
+    "localized_regions": 14,
+    "baseline_ranked": 14,
+    "multiscale_ranked": 14,
+    "coarse_comparisons": 20762,
+    "baseline_detailed_comparisons": 672,
+    "candidate_universe": 1483,
+    "all_regions_completed": true,
+    "top1_expanded16_vs_32_changed": 8,
+    "top1_expanded16_vs_fusion_changed": 3
+  },
+  "regions": [
+    {
+      "region_id": "region-01",
+      "bbox": {
+        "x": 179,
+        "y": 188,
+        "width": 164,
+        "height": 301
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:piggles-protectors",
+          "raw_similarity": 0.684026
+        },
+        {
+          "canonical_entity_id": "bazaar:item:gunpowder",
+          "raw_similarity": 0.669613
+        },
+        {
+          "canonical_entity_id": "bazaar:item:hemlock",
+          "raw_similarity": 0.661216
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:piggles-protectors",
+          "raw_similarity": 0.684026
+        },
+        {
+          "canonical_entity_id": "bazaar:item:gunpowder",
+          "raw_similarity": 0.669613
+        },
+        {
+          "canonical_entity_id": "bazaar:item:hemlock",
+          "raw_similarity": 0.661216
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:tanky-anky",
+          "raw_similarity": 0.694273
+        },
+        {
+          "canonical_entity_id": "bazaar:item:piggles-protectors",
+          "raw_similarity": 0.689612
+        },
+        {
+          "canonical_entity_id": "bazaar:item:gunpowder",
+          "raw_similarity": 0.681312
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:piggles-protectors",
+          "raw_similarity": 0.687377
+        },
+        {
+          "canonical_entity_id": "bazaar:item:gunpowder",
+          "raw_similarity": 0.676632
+        },
+        {
+          "canonical_entity_id": "bazaar:item:tanky-anky",
+          "raw_similarity": 0.673429
+        }
+      ],
+      "fusion_gap": 0.010745,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-02",
+      "bbox": {
+        "x": 357,
+        "y": 188,
+        "width": 156,
+        "height": 301
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:capacitor",
+          "raw_similarity": 0.711426
+        },
+        {
+          "canonical_entity_id": "bazaar:item:hammer",
+          "raw_similarity": 0.701052
+        },
+        {
+          "canonical_entity_id": "bazaar:item:old-sword",
+          "raw_similarity": 0.680232
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:capacitor",
+          "raw_similarity": 0.711426
+        },
+        {
+          "canonical_entity_id": "bazaar:item:hammer",
+          "raw_similarity": 0.701052
+        },
+        {
+          "canonical_entity_id": "bazaar:item:old-sword",
+          "raw_similarity": 0.680232
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:excavation-tools",
+          "raw_similarity": 0.742171
+        },
+        {
+          "canonical_entity_id": "bazaar:item:capacitor",
+          "raw_similarity": 0.738804
+        },
+        {
+          "canonical_entity_id": "bazaar:item:chronobarrier",
+          "raw_similarity": 0.725648
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:capacitor",
+          "raw_similarity": 0.727853
+        },
+        {
+          "canonical_entity_id": "bazaar:item:hammer",
+          "raw_similarity": 0.711268
+        },
+        {
+          "canonical_entity_id": "bazaar:item:excavation-tools",
+          "raw_similarity": 0.70958
+        }
+      ],
+      "fusion_gap": 0.016585,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-03",
+      "bbox": {
+        "x": 527,
+        "y": 188,
+        "width": 343,
+        "height": 301
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:floor-spike",
+          "raw_similarity": 0.646148
+        },
+        {
+          "canonical_entity_id": "bazaar:item:truffles",
+          "raw_similarity": 0.622303
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bag-of-jewels",
+          "raw_similarity": 0.598247
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:floor-spike",
+          "raw_similarity": 0.646148
+        },
+        {
+          "canonical_entity_id": "bazaar:item:truffles",
+          "raw_similarity": 0.622303
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bag-of-jewels",
+          "raw_similarity": 0.598247
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:floor-spike",
+          "raw_similarity": 0.66739
+        },
+        {
+          "canonical_entity_id": "bazaar:item:truffles",
+          "raw_similarity": 0.658037
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bag-of-jewels",
+          "raw_similarity": 0.641707
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:floor-spike",
+          "raw_similarity": 0.658893
+        },
+        {
+          "canonical_entity_id": "bazaar:item:truffles",
+          "raw_similarity": 0.643743
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bag-of-jewels",
+          "raw_similarity": 0.624323
+        }
+      ],
+      "fusion_gap": 0.01515,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-04",
+      "bbox": {
+        "x": 884,
+        "y": 188,
+        "width": 342,
+        "height": 301
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:wildroot-amulet",
+          "raw_similarity": 0.685384
+        },
+        {
+          "canonical_entity_id": "bazaar:item:barbed-wire",
+          "raw_similarity": 0.673958
+        },
+        {
+          "canonical_entity_id": "bazaar:item:neural-toxin",
+          "raw_similarity": 0.658385
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:wildroot-amulet",
+          "raw_similarity": 0.685384
+        },
+        {
+          "canonical_entity_id": "bazaar:item:barbed-wire",
+          "raw_similarity": 0.673958
+        },
+        {
+          "canonical_entity_id": "bazaar:item:neural-toxin",
+          "raw_similarity": 0.658385
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:grindstone",
+          "raw_similarity": 0.711849
+        },
+        {
+          "canonical_entity_id": "bazaar:item:neural-toxin",
+          "raw_similarity": 0.701978
+        },
+        {
+          "canonical_entity_id": "bazaar:item:barbed-wire",
+          "raw_similarity": 0.697876
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:wildroot-amulet",
+          "raw_similarity": 0.69208
+        },
+        {
+          "canonical_entity_id": "bazaar:item:barbed-wire",
+          "raw_similarity": 0.688308
+        },
+        {
+          "canonical_entity_id": "bazaar:item:neural-toxin",
+          "raw_similarity": 0.684541
+        }
+      ],
+      "fusion_gap": 0.003772,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-05",
+      "bbox": {
+        "x": 1240,
+        "y": 188,
+        "width": 347,
+        "height": 301
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:book-of-secrets",
+          "raw_similarity": 0.832244
+        },
+        {
+          "canonical_entity_id": "bazaar:item:wrist-crossbow",
+          "raw_similarity": 0.602371
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cyber-sai",
+          "raw_similarity": 0.587566
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:book-of-secrets",
+          "raw_similarity": 0.832244
+        },
+        {
+          "canonical_entity_id": "bazaar:item:optical-augment",
+          "raw_similarity": 0.602829
+        },
+        {
+          "canonical_entity_id": "bazaar:item:wrist-crossbow",
+          "raw_similarity": 0.602371
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:book-of-secrets",
+          "raw_similarity": 0.922546
+        },
+        {
+          "canonical_entity_id": "bazaar:item:blazehowl-warden",
+          "raw_similarity": 0.638387
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cyber-sai",
+          "raw_similarity": 0.62926
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:book-of-secrets",
+          "raw_similarity": 0.886425
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cyber-sai",
+          "raw_similarity": 0.612582
+        },
+        {
+          "canonical_entity_id": "bazaar:item:wrist-crossbow",
+          "raw_similarity": 0.611315
+        }
+      ],
+      "fusion_gap": 0.273843,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-06",
+      "bbox": {
+        "x": 1601,
+        "y": 188,
+        "width": 152,
+        "height": 301
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:fortune-cookie",
+          "raw_similarity": 0.794129
+        },
+        {
+          "canonical_entity_id": "bazaar:item:pizza-cutter",
+          "raw_similarity": 0.661557
+        },
+        {
+          "canonical_entity_id": "bazaar:item:curry",
+          "raw_similarity": 0.661093
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:fortune-cookie",
+          "raw_similarity": 0.794129
+        },
+        {
+          "canonical_entity_id": "bazaar:item:pizza-cutter",
+          "raw_similarity": 0.661557
+        },
+        {
+          "canonical_entity_id": "bazaar:item:curry",
+          "raw_similarity": 0.661093
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:fortune-cookie",
+          "raw_similarity": 0.884822
+        },
+        {
+          "canonical_entity_id": "bazaar:item:micro-dave",
+          "raw_similarity": 0.713188
+        },
+        {
+          "canonical_entity_id": "bazaar:item:pizza-cutter",
+          "raw_similarity": 0.699038
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:fortune-cookie",
+          "raw_similarity": 0.848545
+        },
+        {
+          "canonical_entity_id": "bazaar:item:pizza-cutter",
+          "raw_similarity": 0.684046
+        },
+        {
+          "canonical_entity_id": "bazaar:item:micro-dave",
+          "raw_similarity": 0.683085
+        }
+      ],
+      "fusion_gap": 0.164499,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-07",
+      "bbox": {
+        "x": 1767,
+        "y": 188,
+        "width": 165,
+        "height": 301
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:extract",
+          "raw_similarity": 0.659094
+        },
+        {
+          "canonical_entity_id": "bazaar:item:schematics",
+          "raw_similarity": 0.655078
+        },
+        {
+          "canonical_entity_id": "bazaar:item:temporal-navigator",
+          "raw_similarity": 0.64218
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:piggles",
+          "raw_similarity": 0.673748
+        },
+        {
+          "canonical_entity_id": "bazaar:item:airplane-glue",
+          "raw_similarity": 0.66752
+        },
+        {
+          "canonical_entity_id": "bazaar:item:soul-ring",
+          "raw_similarity": 0.666254
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:airplane-glue",
+          "raw_similarity": 0.714188
+        },
+        {
+          "canonical_entity_id": "bazaar:item:soul-ring",
+          "raw_similarity": 0.708345
+        },
+        {
+          "canonical_entity_id": "bazaar:item:in-flight-meal",
+          "raw_similarity": 0.698657
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:airplane-glue",
+          "raw_similarity": 0.695521
+        },
+        {
+          "canonical_entity_id": "bazaar:item:soul-ring",
+          "raw_similarity": 0.691508
+        },
+        {
+          "canonical_entity_id": "bazaar:item:piggles",
+          "raw_similarity": 0.678121
+        }
+      ],
+      "fusion_gap": 0.004013,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-08",
+      "bbox": {
+        "x": 176,
+        "y": 562,
+        "width": 340,
+        "height": 330
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:vitality-potion",
+          "raw_similarity": 0.730302
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cloud-wisp",
+          "raw_similarity": 0.711143
+        },
+        {
+          "canonical_entity_id": "bazaar:item:old-sword",
+          "raw_similarity": 0.703119
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:vitality-potion",
+          "raw_similarity": 0.730302
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cloud-wisp",
+          "raw_similarity": 0.711143
+        },
+        {
+          "canonical_entity_id": "bazaar:item:old-sword",
+          "raw_similarity": 0.703119
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:vitality-potion",
+          "raw_similarity": 0.732232
+        },
+        {
+          "canonical_entity_id": "bazaar:item:old-sword",
+          "raw_similarity": 0.713524
+        },
+        {
+          "canonical_entity_id": "bazaar:item:energy-potion",
+          "raw_similarity": 0.705431
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:vitality-potion",
+          "raw_similarity": 0.73146
+        },
+        {
+          "canonical_entity_id": "bazaar:item:old-sword",
+          "raw_similarity": 0.709362
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cloud-wisp",
+          "raw_similarity": 0.706197
+        }
+      ],
+      "fusion_gap": 0.022098,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-09",
+      "bbox": {
+        "x": 530,
+        "y": 562,
+        "width": 151,
+        "height": 330
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:thurible",
+          "raw_similarity": 0.696166
+        },
+        {
+          "canonical_entity_id": "bazaar:item:plasma-grenade",
+          "raw_similarity": 0.683999
+        },
+        {
+          "canonical_entity_id": "bazaar:item:defense-matrix",
+          "raw_similarity": 0.68166
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:thurible",
+          "raw_similarity": 0.696166
+        },
+        {
+          "canonical_entity_id": "bazaar:item:plasma-grenade",
+          "raw_similarity": 0.683999
+        },
+        {
+          "canonical_entity_id": "bazaar:item:quicksilver",
+          "raw_similarity": 0.681762
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:thurible",
+          "raw_similarity": 0.739447
+        },
+        {
+          "canonical_entity_id": "bazaar:item:barbed-wire",
+          "raw_similarity": 0.72113
+        },
+        {
+          "canonical_entity_id": "bazaar:item:laboratory",
+          "raw_similarity": 0.701726
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:thurible",
+          "raw_similarity": 0.722135
+        },
+        {
+          "canonical_entity_id": "bazaar:item:barbed-wire",
+          "raw_similarity": 0.704021
+        },
+        {
+          "canonical_entity_id": "bazaar:item:quicksilver",
+          "raw_similarity": 0.690127
+        }
+      ],
+      "fusion_gap": 0.018114,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-10",
+      "bbox": {
+        "x": 695,
+        "y": 562,
+        "width": 349,
+        "height": 330
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:spider-mace",
+          "raw_similarity": 0.653664
+        },
+        {
+          "canonical_entity_id": "bazaar:item:invulnerability-potion",
+          "raw_similarity": 0.631038
+        },
+        {
+          "canonical_entity_id": "bazaar:item:book-of-secrets",
+          "raw_similarity": 0.614047
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:spider-mace",
+          "raw_similarity": 0.653664
+        },
+        {
+          "canonical_entity_id": "bazaar:item:invulnerability-potion",
+          "raw_similarity": 0.631038
+        },
+        {
+          "canonical_entity_id": "bazaar:item:book-of-secrets",
+          "raw_similarity": 0.614047
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:bottled-lightning",
+          "raw_similarity": 0.684085
+        },
+        {
+          "canonical_entity_id": "bazaar:item:spiky-shield",
+          "raw_similarity": 0.683144
+        },
+        {
+          "canonical_entity_id": "bazaar:item:spider-mace",
+          "raw_similarity": 0.669923
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:spider-mace",
+          "raw_similarity": 0.66342
+        },
+        {
+          "canonical_entity_id": "bazaar:item:invulnerability-potion",
+          "raw_similarity": 0.651911
+        },
+        {
+          "canonical_entity_id": "bazaar:item:spiky-shield",
+          "raw_similarity": 0.650584
+        }
+      ],
+      "fusion_gap": 0.011509,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-11",
+      "bbox": {
+        "x": 1058,
+        "y": 562,
+        "width": 169,
+        "height": 330
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:ylw-m4nt1s",
+          "raw_similarity": 0.703519
+        },
+        {
+          "canonical_entity_id": "bazaar:item:ionized-lightning",
+          "raw_similarity": 0.683627
+        },
+        {
+          "canonical_entity_id": "bazaar:item:yarrow-paste",
+          "raw_similarity": 0.676847
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:ylw-m4nt1s",
+          "raw_similarity": 0.703519
+        },
+        {
+          "canonical_entity_id": "bazaar:item:ionized-lightning",
+          "raw_similarity": 0.683627
+        },
+        {
+          "canonical_entity_id": "bazaar:item:yarrow-paste",
+          "raw_similarity": 0.676847
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:haladie",
+          "raw_similarity": 0.731462
+        },
+        {
+          "canonical_entity_id": "bazaar:item:ylw-m4nt1s",
+          "raw_similarity": 0.72261
+        },
+        {
+          "canonical_entity_id": "bazaar:item:blast-doors",
+          "raw_similarity": 0.710083
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:ylw-m4nt1s",
+          "raw_similarity": 0.714974
+        },
+        {
+          "canonical_entity_id": "bazaar:item:blast-doors",
+          "raw_similarity": 0.692268
+        },
+        {
+          "canonical_entity_id": "bazaar:item:haladie",
+          "raw_similarity": 0.690834
+        }
+      ],
+      "fusion_gap": 0.022706,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-12",
+      "bbox": {
+        "x": 1241,
+        "y": 562,
+        "width": 157,
+        "height": 330
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:mirror",
+          "raw_similarity": 0.767957
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cloche-hat",
+          "raw_similarity": 0.765449
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bottled-explosion",
+          "raw_similarity": 0.76388
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:candles",
+          "raw_similarity": 0.776027
+        },
+        {
+          "canonical_entity_id": "bazaar:item:mirror",
+          "raw_similarity": 0.767957
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cloche-hat",
+          "raw_similarity": 0.765449
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:candles",
+          "raw_similarity": 0.8133
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bottled-explosion",
+          "raw_similarity": 0.785336
+        },
+        {
+          "canonical_entity_id": "bazaar:item:mirror",
+          "raw_similarity": 0.778511
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:candles",
+          "raw_similarity": 0.79839
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bottled-explosion",
+          "raw_similarity": 0.776753
+        },
+        {
+          "canonical_entity_id": "bazaar:item:mirror",
+          "raw_similarity": 0.77429
+        }
+      ],
+      "fusion_gap": 0.021637,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-13",
+      "bbox": {
+        "x": 1412,
+        "y": 562,
+        "width": 349,
+        "height": 330
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:premium-green-piggles",
+          "raw_similarity": 0.642123
+        },
+        {
+          "canonical_entity_id": "bazaar:item:thurible",
+          "raw_similarity": 0.629893
+        },
+        {
+          "canonical_entity_id": "bazaar:item:quicksilver",
+          "raw_similarity": 0.618596
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:premium-green-piggles",
+          "raw_similarity": 0.642123
+        },
+        {
+          "canonical_entity_id": "bazaar:item:thurible",
+          "raw_similarity": 0.629893
+        },
+        {
+          "canonical_entity_id": "bazaar:item:quicksilver",
+          "raw_similarity": 0.618596
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:lumboars",
+          "raw_similarity": 0.710299
+        },
+        {
+          "canonical_entity_id": "bazaar:item:premium-green-piggles",
+          "raw_similarity": 0.67732
+        },
+        {
+          "canonical_entity_id": "bazaar:item:mortal-coil",
+          "raw_similarity": 0.673828
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:lumboars",
+          "raw_similarity": 0.663741
+        },
+        {
+          "canonical_entity_id": "bazaar:item:premium-green-piggles",
+          "raw_similarity": 0.663241
+        },
+        {
+          "canonical_entity_id": "bazaar:item:mortal-coil",
+          "raw_similarity": 0.651176
+        }
+      ],
+      "fusion_gap": 0.0005,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    },
+    {
+      "region_id": "region-14",
+      "bbox": {
+        "x": 1775,
+        "y": 562,
+        "width": 157,
+        "height": 330
+      },
+      "baseline16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:oni-mask",
+          "raw_similarity": 0.598485
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cog",
+          "raw_similarity": 0.590281
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bear-trap",
+          "raw_similarity": 0.590171
+        }
+      ],
+      "expanded16_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:oni-mask",
+          "raw_similarity": 0.598485
+        },
+        {
+          "canonical_entity_id": "bazaar:item:cog",
+          "raw_similarity": 0.590281
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bear-trap",
+          "raw_similarity": 0.590171
+        }
+      ],
+      "top32": [
+        {
+          "canonical_entity_id": "bazaar:item:cog",
+          "raw_similarity": 0.678269
+        },
+        {
+          "canonical_entity_id": "bazaar:item:shuriken",
+          "raw_similarity": 0.637571
+        },
+        {
+          "canonical_entity_id": "bazaar:item:dragon-tooth",
+          "raw_similarity": 0.626811
+        }
+      ],
+      "fusion_top3": [
+        {
+          "canonical_entity_id": "bazaar:item:cog",
+          "raw_similarity": 0.643074
+        },
+        {
+          "canonical_entity_id": "bazaar:item:shuriken",
+          "raw_similarity": 0.610399
+        },
+        {
+          "canonical_entity_id": "bazaar:item:bear-trap",
+          "raw_similarity": 0.607561
+        }
+      ],
+      "fusion_gap": 0.032675,
+      "scored_count_16": 48,
+      "scored_count_32": 64
+    }
+  ],
+  "ground_truth_available": false,
+  "assistant_vision_used": false,
+  "identity_probabilities_calibrated": false,
+  "warning": "Top-ranked identities are unverified model candidates. Similarity scores are not probabilities. Geometry proof and enchantment state are not established.",
+  "source_r2_prefixes": [
+    "debug/region-hypotheses-v1/817608fc249da72a6ee4bbde2ff54e28149f93f44942432c721bc8f90d7c2805/",
+    "debug/region-fullcatalog-convolution-v1/817608fc249da72a6ee4bbde2ff54e28149f93f44942432c721bc8f90d7c2805/",
+    "debug/region-multiscale-diagnostic-v1/817608fc249da72a6ee4bbde2ff54e28149f93f44942432c721bc8f90d7c2805/"
+  ]
+}
