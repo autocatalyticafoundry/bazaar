@@ -1,0 +1,13 @@
+# Bazaar — mandatory screenshot execution runbook
+
+Read this before processing a screenshot or reporting a transfer blocker. The canonical repository is autocatalyticafoundry/bazaar. Follow the current user-authorized Cloudflare resources, verifying the live Worker and bucket rather than assuming account names; never silently reuse a retired account. The Nov 21 run used the connected Bazaar R2/Worker and completed at that time; this is historical evidence, not permission to disregard a later account restriction.
+
+When the user submits a screenshot for testing, execute the actual programmatic recognition pipeline. Do not identify cards with assistant vision, invent results, ask the user to upload manually, or create a replacement pipeline merely because a direct network request fails. Use the proven connector-to-connector bridge: obtain attachment file_id; upload temporarily to private Google Drive; retrieve exact bytes as base64 inside the JS tool orchestrator; transfer 240000-character base64 chunks to authorized Cloudflare R2 with raw Uint8Array PUT; verify counts and total bytes; enqueue experimental_assemble_uploaded_png_v1; confirm SHA-256 verified; enqueue fullcatalog_start_v2; confirm all region results; run multiscale_region_v1 in batches of at most ten if needed and retry only missing outputs; return programmatic rankings, bounding boxes and raw similarity, distinguishing candidates from verified identities; preserve results; clean up private staging and chunk files after verified completion.
+
+This procedure has already succeeded end-to-end on 2026-11-21: 5,430,915 exact PNG bytes, 31 chunks, SHA 817608fc249da72a6ee4bbde2ff54e28149f93f44942432c721bc8f90d7c2805, 14/14 localized regions ranked at both 16x16 and 32x32. No user action was required. Do not mistake isolated tool or DNS failures for missing Cloudflare infrastructure. Inspect the actual tool responses, recover the working path, and complete the task without repeated user prompting. If a genuine failure remains, report its exact failing operation and evidence, and distinguish completed work from missing output.
+
+Free server-side recognition only; no production deployment changes without authorization. Never publish screenshot bytes or credentials, change sharing permissions, or use the retired account contrary to user instructions.
+
+Full runnable procedure: https://github.com/autocatalyticafoundry/bazaar/blob/main/docs/ingestion/2026-11-21-chat-to-cloudflare-transfer.md
+R2 runbook: debug/project-status/screenshot-intake-runbook.md
+R2 successful result: debug/experimental-screenshot-v1/817608fc249da72a6ee4bbde2ff54e28149f93f44942432c721bc8f90d7c2805/pipeline-report-16vs32.json
