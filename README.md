@@ -35,3 +35,7 @@ Secret values and binding values are intentionally excluded or redacted. One old
 ## Current project state
 
 See `cloudflare/project-status/latest.json`.
+
+## Required screenshot execution procedure (verified 2026-11-21)
+
+**Read [AGENTS.md](AGENTS.md) first.** The [verified chat-to-Cloudflare runbook](docs/ingestion/2026-11-21-chat-to-cloudflare-transfer.md) documents the successful original-byte transfer and complete server-side recognition workflow. A failed direct network request does not establish that screenshot intake is unavailable. The R2 mirror is `debug/project-status/screenshot-intake-runbook.md` in the verified Bazaar benchmark bucket. See the [completed 14-region test](https://github.com/autocatalyticafoundry/bazaar/blob/fix/direct-r2-screenshot-intake-20261113/eval/runs/2026-11-13-817608fc-fullcatalog-16vs32.json) for execution evidence.
