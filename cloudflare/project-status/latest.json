@@ -503,5 +503,24 @@
     "production_unchanged": true,
     "benchmark_frozen": true,
     "note": "Cloudflare SHA-verified screenshot processed by experimental 16x16 and 32x32 matcher with independent top-3 results; requires user gold correction."
+  },
+  "screenshot_intake_runbook": {
+    "verified_on": "2026-11-21",
+    "status": "proven_end_to_end",
+    "read_before_screenshot_tasks": true,
+    "repository_instructions": "https://github.com/autocatalyticafoundry/bazaar/blob/main/AGENTS.md",
+    "github_runbook": "https://github.com/autocatalyticafoundry/bazaar/blob/main/docs/ingestion/2026-11-21-chat-to-cloudflare-transfer.md",
+    "r2_runbook": "debug/project-status/screenshot-intake-runbook.md",
+    "r2_instructions": "debug/project-status/screenshot-intake-instructions.md",
+    "verified_example": {
+      "sha256": "817608fc249da72a6ee4bbde2ff54e28149f93f44942432c721bc8f90d7c2805",
+      "original_bytes": 5430915,
+      "parts": 31,
+      "baseline_regions_ranked": 14,
+      "multiscale_regions_ranked": 14,
+      "identity_accuracy": "unverified",
+      "proof": "debug/experimental-screenshot-v1/817608fc249da72a6ee4bbde2ff54e28149f93f44942432c721bc8f90d7c2805/pipeline-report-16vs32.json"
+    },
+    "rule": "Use proven private Drive-to-R2 chunked transfer before declaring intake blocked. Execute the real server-side recognition pipeline autonomously. Verify authorized account scope; do not silently use retired accounts. No manual upload by user, no substitute assistant vision, no invented results."
   }
 }
